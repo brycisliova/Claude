@@ -1,0 +1,22 @@
+{
+  "name": "Who We Are",
+  "short_name": "Who We Are",
+  "description": "A calm, research-backed home for understanding LGBTQIA+ lives: the science, the history, queer India, therapies, sound, games, and a place to be heard.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0a14",
+  "theme_color": "#0b0a14",
+  "icons": [
+    {
+      "src": "assets/img/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/img/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
