@@ -1,11 +1,11 @@
 import { esc, icon } from "../layout.mjs";
-import { POEM } from "../data/content.mjs";
+import { ABOUT_BRIEF } from "../data/content.mjs";
 
 export default {
   slug: "about",
   title: "About the builder",
   accent: "pink",
-  desc: "A note from Reiner Endrios, the anonymous builder of this site, in poetry.",
+  desc: "A note from Reiner Endrios, the anonymous builder of this site: why it exists, and who it is for.",
   scripts: ["about"],
   body: (ctx) => `
 <div class="about">
@@ -15,7 +15,8 @@ export default {
     <h1 class="ph-title reveal" style="--i:1;margin-bottom:.6rem">Reiner Endrios</h1>
     <p class="muted reveal" style="--i:2;margin-bottom:4rem">Not my real name. A name for the part of me that stayed.</p>
     <div class="poem" id="poem">
-      ${POEM.map((p) => `<p>${p}</p>`).join("\n      ")}
+      ${ABOUT_BRIEF.map((p) => `<p>${p}</p>`).join("\n      ")}
+      <p><a href="${ctx.href("stories")}#reiner">Read my whole story</a></p>
     </div>
     <p class="sig reveal">Reiner</p>
     <div class="cta-row reveal">

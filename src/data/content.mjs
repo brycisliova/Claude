@@ -279,16 +279,66 @@ export const QUOTES = [
   ["Every closet has a door. You decide when, and if, to open it.", "A gentle reminder"]
 ];
 
-export const POEM = [
-  "I said it out loud for the first time in college,<br>in a room I thought was safe.",
-  "The laughter came quickly.<br>Not cruel, they said. <em>Just a joke.</em><br>But jokes don't follow you home.",
-  "Some friends drifted. Some stayed and never asked again,<br>which is its own kind of leaving.",
-  "I learned the shape of loneliness:<br>a full hostel corridor,<br>and a door I kept closed anyway.",
-  "I learned to laugh along. I learned to go quiet.<br>I learned how heavy it is to edit yourself<br>before every sentence.",
-  "And still, some mornings, the light comes in.<br>A song. A stranger's kindness. A line in a paper<br>that says <em>you were never broken.</em>",
-  "I'm still trying.<br>Not finished, not fixed, not fearless.<br>Just here.",
-  "I built this place for the version of me<br>who sat alone in that room.<br>If that's you right now: <em>stay.</em><br>It gets less lonely. I promise to keep building until it does."
+// Short version, shown on the About page.
+export const ABOUT_BRIEF = [
+  "My whole life turned around the day I realised I was different. I felt ashamed, because I thought it was wrong. Then I learned, and learned, and learned.",
+  "But I was always afraid to tell anyone. Afraid enough that I would stop breathing, stop thinking, whenever something came close to revealing the truth about me.",
+  "I came to college hoping I could finally open up. I found that people understanding was only an assumption. I heard it laughed at. I heard it called a trend. I heard it called a disease. It broke me, and I still did not give up on myself.",
+  "When I began telling people, it went differently from what I expected. Those I was sure would never accept me supported me the most. Some of those I trusted most <em>pulled away.</em>",
+  "It hurt. It also taught me to cherish the friends and family who refused to leave when things got hard. I give people endless chances because I see more good in them than the world tells me to. I'm not a saint. I have been wrong, and I was forgiven, and that is where I learned.",
+  "I built this place for anyone who still believes it is a choice, if they are willing to read the evidence. And I built it for anyone who is struggling, or who is trying to love someone who is. You are welcome here. I carry no hate for anyone. I only ask that nobody hands hate to people for loving."
 ];
+
+// Full version, shown on the Stories page.
+export const STORY = {
+  title: "The people who stayed",
+  byline: "Told by Reiner Endrios, who built this site. Reiner is a pseudonym.",
+  pull: "The people I was sure would never accept me supported me the most.",
+  sections: [
+    ["The day everything turned", [
+      "My whole life turned around the day I realised I was different. It didn't happen slowly, the way growing up usually does. It happened all at once, like the floor tilting under me.",
+      "And the first thing I felt wasn't wonder, or even relief. It was shame. Without anyone ever sitting me down and saying it, I had absorbed the idea that this was wrong. So I did what frightened people do. I hid it, even from myself, and I told myself it might pass."
+    ]],
+    ["Learning, and learning, and learning", [
+      "It didn't pass. So I started reading. Quietly, late at night, with the screen dimmed, I read everything I could find about what it meant, where it came from, and what scientists and doctors had actually discovered.",
+      "Page after page gave me the same answer: not an illness, not a choice, not a mistake. I learned, and learned, and learned, and slowly the shame loosened its grip.",
+      "But knowing something in your head is not the same as being brave in your life. I was still terrified to tell anyone."
+    ]],
+    ["The fear", [
+      "That kind of fear is hard to explain to someone who hasn't carried it. It lived in my body. It could be as small as a careless joke, a question that came a little too close, a conversation drifting toward the wrong subject. Anything that might touch the truth about me, and I would stop breathing.",
+      "Sometimes I would stop thinking altogether, my mind going blank like a wall, until the moment passed and I could pretend I was fine. I became very good at pretending. It is exhausting in a way I didn't have words for."
+    ]],
+    ["College was not what I imagined", [
+      "I thought college would be where I could finally open up. I pictured a place of big ideas and open minds, where people would understand. But that was only an assumption, and I learned the hard way that it isn't all beds of roses.",
+      "I heard people make fun of it. I heard it called a trend, something people pick up for attention. I heard it called a disease. Every time it landed somewhere deep, because those words were about me, said casually by people who had no idea I was standing there. It broke me.",
+      "But I didn't give up on myself. That is the thing I am proudest of."
+    ]],
+    ["Telling people", [
+      "Then, for reasons I still can't fully explain, I started telling people. One at a time, carefully. And it went differently from everything I had predicted.",
+      "The people I was sure would never accept me supported me the most. And some of the people I would have bet everything on, the ones I assumed would stand right beside me, kept their distance. Some treated it like a disease. Some treated it like a pressure placed on them, as if my truth were something that had happened to them.",
+      "That hurt more than any stranger's mockery, because I had trusted them. It broke me a second time."
+    ]],
+    ["What it taught me", [
+      "But it also showed me, very clearly, who was actually there. It made me cherish the friends and the family who refused to leave when things got hard, who stayed without needing to understand every part of it first.",
+      "I don't always know what kind of person I am. But I know this: even if someone hurts me, I may go quiet and stop talking, and I will still be there for them whenever and wherever they need me, if my life lets me.",
+      "Your surroundings matter, because in the end the people are all that matter. Everyone will end up doing something with their life. It's the people who make it worth it. That is why I give people endless chances. I want to keep them in my life, because I see more good in people than not.",
+      "That's just me. If you think I'm trying to be a saint, I'm not. I have been wrong too. My friends and my family forgave me, and that is exactly where I learned."
+    ]],
+    ["The lonely stretches", [
+      "There were times I was completely alone. In those times, looking at photographs of the people I love gave me strength, even though none of them were in the room.",
+      "And there were people who never said anything cruel to me, who simply didn't understand, and still don't. Some of them call it a choice. Some say it isn't natural. As if anyone would choose the harder road, the fear and the hiding and the explaining, just for fun."
+    ]],
+    ["Why this website exists", [
+      "For them, if they're willing, I made sections of this website carefully researched and documented. If you are about to say it is a choice, a trend or a disease, I'm not asking you to take my word for it. Read the <a href=\"../science/\">science page</a>. Open the <a href=\"../library/\">research library</a> and follow the links to the original studies. See what the evidence says, and let it widen your thinking.",
+      "And if you are someone whose mind is already made up and no evidence will move it, I won't fight you. I wish you a good life, and I carry no hate for you. I only ask that you don't give hate to people for loving. It really is hurtful, and the bullying and harassment we already face is enough."
+    ]],
+    ["If you are the one who is struggling", [
+      "If you are struggling, if you want to be understood, or if you want to help a friend who has just come out, or who came out quietly and hasn't told anyone, or you're in some other situation I haven't named, please help yourself to everything here.",
+      "The <a href=\"../help/\">help page</a> has helplines and guides for exactly these moments. The <a href=\"../therapies/\">therapies</a>, <a href=\"../sound/\">sound studio</a> and <a href=\"../games/\">calm arcade</a> are there for when your head is too loud. And if you want to share your own story, or just send a message to someone who will read it with care, the <a href=\"../connect/\">connect page</a> is open and anonymous.",
+      "You don't have to be brave all at once. I wasn't."
+    ]]
+  ]
+};
 
 export const SOURCES = [
   ["Violence, data and silence", [

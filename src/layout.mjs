@@ -46,7 +46,7 @@ export const PAGES = {
   library: ["library", "Research library", "book", "y", "26 papers with honest limitations"],
   timeline: ["timeline", "Timeline", "clock", "g", "From Khajuraho to 2026"],
   myths: ["myths", "Myths and facts", "cards", "r", "Flip cards for dinner-table debates"],
-  stories: ["stories", "Stories", "heart", "g", "Queer India's trailblazers and the community wall"],
+  stories: ["stories", "Stories", "heart", "g", "Reiner's story, queer India's trailblazers, the community wall"],
   voices: ["voices", "Voices", "mic", "b", "Talks, interviews and videos"],
   watch: ["watch", "Watch", "film", "v", "28 films and series worth your evening"],
   india: ["india", "India today", "chart", "b", "Violence, data and the silence around it"],

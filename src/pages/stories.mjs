@@ -1,16 +1,26 @@
 import { esc, hero, sectionHead, icon } from "../layout.mjs";
-import { PEOPLE, BLOGS } from "../data/content.mjs";
+import { PEOPLE, BLOGS, STORY } from "../data/content.mjs";
 
 export default {
   slug: "stories",
   title: "Stories",
   accent: "g",
-  desc: "Twelve queer Indian trailblazers, a community wall of anonymous experiences, and the best places to read more stories.",
+  desc: "Reiner's story, twelve queer Indian trailblazers, a community wall of anonymous experiences, and the best places to read more.",
   scripts: ["stories"],
   body: (ctx) => `
 ${hero(ctx, { eyebrow: "Courage, in public", title: "Stories from <em class=\"grad\">queer India</em>", lede: "People who lived openly when it was dangerous, so the rest of us could breathe a little easier. Their stories are retold here in brief, with links to read more.", accent: "g" })}
 
-<section class="section">
+<section class="section" id="reiner">
+  <div class="wrap narrow longread">
+    <p class="eyebrow reveal"><span class="dot"></span>Reiner's story</p>
+    <h2 class="reveal" style="--i:1">${esc(STORY.title)}</h2>
+    <p class="byline reveal" style="--i:2">${esc(STORY.byline)}</p>
+    ${STORY.sections.map(([h, ps], i) => `<h3 class="reveal">${esc(h)}</h3>${ps.map((p, j) => `<p class="reveal${i === 0 && j === 0 ? " first" : ""}">${p}</p>`).join("")}${i === 3 ? `<blockquote class="pull reveal">${esc(STORY.pull)}</blockquote>` : ""}`).join("")}
+    <p class="sign reveal">Reiner</p>
+  </div>
+</section>
+
+<section class="section alt">
   <div class="wrap">
     <h2 class="sr-only">Trailblazers</h2>
     <div class="grid" style="--min:19rem">
@@ -19,7 +29,7 @@ ${hero(ctx, { eyebrow: "Courage, in public", title: "Stories from <em class=\"gr
   </div>
 </section>
 
-<section class="section alt" id="wall-section">
+<section class="section" id="wall-section">
   <div class="wrap">
     ${sectionHead("Community wall", "Voices from people like you", "Anonymous experiences, hopes and messages shared by visitors, each read and approved before it appears.")}
     <div class="wall" id="wall"><div class="empty">Stories will appear here once shared and approved. Yours could be the first.</div></div>
