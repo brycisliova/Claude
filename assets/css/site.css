@@ -790,3 +790,5 @@ h1 em,h2 em,h3 em,.feature-q em{font-family:inherit;font-style:normal;font-size:
 .yt-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .yt-btn::after{background:linear-gradient(to top,rgba(0,0,0,.35),rgba(0,0,0,0) 45%)}
 .yt-play{width:3.4rem;height:3.4rem;background:rgba(246,245,241,.94);box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.panel.has-photo .panel-title em{color:rgba(255,255,255,.72)}
+.panel.has-photo .credit{background:rgba(14,14,16,.5)}

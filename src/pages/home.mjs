@@ -19,7 +19,7 @@ export default {
     const { href } = ctx;
     const panels = PANELS.map(([id, c, to, no, title, sub, cta]) => `
       <a class="panel${hasPhoto(id) ? " has-photo" : ""}" href="${ctx.base}${to}" style="--c:var(--${c})" data-cursor="Open">
-        ${photo(ctx, id, { class: "ph--panel", static: true, ratio: 0.62, sizes: "(max-width:820px) 100vw, 40vw", eager: true })}
+        ${photo(ctx, id, { class: "ph--panel", static: true, ratio: 0.62, sizes: "(max-width:820px) 100vw, 40vw", eager: true, credit: "text" })}
         <span class="panel-top"><span class="panel-no">(${no})</span></span>
         <span class="panel-body"><span class="panel-title" data-split>${title}</span><span class="panel-sub">${sub}</span><span class="panel-cta">${cta} ${icon("arrow", 16)}</span></span>
       </a>`).join("");
