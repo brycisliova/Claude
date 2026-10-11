@@ -48,6 +48,15 @@ export default {
   </div>
 </section>
 
+
+<section class="strip" aria-label="Photographs">
+  <div class="strip-row">
+    <div class="strip-col" data-drift="1">${photo(ctx, "strip-1", { ratio: 0.78, class: "reveal-clip", sizes: "(max-width:820px) 80vw, 28vw" })}</div>
+    <div class="strip-col strip-col--mid" data-drift="-1">${photo(ctx, "strip-2", { ratio: 1, class: "reveal-clip", sizes: "(max-width:820px) 80vw, 32vw" })}</div>
+    <div class="strip-col" data-drift="1">${photo(ctx, "strip-3", { ratio: 0.78, class: "reveal-clip", sizes: "(max-width:820px) 80vw, 28vw" })}</div>
+  </div>
+</section>
+
 <section class="sec" style="padding-top:0">
   <div class="wrap-x">
     <header class="sec-head"><p class="label reveal"><span class="no"></span>Sections</p><div class="sec-head-main"><h2 class="sec-title" data-split>Explore the <em>site</em></h2></div></header>

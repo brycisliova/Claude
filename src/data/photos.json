@@ -88,5 +88,383 @@
   "license": "CC BY-SA 3.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "pageUrl": "https://commons.wikimedia.org/wiki/File:Khajuraho_India,_Chitragupta_Temple,_Sculpture_01.JPG"
+ },
+ "hero-learn": {
+  "file": "hero-learn",
+  "sizes": [
+   800,
+   1400,
+   2048
+  ],
+  "w": 2048,
+  "h": 853,
+  "color": "#704f40",
+  "alt": "Two progress-pride flags hanging side by side",
+  "title": "Two Progress Pride flags are hanging on a glass balcony inside a modern building with overhead lighting and exposed beams.",
+  "author": "Nilo Velez",
+  "source": "WordPress Photo Directory",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://wordpress.org/photos/photo/45667594c3/"
+ },
+ "hero-library": {
+  "file": "hero-library",
+  "sizes": [
+   800,
+   1024
+  ],
+  "w": 1024,
+  "h": 427,
+  "color": "#6e6247",
+  "alt": "A long library aisle between shelves of colourful books",
+  "title": "Bookshelves North York Central Library",
+  "author": "Rawpixel",
+  "source": "Rawpixel",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://www.rawpixel.com/image/6043264/photo-image-book-public-domain-room"
+ },
+ "hero-myths": {
+  "file": "hero-myths",
+  "sizes": [
+   800,
+   960
+  ],
+  "w": 960,
+  "h": 400,
+  "color": "#88837d",
+  "alt": "Two women talking across a table by a large window",
+  "title": "Business Meeting",
+  "author": "Christina Morillo",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/business-meeting-SKBXLJOILI"
+ },
+ "hero-stories": {
+  "file": "hero-stories",
+  "sizes": [
+   800,
+   960
+  ],
+  "w": 960,
+  "h": 400,
+  "color": "#524940",
+  "alt": "A person standing at a window in warm evening light",
+  "title": "Woman Girl",
+  "author": "Kate Williams",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/woman-girl-77ON53SSR0"
+ },
+ "hero-voices": {
+  "file": "hero-voices",
+  "sizes": [
+   800,
+   1400,
+   2048
+  ],
+  "w": 2048,
+  "h": 853,
+  "color": "#928279",
+  "alt": "A close view of a microphone",
+  "title": "The tip of a dynamic microphone.",
+  "author": "vatoyiit",
+  "source": "WordPress Photo Directory",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://wordpress.org/photos/photo/22965c09f8/"
+ },
+ "hero-watch": {
+  "file": "hero-watch",
+  "sizes": [
+   800,
+   1024
+  ],
+  "w": 1024,
+  "h": 427,
+  "color": "#66473b",
+  "alt": "Rows of red cinema seats in front of a lit curtain",
+  "title": "Free movie theatre image",
+  "author": "Rawpixel",
+  "source": "Rawpixel",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://www.rawpixel.com/image/5923945/photo-image-public-domain-room-red"
+ },
+ "hero-india": {
+  "file": "hero-india",
+  "sizes": [
+   800,
+   1400,
+   2048
+  ],
+  "w": 2048,
+  "h": 853,
+  "color": "#45403d",
+  "alt": "India Gate in New Delhi lit up at night with a crowd gathered",
+  "title": "Night view of Gateway of India arch in New Delhi",
+  "author": "vgnavada",
+  "source": "WordPress Photo Directory",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://wordpress.org/photos/photo/997671fd59/"
+ },
+ "hero-help": {
+  "file": "hero-help",
+  "sizes": [
+   800,
+   960
+  ],
+  "w": 960,
+  "h": 400,
+  "color": "#7a6a59",
+  "alt": "Three friends sitting side by side looking out over a lake",
+  "title": "People Adult",
+  "author": "Elliott Chau",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/people-adult-U3ESM8YMDM"
+ },
+ "hero-therapies": {
+  "file": "hero-therapies",
+  "sizes": [
+   800,
+   960
+  ],
+  "w": 960,
+  "h": 400,
+  "color": "#dad8d9",
+  "alt": "A woman meditating on a rock beside the sea",
+  "title": "Yoga Meditation",
+  "author": "Healthy Living",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/yoga-meditation-GG3SROJUUS"
+ },
+ "hero-sound": {
+  "file": "hero-sound",
+  "sizes": [
+   800,
+   960
+  ],
+  "w": 960,
+  "h": 400,
+  "color": "#8c765e",
+  "alt": "Raindrops on a window with warm lights blurred behind",
+  "title": "Rain Raining",
+  "author": "Negative Space",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/rain-raining-3SEGDBCEQF"
+ },
+ "hero-games": {
+  "file": "hero-games",
+  "sizes": [
+   800,
+   1024
+  ],
+  "w": 1024,
+  "h": 427,
+  "color": "#0b1339",
+  "alt": "Paper lanterns drifting through a dark night sky",
+  "title": "Floating lantern sky",
+  "author": "Rawpixel",
+  "source": "Rawpixel",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://www.rawpixel.com/image/6036315/photo-image-public-domain-balloon-sky"
+ },
+ "hero-about": {
+  "file": "hero-about",
+  "sizes": [
+   800,
+   960
+  ],
+  "w": 960,
+  "h": 400,
+  "color": "#463f48",
+  "alt": "The Milky Way rising above silhouetted trees",
+  "title": "Tree Night",
+  "author": "Free Nature Stock",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/tree-night-JO6K51KINA"
+ },
+ "hero-connect": {
+  "file": "hero-connect",
+  "sizes": [
+   800,
+   960
+  ],
+  "w": 960,
+  "h": 400,
+  "color": "#a79076",
+  "alt": "An old envelope with a fountain pen and flower petals",
+  "title": "Old Letter",
+  "author": "Vintage RS",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/old-letter-GRBHA41KW7"
+ },
+ "hero-privacy": {
+  "file": "hero-privacy",
+  "sizes": [
+   800,
+   1024
+  ],
+  "w": 1024,
+  "h": 427,
+  "color": "#99928b",
+  "alt": "A curtain with sunlight falling across it",
+  "title": "sunlight is coming windows white",
+  "author": "Rawpixel",
+  "source": "Rawpixel",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://www.rawpixel.com/image/3285030/free-photo-image-morning-wooden-floor-sun-light-interior-decorations"
+ },
+ "hero-sources": {
+  "file": "hero-sources",
+  "sizes": [
+   800,
+   960
+  ],
+  "w": 960,
+  "h": 400,
+  "color": "#a6a3a1",
+  "alt": "Hardback books laid out flat, seen from above",
+  "title": "Stacked Books",
+  "author": "Matt Bango",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/stacked-books-DGF2LFZ6JJ"
+ },
+ "interlude-1": {
+  "file": "interlude-1",
+  "sizes": [
+   800,
+   1024
+  ],
+  "w": 1024,
+  "h": 465,
+  "color": "#836b67",
+  "alt": "A crowd with rainbow flags at a pride parade",
+  "title": "interlude-1",
+  "author": "Rawpixel",
+  "source": "Rawpixel",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://www.rawpixel.com/image/6074266/free-public-domain-cc0-photo"
+ },
+ "interlude-2": {
+  "file": "interlude-2",
+  "sizes": [
+   800,
+   960
+  ],
+  "w": 960,
+  "h": 436,
+  "color": "#bbb1ab",
+  "alt": "A group of friends laughing with their arms around each other",
+  "title": "Group Friends",
+  "author": "Helena Lopes",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/group-friends-M16QHPDGYJ"
+ },
+ "interlude-3": {
+  "file": "interlude-3",
+  "sizes": [
+   800,
+   1400,
+   2048
+  ],
+  "w": 2048,
+  "h": 931,
+  "color": "#708b5f",
+  "alt": "Dew drops on long green leaves",
+  "title": "Close-up of green leaves of a daylily (Bot: Hemmerocallis) with countless drops of water after the rain and a blurred background.",
+  "author": "werkform",
+  "source": "WordPress Photo Directory",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://wordpress.org/photos/photo/928663601c/"
+ },
+ "interlude-4": {
+  "file": "interlude-4",
+  "sizes": [
+   800,
+   1400,
+   2048
+  ],
+  "w": 2048,
+  "h": 931,
+  "color": "#b3b1b1",
+  "alt": "A calm sunrise over the sea with a lifeguard tower",
+  "title": "Sunrise on the sea",
+  "author": "Ivan Tsoma",
+  "source": "WordPress Photo Directory",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://wordpress.org/photos/photo/70669f8d27/"
+ },
+ "strip-1": {
+  "file": "strip-1",
+  "sizes": [
+   499
+  ],
+  "w": 499,
+  "h": 640,
+  "color": "#938e8a",
+  "alt": "Two women talking across a table by a large window",
+  "title": "Business Meeting",
+  "author": "Christina Morillo",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/business-meeting-SKBXLJOILI"
+ },
+ "strip-2": {
+  "file": "strip-2",
+  "sizes": [
+   500,
+   641
+  ],
+  "w": 641,
+  "h": 641,
+  "color": "#d0ccce",
+  "alt": "A woman meditating on a rock beside the sea",
+  "title": "Yoga Meditation",
+  "author": "Healthy Living",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/yoga-meditation-GG3SROJUUS"
+ },
+ "strip-3": {
+  "file": "strip-3",
+  "sizes": [
+   500,
+   528
+  ],
+  "w": 528,
+  "h": 677,
+  "color": "#b2aaa5",
+  "alt": "Friends laughing with their arms around each other",
+  "title": "Group Friends",
+  "author": "Helena Lopes",
+  "source": "StockSnap",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://stocksnap.io/photo/group-friends-M16QHPDGYJ"
  }
 }

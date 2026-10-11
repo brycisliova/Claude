@@ -792,3 +792,11 @@ h1 em,h2 em,h3 em,.feature-q em{font-family:inherit;font-style:normal;font-size:
 .yt-play{width:3.4rem;height:3.4rem;background:rgba(246,245,241,.94);box-shadow:0 6px 24px rgba(0,0,0,.35)}
 .panel.has-photo .panel-title em{color:rgba(255,255,255,.72)}
 .panel.has-photo .credit{background:rgba(14,14,16,.5)}
+
+/* home picture strip */
+.strip{padding:clamp(1rem,4vw,4rem) var(--gx) clamp(3rem,7vw,7rem);overflow:hidden}
+.strip-row{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:clamp(.8rem,2vw,2rem);align-items:start;max-width:92rem;margin-inline:auto}
+.strip-col{min-width:0;will-change:transform}
+.strip-col--mid{margin-top:clamp(2rem,8vw,8rem)}
+.strip .ph{border-radius:3px}
+@media (max-width:700px){.strip-row{grid-template-columns:1fr 1fr}.strip-col:last-child{display:none}.strip-col--mid{margin-top:2.2rem}}

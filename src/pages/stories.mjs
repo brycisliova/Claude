@@ -11,7 +11,7 @@ export default {
   desc: "Reiner's story, twelve queer Indian trailblazers, a community wall of anonymous experiences, and the best places to read more.",
   scripts: ["stories"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "People", title: "<em>Stories</em>", lede: "People who lived openly when it was dangerous, so the rest of us could breathe a little easier. Their stories are retold here in brief, with links to read more." })}
+${hero(ctx, { eyebrow: "People", title: "Stories", lede: "People who lived openly when it was dangerous, so the rest of us could breathe a little easier. Their stories are retold here in brief, with links to read more." })}
 
 <section class="sec" id="reiner">
   <div class="wrap">

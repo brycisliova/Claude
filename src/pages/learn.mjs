@@ -50,7 +50,7 @@ ${hero(ctx, { eyebrow: "Learn", title: "LGBTQIA+ <em>explained</em>", lede: "The
 
 <section class="sec alt" id="glossary">
   <div class="wrap">
-    ${head("Glossary", "<em>Glossary</em>", "Thirty-two terms in everyday language. Search for any word.")}
+    ${head("Glossary", "Glossary", "Thirty-two terms in everyday language. Search for any word.")}
     <label class="sr-only" for="glossSearch">Search the glossary</label>
     <input class="search reveal" id="glossSearch" type="search" placeholder="Search a word, like pansexual or deadname" autocomplete="off">
     <div class="gloss" id="gloss">

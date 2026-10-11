@@ -307,6 +307,11 @@ function initScrollFx() {
     splitNode(el, "mw");
     G.to($$(".mw", el), { opacity: 1, ease: "none", stagger: 0.12, scrollTrigger: { trigger: el, start: "top 82%", end: "bottom 48%", scrub: true } });
   });
+  // home picture strip: columns drift at different speeds while scrolling
+  if (!reduce) $$(".strip-col").forEach((col) => {
+    const d = Number(col.dataset.drift || 1);
+    G.fromTo(col, { y: 70 * d }, { y: -70 * d, ease: "none", scrollTrigger: { trigger: col.closest(".strip"), start: "top bottom", end: "bottom top", scrub: 0.8 } });
+  });
   // photographs: parallax + mask reveal
   $$(".ph--photo:not([data-static])").forEach((fig) => {
     const inner = $(".ph-in", fig);

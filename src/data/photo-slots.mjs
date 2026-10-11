@@ -33,6 +33,10 @@ export const PHOTO_SLOTS = [
   S("interlude-2", 2.2, "orange", "Friends laughing together outdoors, warm light.", ["friends laughing outdoors"]),
   S("interlude-3", 2.2, "green", "Rain falling on leaves, calm and green.", ["rain leaves green"]),
   S("interlude-4", 2.2, "blue", "Sunrise over water.", ["sunrise over water"]),
+  // home picture strip
+  S("strip-1", 0.78, "pink", "Two people in conversation, warm daylight.", ["friends talking"]),
+  S("strip-2", 1.0, "green", "A person meditating or walking by the sea.", ["meditation sea"]),
+  S("strip-3", 0.78, "yellow", "Friends laughing together.", ["friends laughing"]),
   // portraits for the Stories page (public figures; use their freely licensed portrait only)
   S("portrait-ashok-row-kavi", 0.8, "orange", "Portrait of Ashok Row Kavi.", ["Ashok Row Kavi"]),
   S("portrait-laxmi-narayan-tripathi", 0.8, "r", "Portrait of Laxmi Narayan Tripathi.", ["Laxmi Narayan Tripathi"]),
