@@ -59,6 +59,19 @@ To fill a slot:
 3. Add an entry to `src/data/photos.json` keyed by the slot id: `file`, `sizes` (`[800, 1400, 2200]`), `w` and `h` (pixel size of the original), `color` (average colour), `alt` text, `author`, `source`, `license` and `pageUrl`.
 4. Run `node tools/build.mjs`. The credit appears under the picture, and a Photo credits page listing every photograph is generated automatically.
 
+## Films and songs that play on the page
+
+`src/data/media.json` links a title to a YouTube video. Add a YouTube link (or the 11-character id) beside the exact title used in `src/data/content.mjs`, then rebuild:
+
+```json
+{
+  "films": { "Fire": "https://www.youtube.com/watch?v=VIDEO_ID" },
+  "songs": { "True Colors": "VIDEO_ID" }
+}
+```
+
+A film with an entry shows an embedded trailer in place of its title card, and a song with an entry gets a player in its row. Players load YouTube's privacy-enhanced embed only when pressed, so nothing is requested from YouTube until a visitor chooses to play.
+
 ## Community wall
 
 The wall shows what is listed in `data/wall.json`. Add an entry to publish a message and delete an entry to remove it:
