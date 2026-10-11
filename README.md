@@ -19,10 +19,13 @@ Address: <https://shiningforever.in>
 | --- | --- |
 | Papers, timeline, people, films, helplines, glossary, quotes, sources | `src/data/content.mjs` |
 | Text of each page | `src/pages/*.mjs` |
-| Navigation, header, footer | `src/layout.mjs` |
-| Styles | `assets/css/site.css` |
-| Scripts, games, sound | `assets/js/` |
-| Fonts and images | `assets/fonts/`, `assets/img/` |
+| Navigation, menu, header, footer | `src/layout.mjs` |
+| Shared components (hero, photo, marquee, buttons) | `src/ui.mjs` |
+| Styles and design tokens | `assets/css/site.css` |
+| Animation engine, games, sound | `assets/js/` (`core.js` plus one script per page) |
+| Animation libraries (GSAP, ScrollTrigger, Lenis) and their licences | `assets/vendor/` |
+| Fonts and brand images | `assets/fonts/`, `assets/img/` |
+| Photographs and their credits | `src/data/photos.json`, `src/data/photo-slots.mjs` |
 | Community wall and video shelf | `data/wall.json`, `data/videos.json` |
 | Site name, address, email | `site.config.json` |
 | Generated pages | the folders at the repository root (`index.html`, `learn/`, `science/`, ...) |
@@ -40,6 +43,21 @@ python3 -m http.server 8080   # preview at http://localhost:8080
 After changing anything in `src/`, `assets/` or `site.config.json`, run the build and commit the regenerated files. Changes to `data/*.json` need no build.
 
 To change the address, edit `url` in `site.config.json` (or run `SITE_URL=https://example.org node tools/build.mjs`) and rebuild.
+
+## Design and animation
+
+The site uses flat colour blocks, large condensed type (Bricolage Grotesque) with serif italic accents (Instrument Serif), and a pride-flag palette used sparingly. Motion is built with GSAP, ScrollTrigger and Lenis (smooth scrolling): page transitions, split-text reveals, a scroll-driven manifesto, a pinned horizontal reel, magnetic buttons and a full-screen menu. Everything is self-hosted. With JavaScript off, or with reduced motion requested, the site shows all content without animation.
+
+## Photographs
+
+Every picture on the site is a real photograph shown with a short credit ("author, source") linking to the original page. Each place a photograph can appear is a *slot* listed in `src/data/photo-slots.mjs`, with a note on what belongs there. Until a slot has a photograph it shows a plain colour field.
+
+To fill a slot:
+
+1. Choose a photograph that is public domain or under a Creative Commons licence that allows reuse (for example from Wikimedia Commons, Unsplash or Pexels).
+2. Save resized WebP copies in `assets/img/photos/` named `<file>-800.webp`, `<file>-1400.webp` and `<file>-2200.webp`.
+3. Add an entry to `src/data/photos.json` keyed by the slot id: `file`, `sizes` (`[800, 1400, 2200]`), `w` and `h` (pixel size of the original), `color` (average colour), `alt` text, `author`, `source`, `license` and `pageUrl`.
+4. Run `node tools/build.mjs`. The credit appears under the picture, and a Photo credits page listing every photograph is generated automatically.
 
 ## Community wall
 
