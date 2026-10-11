@@ -1,0 +1,5 @@
+{
+  "_help": "Paste a YouTube link or 11-character id next to a title. Films and songs with an entry get a player that plays on the page. Titles must match src/data/content.mjs exactly.",
+  "films": {},
+  "songs": {}
+}

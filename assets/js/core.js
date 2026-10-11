@@ -98,7 +98,7 @@ function tone() {
   let dark;
   if (!t) dark = themeIsDark();
   else if (t.closest('[data-tone="dark"],.ink,.foot,.about')) dark = true;
-  else if (t.closest('[data-tone="light"],.block')) dark = false;
+  else if (t.closest('[data-tone="light"],.block:not(.phero):not(.cta-giant):not(.split2)')) dark = false;
   else dark = themeIsDark();
   root.style.setProperty("--bar-fg", dark ? "#f2efe9" : "#0e0e10");
 }
@@ -371,3 +371,17 @@ if (hasGsap) {
 }
 // pages that add content dynamically call these
 export { initSplit };
+
+// YouTube players: the privacy-enhanced embed loads only when a player is pressed.
+document.addEventListener("click", (e) => {
+  const b = e.target.closest?.(".yt-btn");
+  if (!b || b.querySelector("iframe")) return;
+  const f = document.createElement("iframe");
+  f.src = `https://www.youtube-nocookie.com/embed/${b.dataset.yt}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+  f.title = b.dataset.title || "Video";
+  f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+  f.allowFullscreen = true;
+  f.referrerPolicy = "strict-origin-when-cross-origin";
+  b.appendChild(f);
+  b.classList.add("on");
+});

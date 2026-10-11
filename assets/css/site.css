@@ -696,3 +696,85 @@ tr:last-child td{border-bottom:0}
 :root:not([data-theme="light"]) .btn-no{color:#ff6b72;box-shadow:inset 0 0 0 1.5px #ff6b72}
 :root[data-theme="dark"] .btn-no{color:#ff6b72;box-shadow:inset 0 0 0 1.5px #ff6b72}
 @media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .btn-no{color:var(--alert);box-shadow:inset 0 0 0 1.5px var(--alert)}}
+
+/* ---- YouTube players ---- */
+.yt{position:relative;aspect-ratio:16/9;background:#0e0e10;overflow:hidden}
+.yt-btn{all:unset;box-sizing:border-box;position:absolute;inset:0;display:flex;align-items:flex-end;gap:.9rem;padding:1rem 1.1rem;cursor:pointer;color:#f2efe9;background:linear-gradient(160deg,#1c1c20,#0e0e10)}
+.yt-btn:focus-visible{outline:2px solid var(--fg);outline-offset:-4px}
+.yt-play{display:grid;place-items:center;width:3rem;height:3rem;border-radius:50%;background:#f2efe9;color:#0e0e10;flex:none;transition:transform .5s var(--ease)}
+.yt-btn:hover .yt-play{transform:scale(1.1)}
+.yt-t{font-weight:600;font-stretch:86%;font-size:1.05rem;line-height:1.15;align-self:center}
+.yt-btn.on .yt-play,.yt-btn.on .yt-t{display:none}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yt--film{margin:0}
+.yt--song{width:min(22rem,46%);flex:none}
+.song--yt{align-items:center}
+@media (max-width:700px){.song--yt{flex-direction:column;align-items:stretch}.yt--song{width:100%}}
+
+/* =====================================================================
+   Quiet layer: restrained palette, lighter type, no italic flourishes.
+   Loaded last so it refines the rules above.
+   ===================================================================== */
+:root{
+  --bg:#f6f5f1; --bg2:#eceae4; --fg:#111113; --fg2:#5d5b56; --line:rgba(17,17,19,.14);
+  --surface:#fbfaf7; --surface2:#eceae4;
+  --pink:#ecdcdc; --orange:#eadfd0; --yellow:#ebe5c9; --green:#d8e3d6; --blue:#d6e1ea; --violet:#dedaea; --sky:#d6e5e7; --r:#ecd6cf;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101012;--bg2:#18181b;--fg:#f1efea;--fg2:#a9a59d;--line:rgba(241,239,234,.15)}}
+:root[data-theme="dark"]{--bg:#101012;--bg2:#18181b;--fg:#f1efea;--fg2:#a9a59d;--line:rgba(241,239,234,.15)}
+.block{--fg2:#55524d}
+:root{--pbg:#f6f5f1;--pbg2:#eceae4;--pfg:#111113;--pfg2:#5d5b56;--pline:rgba(17,17,19,.14)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--pbg:#101012;--pbg2:#18181b;--pfg:#f1efea;--pfg2:#a9a59d;--pline:rgba(241,239,234,.15)}}
+:root[data-theme="dark"]{--pbg:#101012;--pbg2:#18181b;--pfg:#f1efea;--pfg2:#a9a59d;--pline:rgba(241,239,234,.15)}
+
+/* display type: one family, regular weight, quiet second tone instead of italics */
+h1,h2,h3,.phero-title,.panel-title,.sec-title,.cta-giant-t,.foot-big,.longread h2,.about .name,.chapter-t,.manifesto,
+.hs-card q,.feature-q blockquote,.urgent h2,.form-card .h2,.h3{
+  font-family:var(--sans);font-weight:450;font-stretch:100%;letter-spacing:-.035em;word-spacing:0;font-style:normal
+}
+.phero-title em,.panel-title em,.sec-title em,.cta-giant-t em,.foot-big em,.longread h2 em,.manifesto em,.about .name em,
+h1 em,h2 em,h3 em,.feature-q em{font-family:inherit;font-style:normal;font-size:1em;letter-spacing:inherit;font-weight:inherit;color:var(--fg2)}
+.panel-title em{color:rgba(17,17,19,.55)}
+.phero-title{font-size:clamp(2.8rem,8.2vw,8.6rem);line-height:.95;max-width:16ch}
+.panel-title{font-size:clamp(2.2rem,4.6vw,5.4rem);line-height:.98}
+.sec-title{font-size:clamp(2rem,4.6vw,4.8rem);line-height:1}
+.cta-giant-t{font-size:clamp(2.4rem,7vw,8rem);line-height:.98}
+.foot-big{font-size:clamp(2rem,5.2vw,5.6rem);line-height:1}
+.longread h2{font-size:clamp(2.4rem,5.6vw,5.8rem);line-height:.98}
+.about .name{font-size:clamp(3rem,10vw,10.5rem);line-height:.9}
+.chapter-t{font-size:clamp(1.6rem,3.4vw,3.4rem);line-height:1.05}
+.manifesto{font-size:clamp(1.7rem,3.8vw,3.9rem);line-height:1.12;font-weight:420;max-width:30ch}
+.manifesto em{color:inherit;font-weight:520}
+.hs-card q{font-size:clamp(1.6rem,2.8vw,2.6rem);line-height:1.1;font-weight:420}
+.feature-q blockquote{font-size:clamp(1.8rem,3.4vw,3.4rem);line-height:1.08}
+/* numerals */
+.stat strong,.big-num strong,.event .when,.fig strong,.consensus strong,.v-card strong,.paper .yr,.glyph,.args li::before,.steps li::before,.ground button strong,.ph-initials{
+  font-weight:400;font-stretch:100%;letter-spacing:-.05em}
+.stat strong{font-size:clamp(2.8rem,6.6vw,7rem)}
+.big-num strong{font-size:clamp(3rem,6.4vw,7rem)}
+.event .when{font-size:clamp(2rem,5vw,5.4rem)}
+.fig strong{font-size:clamp(3rem,6.6vw,7rem)}
+.glyph{font-size:clamp(5rem,10vw,10rem);font-weight:380}
+.foot-word{font-weight:500;font-stretch:100%;letter-spacing:-.06em;font-size:clamp(4rem,17vw,22rem);opacity:.96}
+.poster,.chan .ct,.game .ct,.face.front .ct,.song strong,.player .ptitle,.yt-t{font-weight:500;font-stretch:100%;letter-spacing:-.02em}
+.curtain-word,.bar-brand,.menu-link{font-weight:500;font-stretch:100%;letter-spacing:-.03em}
+.menu-link{font-weight:420}
+
+/* calmer chrome */
+.sec{padding-block:clamp(4rem,9vw,8rem)}
+.card{border-radius:4px}
+.label{letter-spacing:.1em;font-weight:500}
+.phero.block{background:var(--pbg);--bg:var(--pbg);--bg2:var(--pbg2);--fg:var(--pfg);--fg2:var(--pfg2);--line:var(--pline);color:var(--pfg)}
+.phero.block::after{content:"";position:absolute;left:var(--gx);right:var(--gx);bottom:0;height:1px;background:var(--line)}
+.btn{font-weight:500}
+.hero{background:var(--bg)}
+.panel{border-left:1px solid var(--line)}
+.panel:first-child{border-left:0}
+.cta-giant.block,.split2.block{background:var(--pbg2);--bg:var(--pbg2);--bg2:var(--pbg);--fg:var(--pfg);--fg2:var(--pfg2);--line:var(--pline);color:var(--pfg)}
+.stripe,.bar-progress{opacity:.9}
+
+/* empty photo slots stay quiet until a real photograph is added */
+.ph--empty svg{display:none}
+.phero-img:has(.ph--empty){display:none}
+.panel .ph--empty{background:transparent}
+.phero{padding-bottom:clamp(2rem,4vw,4rem)}

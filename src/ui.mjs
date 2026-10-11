@@ -82,3 +82,16 @@ export const arrowBtn = (href, label, cls = "") =>
   `<a class="btn ${cls}" href="${esc(href)}" data-magnetic><span class="btn-t">${label}</span><span class="btn-i">${icon("arrow", 18)}</span></a>`;
 
 export const ext = (url, label) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+
+// ---- YouTube players ----
+// media.json maps a title to a YouTube link or id. A player is a button that loads the privacy-enhanced embed
+// only when pressed, so nothing is requested from YouTube until the visitor chooses to play.
+const MEDIA = JSON.parse(readFileSync(new URL("./data/media.json", import.meta.url), "utf8"));
+export function ytId(v) {
+  const m = String(v || "").match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : /^[A-Za-z0-9_-]{11}$/.test(String(v || "")) ? String(v) : null;
+}
+export const mediaId = (kind, title) => ytId(MEDIA[kind]?.[title]);
+export function player(id, title, o = {}) {
+  return `<div class="yt${o.class ? " " + o.class : ""}"><button class="yt-btn" type="button" data-yt="${id}" data-title="${esc(title)}" aria-label="Play: ${esc(title)}"><span class="yt-play" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="yt-t">${esc(title)}</span></button></div>`;
+}

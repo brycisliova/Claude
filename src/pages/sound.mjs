@@ -1,5 +1,5 @@
 import { esc, icon } from "../layout.mjs";
-import { hero, sectionHead, photo, arrowBtn } from "../ui.mjs";
+import { hero, sectionHead, photo, arrowBtn, mediaId, player } from "../ui.mjs";
 import { SONGS } from "../data/content.mjs";
 
 export default {
@@ -9,7 +9,7 @@ export default {
   desc: "A sound studio for your nervous system: rain, ocean and wind mixer, singing bowl, self-composing ambient music, binaural beats, sleep timer and song therapy. All generated live in your browser.",
   scripts: ["sound"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Sound and song therapy", title: "A sound studio for <em class=\"grad\">your nervous system</em>", lede: "Every sound here is generated live in your browser, so there's nothing to download. Mix rain, ocean and wind, strike a singing bowl, or let calm music compose itself. Headphones make it better.", accent: "sky" })}
+${hero(ctx, { eyebrow: "Sound", title: "Sound <em>studio</em>", lede: "Every sound here is generated live in your browser, so there's nothing to download. Mix rain, ocean and wind, strike a singing bowl, or let calm music compose itself. Headphones make it better.", accent: "sky" })}
 
 <section class="sec">
   <div class="wrap">
@@ -30,9 +30,9 @@ ${hero(ctx, { eyebrow: "Sound and song therapy", title: "A sound studio for <em 
 
 <section class="sec alt">
   <div class="wrap narrow">
-    ${sectionHead("Song therapy", "Music for the days you need it", "Music affects mood in measurable ways. A Cochrane review (Aalbers et al., 2017) found music therapy added to usual care probably reduces depressive symptoms in the short term. Here are songs many queer people say helped them feel less alone. Each link opens a YouTube search.")}
+    ${sectionHead("Song therapy", "Songs", "Music affects mood in measurable ways. A Cochrane review (Aalbers et al., 2017) found music therapy added to usual care probably reduces depressive symptoms in the short term. Here are songs many queer people say helped them feel less alone. Press play to listen here.")}
     <div class="card reveal" style="--c:var(--sky);padding:.5rem 1.75rem">
-      ${SONGS.map(([t, a]) => `<div class="song"><div><strong>${esc(t)}</strong><span>${esc(a)}</span></div><a class="btn btn-ghost btn-xs" href="https://www.youtube.com/results?search_query=${encodeURIComponent(t + " " + a)}" target="_blank" rel="noopener noreferrer">Listen ${icon("up", 14)}</a></div>`).join("")}
+      ${SONGS.map(([t, a]) => { const id = mediaId("songs", t); return `<div class="song${id ? " song--yt" : ""}"><div><strong>${esc(t)}</strong><span>${esc(a)}</span></div>${id ? player(id, t + ", " + a, { class: "yt--song" }) : `<a class="btn btn-ghost btn-xs" href="https://www.youtube.com/results?search_query=${encodeURIComponent(t + " " + a)}" target="_blank" rel="noopener noreferrer">Listen ${icon("up", 14)}</a>`}</div>`; }).join("")}
     </div>
   </div>
 </section>`
