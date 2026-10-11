@@ -8,7 +8,7 @@ export default {
   desc: "What this site does and doesn't know about you: no tracking, no cookies, no ads. Plus practical steps for staying safe if you share a device or a home.",
   scripts: ["privacy"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Plain language", title: "Privacy <em class=\"grad\">and safety</em>", lede: "For many people, visiting a site like this is a risk in itself. So here is exactly what this site does, what it can't promise, and how to stay safer.", accent: "b" })}
+${hero(ctx, { eyebrow: "Privacy", title: "Privacy <em>and safety</em>", lede: "For many people, visiting a site like this is a risk in itself. So here is exactly what this site does, what it can't promise, and how to stay safer.", accent: "b" })}
 
 <section class="sec">
   <div class="wrap narrow prose">

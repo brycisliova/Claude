@@ -8,7 +8,7 @@ export default {
   desc: "LGBTQ lives and deaths in India: why there is no official count, what independent records show, and why hating queer people is not the same as hating rapists.",
   scripts: [],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "The hard part", title: "Violence, and <em class=\"grad\">the silence around it</em>", lede: "Decriminalisation changed the law. It didn't change every home, workplace or street. Here is what the record shows, what it can't show, and why the comparison people reach for falls apart.", accent: "b" })}
+${hero(ctx, { eyebrow: "India", title: "Violence against <em>LGBTQ people in India</em>", lede: "Decriminalisation changed the law. It didn't change every home, workplace or street. Here is what the record shows, what it can't show, and why the comparison people reach for falls apart.", accent: "b" })}
 
 <section class="sec">
   <div class="wrap narrow">

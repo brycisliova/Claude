@@ -11,7 +11,7 @@ export default {
   desc: "Reiner's story, twelve queer Indian trailblazers, a community wall of anonymous experiences, and the best places to read more.",
   scripts: ["stories"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Courage, in public", title: "Stories from <em>queer India</em>", lede: "People who lived openly when it was dangerous, so the rest of us could breathe a little easier. Their stories are retold here in brief, with links to read more." })}
+${hero(ctx, { eyebrow: "People", title: "<em>Stories</em>", lede: "People who lived openly when it was dangerous, so the rest of us could breathe a little easier. Their stories are retold here in brief, with links to read more." })}
 
 <section class="sec" id="reiner">
   <div class="wrap">
@@ -31,7 +31,7 @@ ${hero(ctx, { eyebrow: "Courage, in public", title: "Stories from <em>queer Indi
 
 <section class="sec alt">
   <div class="wrap-x">
-    ${head("Trailblazers", "Twelve people <em>who went first.</em>", "Each retold briefly, with a link to read more.")}
+    ${head("Trailblazers", "Twelve <em>trailblazers</em>", "Each retold briefly, with a link to read more.")}
     <h2 class="sr-only">Trailblazers</h2>
     <div class="grid" style="--min:19rem">
       ${PEOPLE.map(([n, role, story, link, c], i) => {
@@ -45,7 +45,7 @@ ${hero(ctx, { eyebrow: "Courage, in public", title: "Stories from <em>queer Indi
 
 <section class="sec" id="wall-section">
   <div class="wrap">
-    ${head("Community wall", "Voices from <em>people like you.</em>", "Anonymous experiences, hopes and messages shared by visitors, each read and approved before it appears.")}
+    ${head("Community wall", "Community <em>wall</em>", "Anonymous experiences, hopes and messages shared by visitors, each read and approved before it appears.")}
     <div class="wall" id="wall"><div class="empty">Stories will appear here once shared and approved. Yours could be the first.</div></div>
     <div class="cta-row">${arrowBtn("../connect/", "Share yours, anonymously")}</div>
   </div>
@@ -53,7 +53,7 @@ ${hero(ctx, { eyebrow: "Courage, in public", title: "Stories from <em>queer Indi
 
 <section class="sec alt">
   <div class="wrap">
-    ${head("Keep reading", "Where to find <em>more stories.</em>")}
+    ${head("Keep reading", "More <em>stories</em>")}
     <div class="grid" style="--min:18rem">
       ${BLOGS.map(([n, d, u, c], i) => `<a class="card blog lift reveal" style="--c:var(--${c});--i:${i % 4}" href="${esc(u)}" target="_blank" rel="noopener noreferrer"><h4>${esc(n)} ${icon("up", 18)}</h4><p>${esc(d)}</p></a>`).join("")}
     </div>

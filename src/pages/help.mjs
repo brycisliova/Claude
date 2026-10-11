@@ -9,7 +9,7 @@ export default {
   desc: "Verified helplines, and practical guides: if you're questioning, coming out safely, for parents, for allies, at college and work, and your legal rights in India.",
   scripts: ["help"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "You are not alone", title: "Help <em class=\"grad\">and guides</em>", lede: "Helplines first. Then calm, practical guides for the situations people most often find themselves in.", accent: "v" })}
+${hero(ctx, { eyebrow: "Support", title: "Help <em>and guides</em>", lede: "Helplines first. Then calm, practical guides for the situations people most often find themselves in.", accent: "v" })}
 
 <section class="sec" style="padding-top:2.5rem">
   <div class="wrap">

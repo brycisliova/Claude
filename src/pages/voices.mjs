@@ -9,7 +9,7 @@ export default {
   desc: "Talks, interviews and videos from queer India and beyond. Press play right here, or follow links to the full talks.",
   scripts: ["voices"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Talks, interviews and videos", title: "<em class=\"grad\">Voices</em>", lede: "Press play to watch right here. Videos load only when you click, so nothing is tracked until you choose to watch.", accent: "b" })}
+${hero(ctx, { eyebrow: "Video", title: "<em>Voices</em>", lede: "Press play to watch right here. Videos load only when you click, so nothing is tracked until you choose to watch.", accent: "b" })}
 
 <section class="sec">
   <div class="wrap">

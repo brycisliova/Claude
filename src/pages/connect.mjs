@@ -10,7 +10,7 @@ export default {
   body: (ctx) => {
     const mail = ctx.config.email;
     return `
-${hero(ctx, { eyebrow: "Let's build this together", title: "Connect", lede: `Want to help this grow, collaborate, translate, volunteer, or just say hello? Write to <a href="mailto:${esc(mail)}">${esc(mail)}</a> or use the forms below.`, accent: "o" })}
+${hero(ctx, { eyebrow: "Get in touch", title: "Connect", lede: `Want to help this grow, collaborate, translate, volunteer, or just say hello? Write to <a href="mailto:${esc(mail)}">${esc(mail)}</a> or use the forms below.`, accent: "o" })}
 
 <section class="sec" style="padding-top:2.5rem">
   <div class="wrap">

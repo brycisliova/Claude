@@ -8,7 +8,7 @@ export default {
   desc: "Homosexuality is not an illness and not a choice. What seventy years of psychology, genetics, neuroscience and biology actually found, with every study linked and its limits stated.",
   scripts: ["science"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Seventy years of research", title: "Homosexuality, <em>explained by science</em>", lede: "Psychologists, geneticists, neuroscientists and biologists asked the same questions people still argue about at dinner tables. Their answers line up." })}
+${hero(ctx, { eyebrow: "Research", title: "The <em>science</em>", lede: "Psychologists, geneticists, neuroscientists and biologists asked the same questions people still argue about at dinner tables. Their answers line up." })}
 
 <section class="verdict" aria-label="The four findings">
   <div class="v-card reveal" style="--c:var(--g)"><strong>Not a disease</strong><p>WHO, the American Psychiatric Association and the Indian Psychiatric Society all say so.</p></div>
@@ -26,7 +26,7 @@ ${hero(ctx, { eyebrow: "Seventy years of research", title: "Homosexuality, <em>e
 
 <section class="sec alt">
   <div class="wrap-x">
-    ${head("Who agrees", "Every major body <em>reached the same conclusion.</em>", "Not one opinion, but decades of independent review by the institutions that define health.")}
+    ${head("Who agrees", "Who <em>agrees</em>", "Not one opinion, but decades of independent review by the institutions that define health.")}
     <div class="consensus">
       <div class="reveal"><strong>1973</strong><span>The American Psychiatric Association removes homosexuality from its diagnostic manual after reviewing the evidence.</span></div>
       <div class="reveal" style="--i:1"><strong>1990</strong><span>The World Health Organization removes it from the international classification of diseases. 17 May is now marked as IDAHOBIT.</span></div>
@@ -38,7 +38,7 @@ ${hero(ctx, { eyebrow: "Seventy years of research", title: "Homosexuality, <em>e
 
 <section class="sec">
   <div class="wrap">
-    ${head("Question by question", "What the evidence <em>says.</em>")}
+    ${head("Question by question", "The <em>evidence</em>")}
     <div class="wrap narrow prose" style="margin:0;padding:0;max-width:880px">
       <h3 id="illness">Is it an illness?</h3>
       <p>The first rigorous test came in 1957. Psychologist Evelyn Hooker gave personality tests to 30 gay and 30 straight men who weren't patients, then asked expert clinicians to tell them apart. They couldn't. The gay men were as psychologically healthy as everyone else. By 1973 the American Psychiatric Association had removed homosexuality from its manual; the WHO followed in 1990.</p>
@@ -68,12 +68,12 @@ ${hero(ctx, { eyebrow: "Seventy years of research", title: "Homosexuality, <em>e
 <section class="sec alt">
   <div class="wrap cols2">
     <div>
-      ${head("The twin study", "What twins <em>tell us.</em>", "Genes explained roughly a third of the variation in men's same-sex behaviour. Shared upbringing explained almost nothing. The rest came from individual factors, including conditions before birth.")}
+      ${head("The twin study", "Twin <em>studies</em>", "Genes explained roughly a third of the variation in men's same-sex behaviour. Shared upbringing explained almost nothing. The rest came from individual factors, including conditions before birth.")}
       <div class="bars reveal" role="img" aria-label="Men: genes about 35 percent, shared upbringing about 0, individual factors about 63 percent"><span style="--w:35%;background:var(--v)">Genes ~35%</span><span style="--w:2%;background:var(--y)"></span><span style="--w:63%;background:var(--b)">Individual factors ~63%</span></div>
       <p class="muted small reveal">The yellow sliver is shared upbringing. Approximate figures for men, from Långström et al., 2010.</p>
     </div>
     <div>
-      ${head("Attitudes shift", "India is changing <em>its mind.</em>", "Pew Research asked Indians whether society should accept homosexuality. In five years, acceptance more than doubled.")}
+      ${head("Attitudes shift", "Attitudes <em>in India</em>", "Pew Research asked Indians whether society should accept homosexuality. In five years, acceptance more than doubled.")}
       <div class="chart reveal" role="img" aria-label="15 percent in 2014, 37 percent in 2019"><div class="col"><div class="barv" style="--h:36%">15%</div><span class="lbl">2014</span></div><div class="col"><div class="barv" style="--h:88%">37%</div><span class="lbl">2019</span></div></div>
       <p class="muted small reveal" style="margin-top:3.2rem">Source: <a href="https://www.pewresearch.org/global/2020/06/25/global-divide-on-homosexuality-persists/" target="_blank" rel="noopener noreferrer">Pew Research Center, 2020</a>.</p>
     </div>

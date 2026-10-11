@@ -9,7 +9,7 @@ export default {
   desc: "What the evidence says helps queer mental health, ten approaches rated by strength of evidence, plus grounding, writing and mood tools you can use now.",
   scripts: ["therapies"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Ways to heal", title: "Therapies <em class=\"grad\">and self-care</em>", lede: "What the evidence says helps, explained simply, plus tools you can use right now. These support professional care; they don't replace it.", accent: "pink" })}
+${hero(ctx, { eyebrow: "Wellbeing", title: "Therapies <em>and self-care</em>", lede: "What the evidence says helps, explained simply, plus tools you can use right now. These support professional care; they don't replace it.", accent: "pink" })}
 
 <section class="sec">
   <div class="wrap">

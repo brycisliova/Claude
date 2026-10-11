@@ -12,7 +12,7 @@ export default {
     const m = photoManifest();
     const rows = Object.entries(m).map(([id, p]) => `<tr><td>${esc(SLOT[id]?.brief?.split(".")[0] || id)}</td><td>${esc(p.title || p.alt || id)}</td><td>${esc(p.author)}</td><td><a href="${esc(p.licenseUrl || p.pageUrl)}" target="_blank" rel="noopener noreferrer">${esc(p.license)}</a></td><td><a href="${esc(p.pageUrl)}" target="_blank" rel="noopener noreferrer">${esc(p.source)}</a></td></tr>`).join("");
     return `
-${hero(ctx, { eyebrow: "Credit where it's due", title: "Photo <em>credits</em>", lede: "Every photograph here was made by someone else and shared under an open licence. This is who, and where to find the original." })}
+${hero(ctx, { eyebrow: "Credits", title: "Photo <em>credits</em>", lede: "Every photograph here was made by someone else and shared under an open licence. This is who, and where to find the original." })}
 <section class="sec">
   <div class="wrap">
     <div class="table-wrap"><table><thead><tr><th scope="col">Where it appears</th><th scope="col">Photograph</th><th scope="col">Photographer</th><th scope="col">Licence</th><th scope="col">Source</th></tr></thead><tbody>${rows}</tbody></table></div>

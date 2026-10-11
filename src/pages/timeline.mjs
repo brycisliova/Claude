@@ -11,7 +11,7 @@ export default {
   desc: "A timeline of love, law and science: from Khajuraho and Section 377 to Navtej Singh Johar, the marriage equality case and the 2026 transgender amendment.",
   scripts: ["timeline"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "How we got here", title: "Love, law <em>and science</em>", lede: "Three threads running side by side for two thousand years. Filter by theme, then scroll." })}
+${hero(ctx, { eyebrow: "History", title: "<em>Timeline</em>", lede: "Three threads running side by side for two thousand years. Filter by theme, then scroll." })}
 
 <section class="sec" style="padding-top:2.4rem">
   <div class="wrap-x">

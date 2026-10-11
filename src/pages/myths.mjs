@@ -11,7 +11,7 @@ export default {
   desc: "Twelve things people say about LGBTQIA+ people, and what the evidence actually shows. Flip each card.",
   scripts: ["myths"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Tap a card to flip it", title: "Myths <em>and facts</em>", lede: "The things people say at dinner tables and in family group chats, and what the evidence actually shows." })}
+${hero(ctx, { eyebrow: "Myths", title: "Myths <em>and facts</em>", lede: "The things people say at dinner tables and in family group chats, and what the evidence actually shows." })}
 
 <section class="sec">
   <div class="wrap-x">

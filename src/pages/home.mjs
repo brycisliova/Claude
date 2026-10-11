@@ -1,5 +1,5 @@
 import { PAGES, NAV_GROUPS, esc, icon } from "../layout.mjs";
-import { photo, hasPhoto, marquee, arrowBtn } from "../ui.mjs";
+import { photo, hasPhoto, arrowBtn } from "../ui.mjs";
 import { QUOTES } from "../data/content.mjs";
 
 const PANELS = [
@@ -29,7 +29,7 @@ export default {
         const [s, l, , c, d, idx] = PAGES[k];
         return `<a class="chapter" href="${href(s)}" style="--c:var(--${c})" data-peek="${s}" data-cursor="Open"><span class="chapter-no">${idx}</span><span class="chapter-t">${esc(l)}</span><span class="chapter-d">${esc(d)}</span><span class="chapter-a">${icon("arrow", 18)}</span></a>`;
       }).join("");
-      return `<div class="chapters-group"><p class="label">${label}</p><p class="label">${items.length} rooms</p></div>${rows}`;
+      return `<div class="chapters-group"><p class="label">${label}</p></div>${rows}`;
     }).join("");
     const peeks = NAV_GROUPS.filter(([g]) => g !== "About").flatMap(([, items]) => items).map((k) => `<div class="peek-card" data-for="${k}">${photo(ctx, "hero-" + k, { ratio: 0.8, static: true, credit: false })}</div>`).join("");
 
@@ -41,11 +41,8 @@ export default {
   ${panels}
 </section>
 
-${marquee(["Not a choice", "Not an illness", "Just who we are", "You belong here"])}
-
 <section class="sec">
   <div class="wrap">
-    <p class="label reveal" style="margin-bottom:2.4rem"><span>Manifesto</span></p>
     <p class="manifesto" data-manifesto>This is a place for understanding, healing and being seen. The science is settled: orientation is <em>not a choice</em>, <em>not an illness</em>, and cannot be fixed. What is left is how we treat each other. <em>Let us live.</em></p>
     <div class="cta-row reveal">${arrowBtn(href("science"), "See the evidence")}${arrowBtn(href("help"), "I need help right now", "btn--ghost")}</div>
   </div>
@@ -53,14 +50,14 @@ ${marquee(["Not a choice", "Not an illness", "Just who we are", "You belong here
 
 <section class="sec" style="padding-top:0">
   <div class="wrap-x">
-    <header class="sec-head"><p class="label reveal"><span class="no"></span>Every room</p><div class="sec-head-main"><h2 class="sec-title" data-split>Thirteen rooms, <em>one message.</em></h2></div></header>
+    <header class="sec-head"><p class="label reveal"><span class="no"></span>Sections</p><div class="sec-head-main"><h2 class="sec-title" data-split>Explore the <em>site</em></h2></div></header>
   </div>
   <div class="chapters" id="chapters">${groups}</div>
   <div class="peek" id="peek" aria-hidden="true">${peeks}</div>
 </section>
 
 <section class="hs" data-hs data-tone="light">
-  <div class="hs-head"><p class="label"><span class="no"></span>Eight thoughts</p></div>
+  <div class="hs-head"><p class="label"><span class="no"></span>Quotes</p></div>
   <div class="hs-track">${thoughts}</div>
 </section>
 
@@ -77,7 +74,7 @@ ${marquee(["Not a choice", "Not an illness", "Just who we are", "You belong here
 
 <section class="sec">
   <div class="wrap-x">
-    <header class="sec-head"><p class="label reveal"><span class="no"></span>The record</p><div class="sec-head-main"><h2 class="sec-title" data-split>What the world <em>already decided.</em></h2></div></header>
+    <header class="sec-head"><p class="label reveal"><span class="no"></span>The record</p><div class="sec-head-main"><h2 class="sec-title" data-split>What is <em>settled</em></h2></div></header>
     <div class="stats">
       <div class="stat reveal"><strong data-count="1973">0</strong><span>American psychiatrists removed homosexuality from their list of mental disorders</span></div>
       <div class="stat reveal" style="--i:1"><strong data-count="1990">0</strong><span>The World Health Organization removed it from its classification of diseases</span></div>
@@ -90,7 +87,7 @@ ${marquee(["Not a choice", "Not an illness", "Just who we are", "You belong here
 <section class="sec ink">
   <div class="wrap">
     <p class="label reveal" style="margin-bottom:2rem"><span class="no"></span>India today</p>
-    <h2 class="sec-title" data-split style="margin-bottom:clamp(2.5rem,5vw,5rem);max-width:12ch">No one is <em>counting.</em></h2>
+    <h2 class="sec-title" data-split style="margin-bottom:clamp(2.5rem,5vw,5rem);max-width:12ch">No official <em>count</em></h2>
     <div class="big-num">
       <div class="reveal"><strong data-count="9">0</strong><span>transgender murder victims in the national crime bureau's 2022 report, out of 29,356 murders</span></div>
       <div class="reveal" style="--i:1"><strong>0</strong><span>recorded assaults or lynchings of trans people in that same report</span></div>
@@ -102,7 +99,7 @@ ${marquee(["Not a choice", "Not an illness", "Just who we are", "You belong here
 
 <a class="cta-giant block" href="tel:14416" style="--c:var(--blue)" data-cursor="Call">
   <p class="label"><span>If today is heavy</span></p>
-  <span class="cta-giant-t" data-split>You don't carry it <em>alone.</em></span>
+  <span class="cta-giant-t" data-split>You don't have to <em>carry it alone.</em></span>
   <span class="cta-giant-row"><span class="btn btn--ghost" style="pointer-events:none"><span class="btn-t">Tele-MANAS 14416</span><span class="btn-i">${icon("phone", 18)}</span></span><span class="small">Free, confidential, 24/7, in 20+ languages</span></span>
 </a>`;
   }

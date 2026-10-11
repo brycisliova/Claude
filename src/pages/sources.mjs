@@ -11,7 +11,7 @@ export default {
   desc: "Every reference used on this site in one place: news and data sources, law and policy, surveys, help directories and all twenty-six research papers.",
   scripts: [],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Show your work", title: "Sources <em class=\"grad\">and further reading</em>", lede: "Everything on this site should be checkable. If you find an error, please tell us at the address in the footer.", accent: "sky" })}
+${hero(ctx, { eyebrow: "Sources", title: "<em>Sources</em>", lede: "Everything on this site should be checkable. If you find an error, please tell us at the address in the footer.", accent: "sky" })}
 
 <section class="sec">
   <div class="wrap narrow prose">

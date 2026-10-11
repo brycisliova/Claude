@@ -13,7 +13,7 @@ export default {
   body: (ctx) => {
     const list = [...PAPERS].sort((a, b) => a.y - b.y);
     return `
-${hero(ctx, { eyebrow: "26 papers, honestly described", title: "The research <em>library</em>", lede: "Every key paper, what it found, and its limitations. Filter by question or search by author, journal or topic. Open any row to read it." })}
+${hero(ctx, { eyebrow: "26 papers", title: "Research <em>library</em>", lede: "Every key paper, what it found, and its limitations. Filter by question or search by author, journal or topic. Open any row to read it." })}
 
 <section class="sec" style="padding-block:0">
   <div class="lib-tools">

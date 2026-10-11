@@ -9,7 +9,7 @@ export default {
   desc: "Thirteen gentle games: breathing orb, lanterns, bubbles, light painting, kaleidoscope, zen sand garden, colour puzzles, constellations, a growing garden, wind chimes and aurora. No timers, no losing.",
   scripts: ["games"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Play is rest too", title: "The calm <em class=\"grad\">arcade</em>", lede: "Thirteen gentle games. No timers chasing you, no losing. Just your hands, colour and quiet.", accent: "g" })}
+${hero(ctx, { eyebrow: "Games", title: "Calm <em>games</em>", lede: "Thirteen gentle games. No timers chasing you, no losing. Just your hands, colour and quiet.", accent: "g" })}
 
 <section class="sec" style="padding-top:2.5rem">
   <div class="wrap">
