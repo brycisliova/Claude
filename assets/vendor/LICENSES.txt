@@ -1,0 +1,4 @@
+Third-party libraries served from this folder (self-hosted, so visitors' browsers never contact a third party):
+
+GSAP 3.15.0 and ScrollTrigger  https://gsap.com  - used under the GSAP "no charge" Standard License (https://gsap.com/standard-license)
+Lenis 1.3.26                   https://github.com/darkroomengineering/lenis  - MIT License
