@@ -1,4 +1,5 @@
-import { hero, icon } from "../layout.mjs";
+import { icon } from "../layout.mjs";
+import { hero, photo, arrowBtn } from "../ui.mjs";
 
 export default {
   slug: "privacy",
@@ -9,7 +10,7 @@ export default {
   body: (ctx) => `
 ${hero(ctx, { eyebrow: "Plain language", title: "Privacy <em class=\"grad\">and safety</em>", lede: "For many people, visiting a site like this is a risk in itself. So here is exactly what this site does, what it can't promise, and how to stay safer.", accent: "b" })}
 
-<section class="section">
+<section class="sec">
   <div class="wrap narrow prose">
     <h2 style="margin-top:0">What this site does</h2>
     <ul>

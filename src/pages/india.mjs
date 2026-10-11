@@ -1,4 +1,5 @@
-import { icon, hero, sectionHead, ext } from "../layout.mjs";
+import { icon } from "../layout.mjs";
+import { hero, sectionHead, ext, photo, arrowBtn } from "../ui.mjs";
 
 export default {
   slug: "india",
@@ -9,7 +10,7 @@ export default {
   body: (ctx) => `
 ${hero(ctx, { eyebrow: "The hard part", title: "Violence, and <em class=\"grad\">the silence around it</em>", lede: "Decriminalisation changed the law. It didn't change every home, workplace or street. Here is what the record shows, what it can't show, and why the comparison people reach for falls apart.", accent: "b" })}
 
-<section class="section">
+<section class="sec">
   <div class="wrap narrow">
     <header class="sec-head"><p class="eyebrow reveal"><span class="dot"></span>Start with one question</p><h2 class="reveal" style="--i:1">What did the victim do?</h2><p class="lede reveal" style="--i:2">Every argument below comes back to this. Anger at a rapist is anger at an act that destroyed another person. Anger at a queer person is anger at who they are.</p></header>
     <table class="ledger reveal">
@@ -29,7 +30,7 @@ ${hero(ctx, { eyebrow: "The hard part", title: "Violence, and <em class=\"grad\"
   </div>
 </section>
 
-<section class="section alt">
+<section class="sec alt">
   <div class="wrap narrow prose">
     ${sectionHead("Part one", "Why there is no clean death toll", "Anyone who shows you a precise year-by-year count of LGBTQ hate killings in India is guessing. Here is why.")}
     <div class="callout reveal" style="--c:var(--b)"><p><strong>India stopped counting hate crimes.</strong> The National Crime Records Bureau collected data on lynchings and hate crimes in 2017, then dropped the categories, telling Parliament the data was unreliable because these crimes are not legally defined. Its separate sections on honour killings and communal violence went the same way.</p></div>
@@ -42,7 +43,7 @@ ${hero(ctx, { eyebrow: "The hard part", title: "Violence, and <em class=\"grad\"
   </div>
 </section>
 
-<section class="section">
+<section class="sec">
   <div class="wrap narrow prose">
     ${sectionHead("Part two", "What the independent record shows", "The best documentation comes from the global Trans Murder Monitoring project run by Transgender Europe, which Indian queer groups now feed case reports into. Its entries are not statistics. They are people.")}
     <div class="card case reveal" style="--c:var(--r)"><h4>Nirmal, Telangana, January 2025</h4><p>A trans girl aged between 10 and 14 was strangled. The monitoring record lists her gender identity as the basis for bias.</p></div>
@@ -58,7 +59,7 @@ ${hero(ctx, { eyebrow: "The hard part", title: "Violence, and <em class=\"grad\"
   </div>
 </section>
 
-<section class="section alt">
+<section class="sec alt">
   <div class="wrap narrow prose">
     ${sectionHead("Part three", "The \"rapists get shot\" claim", "Some say society hates rapists just as much, pointing to police shootings of rape accused. The famous cases are few, and neither turned out to be justice.")}
     <div class="card case reveal" style="--c:var(--b)"><h4>Hyderabad, December 2019: four killed</h4><p>Four men accused in the rape and murder of a veterinary doctor were shot dead while in police custody. A Supreme Court-appointed commission headed by Justice V.S. Sirpurkar found the "encounter" was fake and that police fired with intent to kill.</p><p>It found three of the four were minors, that police knew the ages of at least two, and that a key confession statement was untrue. It recommended that 10 officers be tried for murder.</p></div>
@@ -70,7 +71,7 @@ ${hero(ctx, { eyebrow: "The hard part", title: "Violence, and <em class=\"grad\"
     <p>Most encounter killings happen in states like Chhattisgarh, Uttar Pradesh, Assam and Jharkhand, in insurgency and gangster cases. Rape accused are a tiny fraction.</p>
     <h3>Meanwhile, the courts mostly fail survivors</h3>
     <p>Of the rape trials Indian courts completed in 2024:</p>
-    <div class="bar3 reveal" role="img" aria-label="24 percent convicted, 8 percent discharged, 68 percent acquitted"><span style="--w:24%;background:var(--b)">24%</span><span style="--w:8%;background:var(--faint)">8%</span><span style="--w:68%;background:var(--muted)">68% acquitted</span></div>
+    <div class="bar3 reveal" role="img" aria-label="24 percent convicted, 8 percent discharged, 68 percent acquitted"><span style="--w:24%;background:var(--b)">24%</span><span style="--w:8%;background:#d6d1c7">8%</span><span style="--w:68%;background:#aaa498">68% acquitted</span></div>
     <p class="muted small">Convicted · Discharged · Acquitted. Only about 2% of rape cases sent to trial in 2024 ended in conviction the same year.</p>
     <p>So rapists are not being punished, either by bullets or by courts. And LGBTQ people are being punished, by families, mobs and silence, for no crime at all.</p>
 
@@ -87,7 +88,7 @@ ${hero(ctx, { eyebrow: "The hard part", title: "Violence, and <em class=\"grad\"
   </div>
 </section>
 
-<section class="section">
+<section class="sec">
   <div class="wrap narrow prose">
     ${sectionHead("Part four", "The argument, in three lines")}
     <ol class="args">

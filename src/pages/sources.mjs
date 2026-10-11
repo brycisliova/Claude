@@ -1,4 +1,5 @@
-import { esc, hero, ext } from "../layout.mjs";
+import { esc } from "../layout.mjs";
+import { hero, ext, photo, arrowBtn } from "../ui.mjs";
 import { SOURCES, PAPERS } from "../data/content.mjs";
 
 const slugify = (s) => s.toLowerCase().replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "");
@@ -12,7 +13,7 @@ export default {
   body: (ctx) => `
 ${hero(ctx, { eyebrow: "Show your work", title: "Sources <em class=\"grad\">and further reading</em>", lede: "Everything on this site should be checkable. If you find an error, please tell us at the address in the footer.", accent: "sky" })}
 
-<section class="section">
+<section class="sec">
   <div class="wrap narrow prose">
     ${SOURCES.map(([title, items]) => `<h2 id="${slugify(title).split("-")[0]}" style="margin-top:0">${esc(title)}</h2><ul>${items.map(([l, u]) => `<li>${ext(u, esc(l))}</li>`).join("")}</ul>`).join("")}
     <h2 id="papers">Research papers</h2>

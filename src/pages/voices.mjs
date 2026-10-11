@@ -1,4 +1,5 @@
-import { esc, hero, sectionHead, icon } from "../layout.mjs";
+import { esc, icon } from "../layout.mjs";
+import { hero, sectionHead, photo, arrowBtn } from "../ui.mjs";
 import { TALKS, INTERVIEWS, SHELF } from "../data/content.mjs";
 
 export default {
@@ -10,7 +11,7 @@ export default {
   body: (ctx) => `
 ${hero(ctx, { eyebrow: "Talks, interviews and videos", title: "<em class=\"grad\">Voices</em>", lede: "Press play to watch right here. Videos load only when you click, so nothing is tracked until you choose to watch.", accent: "b" })}
 
-<section class="section">
+<section class="sec">
   <div class="wrap">
     ${sectionHead("Watch here", "Featured videos")}
     <div class="grid" id="videos" style="--min:21rem">
@@ -19,7 +20,7 @@ ${hero(ctx, { eyebrow: "Talks, interviews and videos", title: "<em class=\"grad\
   </div>
 </section>
 
-<section class="section alt">
+<section class="sec alt">
   <div class="wrap">
     ${sectionHead("Interview highlights", "In their own words")}
     <div class="grid" style="--min:21rem">
@@ -28,7 +29,7 @@ ${hero(ctx, { eyebrow: "Talks, interviews and videos", title: "<em class=\"grad\
   </div>
 </section>
 
-<section class="section">
+<section class="sec">
   <div class="wrap">
     ${sectionHead("Explore by topic", "Shelves on YouTube", "Curated searches open YouTube directly, so you always see the newest uploads.")}
     <div class="shelf reveal">

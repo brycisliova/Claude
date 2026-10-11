@@ -16,5 +16,7 @@ import about from "./about.mjs";
 import connect from "./connect.mjs";
 import privacy from "./privacy.mjs";
 import sources from "./sources.mjs";
+import credits from "./credits.mjs";
+import { hasPhotos } from "../ui.mjs";
 
-export default [home, learn, science, library, timeline, myths, stories, voices, watch, india, help, therapies, sound, games, about, connect, privacy, sources];
+export default [home, learn, science, library, timeline, myths, stories, voices, watch, india, help, therapies, sound, games, about, connect, privacy, sources, ...(hasPhotos() ? [credits] : [])];

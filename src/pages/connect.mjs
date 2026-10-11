@@ -1,4 +1,5 @@
-import { esc, hero, icon } from "../layout.mjs";
+import { esc, icon } from "../layout.mjs";
+import { hero, photo, arrowBtn } from "../ui.mjs";
 
 export default {
   slug: "connect",
@@ -11,7 +12,7 @@ export default {
     return `
 ${hero(ctx, { eyebrow: "Let's build this together", title: "Connect", lede: `Want to help this grow, collaborate, translate, volunteer, or just say hello? Write to <a href="mailto:${esc(mail)}">${esc(mail)}</a> or use the forms below.`, accent: "o" })}
 
-<section class="section" style="padding-top:2.5rem">
+<section class="sec" style="padding-top:2.5rem">
   <div class="wrap">
     <div class="split">
       <div class="card form-card reveal" style="--c:var(--pink)">

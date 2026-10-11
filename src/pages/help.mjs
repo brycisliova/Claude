@@ -1,4 +1,5 @@
-import { esc, hero, icon } from "../layout.mjs";
+import { esc, icon } from "../layout.mjs";
+import { hero, photo, arrowBtn } from "../ui.mjs";
 import { LINES } from "../data/content.mjs";
 
 export default {
@@ -10,7 +11,7 @@ export default {
   body: (ctx) => `
 ${hero(ctx, { eyebrow: "You are not alone", title: "Help <em class=\"grad\">and guides</em>", lede: "Helplines first. Then calm, practical guides for the situations people most often find themselves in.", accent: "v" })}
 
-<section class="section" style="padding-top:2.5rem">
+<section class="sec" style="padding-top:2.5rem">
   <div class="wrap">
     <div class="urgent reveal">
       <h2>If you're in danger or thinking of ending your life</h2>

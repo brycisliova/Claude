@@ -1,4 +1,5 @@
-import { esc, hero, sectionHead, icon } from "../layout.mjs";
+import { esc, icon } from "../layout.mjs";
+import { hero, sectionHead, photo, arrowBtn } from "../ui.mjs";
 import { SONGS } from "../data/content.mjs";
 
 export default {
@@ -10,7 +11,7 @@ export default {
   body: (ctx) => `
 ${hero(ctx, { eyebrow: "Sound and song therapy", title: "A sound studio for <em class=\"grad\">your nervous system</em>", lede: "Every sound here is generated live in your browser, so there's nothing to download. Mix rain, ocean and wind, strike a singing bowl, or let calm music compose itself. Headphones make it better.", accent: "sky" })}
 
-<section class="section">
+<section class="sec">
   <div class="wrap">
     <canvas class="viz reveal" id="viz" aria-hidden="true"></canvas>
 
@@ -27,7 +28,7 @@ ${hero(ctx, { eyebrow: "Sound and song therapy", title: "A sound studio for <em 
   </div>
 </section>
 
-<section class="section alt">
+<section class="sec alt">
   <div class="wrap narrow">
     ${sectionHead("Song therapy", "Music for the days you need it", "Music affects mood in measurable ways. A Cochrane review (Aalbers et al., 2017) found music therapy added to usual care probably reduces depressive symptoms in the short term. Here are songs many queer people say helped them feel less alone. Each link opens a YouTube search.")}
     <div class="card reveal" style="--c:var(--sky);padding:.5rem 1.75rem">

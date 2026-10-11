@@ -1,4 +1,5 @@
-import { esc, hero, sectionHead } from "../layout.mjs";
+import { esc } from "../layout.mjs";
+import { hero, sectionHead, photo, arrowBtn } from "../ui.mjs";
 import { THERAPIES, PROMPTS } from "../data/content.mjs";
 
 export default {
@@ -10,7 +11,7 @@ export default {
   body: (ctx) => `
 ${hero(ctx, { eyebrow: "Ways to heal", title: "Therapies <em class=\"grad\">and self-care</em>", lede: "What the evidence says helps, explained simply, plus tools you can use right now. These support professional care; they don't replace it.", accent: "pink" })}
 
-<section class="section">
+<section class="sec">
   <div class="wrap">
     ${sectionHead("Ten approaches", "Rated by how strong the evidence is")}
     <div class="grid" style="--min:20rem">
@@ -20,7 +21,7 @@ ${hero(ctx, { eyebrow: "Ways to heal", title: "Therapies <em class=\"grad\">and 
   </div>
 </section>
 
-<section class="section alt">
+<section class="sec alt">
   <div class="wrap narrow">
     ${sectionHead("Right now", "5-4-3-2-1 grounding", "When anxiety spikes, bring yourself back to the present. Tap each step as you notice the things around you.")}
     <div class="card reveal" style="--c:var(--v)">
@@ -36,7 +37,7 @@ ${hero(ctx, { eyebrow: "Ways to heal", title: "Therapies <em class=\"grad\">and 
   </div>
 </section>
 
-<section class="section">
+<section class="sec">
   <div class="wrap narrow">
     ${sectionHead("Expressive writing", "Write it out", "Research by James Pennebaker found that writing about difficult feelings for 15 to 20 minutes over a few days can improve wellbeing. Nothing you type here leaves your device.")}
     <div class="card reveal" style="--c:var(--o)">
@@ -54,7 +55,7 @@ ${hero(ctx, { eyebrow: "Ways to heal", title: "Therapies <em class=\"grad\">and 
   </div>
 </section>
 
-<section class="section alt">
+<section class="sec alt">
   <div class="wrap narrow">
     ${sectionHead("Daily check-in", "How are you, really?", "Noticing patterns is a first step. Your check-ins stay on this device only.")}
     <div class="card reveal" style="--c:var(--g)">
