@@ -800,3 +800,4 @@ h1 em,h2 em,h3 em,.feature-q em{font-family:inherit;font-style:normal;font-size:
 .strip-col--mid{margin-top:clamp(2rem,8vw,8rem)}
 .strip .ph{border-radius:3px}
 @media (max-width:700px){.strip-row{grid-template-columns:1fr 1fr}.strip-col:last-child{display:none}.strip-col--mid{margin-top:2.2rem}}
+@media (max-width:520px){.bar-brand span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}

@@ -50,14 +50,18 @@ The site uses flat colour blocks, large condensed type (Bricolage Grotesque) wit
 
 ## Photographs
 
-Every picture on the site is a real photograph shown with a short credit ("author, source") linking to the original page. Each place a photograph can appear is a *slot* listed in `src/data/photo-slots.mjs`, with a note on what belongs there. Until a slot has a photograph it shows a plain colour field.
+Every picture on the site is an openly licensed photograph shown with a short credit ("photographer · source"). Photographs come from the WordPress Photo Directory, StockSnap and Rawpixel (all CC0 or public domain) and from Wikimedia Commons (CC BY or CC BY-SA). The Photo credits page lists each photograph with its photographer, licence and original page.
 
-To fill a slot:
+Each place a photograph can appear is a *slot* listed in `src/data/photo-slots.mjs`, with a note on what belongs there. A slot with no photograph stays plain.
 
-1. Choose a photograph that is public domain or under a Creative Commons licence that allows reuse (for example from Wikimedia Commons, Unsplash or Pexels).
-2. Save resized WebP copies in `assets/img/photos/` named `<file>-800.webp`, `<file>-1400.webp` and `<file>-2200.webp`.
-3. Add an entry to `src/data/photos.json` keyed by the slot id: `file`, `sizes` (`[800, 1400, 2200]`), `w` and `h` (pixel size of the original), `color` (average colour), `alt` text, `author`, `source`, `license` and `pageUrl`.
-4. Run `node tools/build.mjs`. The credit appears under the picture, and a Photo credits page listing every photograph is generated automatically.
+To change or add a photograph:
+
+1. Choose a photograph that is public domain or under a Creative Commons licence that allows reuse.
+2. Save resized WebP copies in `assets/img/photos/` named `<slot-id>-800.webp`, `<slot-id>-1400.webp` and so on.
+3. Add an entry to `src/data/photos.json` keyed by the slot id: `file`, `sizes`, `w` and `h` (pixel size of the largest copy), `color` (average colour), `alt` text, `author`, `source`, `license`, `licenseUrl` and `pageUrl`.
+4. Run `node tools/build.mjs`.
+
+Photographs inside a link (such as the three home panels) show their credit as plain text; everywhere else the credit links to the original page.
 
 ## Films and songs that play on the page
 
