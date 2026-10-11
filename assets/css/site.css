@@ -778,3 +778,15 @@ h1 em,h2 em,h3 em,.feature-q em{font-family:inherit;font-style:normal;font-size:
 .phero-img:has(.ph--empty){display:none}
 .panel .ph--empty{background:transparent}
 .phero{padding-bottom:clamp(2rem,4vw,4rem)}
+
+/* video posters come from the video's own thumbnail */
+.yt-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.yt-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,0) 55%);z-index:1;pointer-events:none}
+.yt-play,.yt-t{position:relative;z-index:2}
+.yt-t{text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.yt-btn.on::after,.yt-btn.on .yt-img{display:none}
+.yt--song .yt-t{font-size:.9rem}
+.yt-btn{align-items:center;justify-content:center}
+.yt-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.yt-btn::after{background:linear-gradient(to top,rgba(0,0,0,.35),rgba(0,0,0,0) 45%)}
+.yt-play{width:3.4rem;height:3.4rem;background:rgba(246,245,241,.94);box-shadow:0 6px 24px rgba(0,0,0,.35)}

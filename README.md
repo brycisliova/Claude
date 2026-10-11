@@ -70,7 +70,7 @@ To fill a slot:
 }
 ```
 
-A film with an entry shows an embedded trailer in place of its title card, and a song with an entry gets a player in its row. Players load YouTube's privacy-enhanced embed only when pressed, so nothing is requested from YouTube until a visitor chooses to play.
+A film with an entry shows an embedded trailer in place of its title card, and a song with an entry gets a player in its row. Each player shows the video's own preview picture (loaded from YouTube's image server as it scrolls into view) and loads YouTube's privacy-enhanced player only when pressed.
 
 ## Community wall
 
