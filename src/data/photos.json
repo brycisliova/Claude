@@ -1,1 +1,92 @@
-{}
+{
+ "hero-choice": {
+  "file": "hero-choice",
+  "sizes": [
+   500,
+   900,
+   1400
+  ],
+  "w": 1400,
+  "h": 2258,
+  "color": "#7d5031",
+  "alt": "Orange sunrise behind a bare tree in a snowy field",
+  "title": "Dülmen, Hausdülmen, Sonnenaufgang -- 2015 -- 4952",
+  "author": "Dietmar Rabich",
+  "source": "Wikimedia Commons",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "pageUrl": "https://commons.wikimedia.org/wiki/File:D%C3%BClmen,_Hausd%C3%BClmen,_Sonnenaufgang_--_2015_--_4952.jpg"
+ },
+ "hero-illness": {
+  "file": "hero-illness",
+  "sizes": [
+   500,
+   900,
+   1092
+  ],
+  "w": 1092,
+  "h": 1761,
+  "color": "#9c5948",
+  "alt": "An adult's hand holding a baby's hand",
+  "title": "Haende-30",
+  "author": "Matthias Süßen",
+  "source": "Wikimedia Commons",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "pageUrl": "https://commons.wikimedia.org/wiki/File:Haende-30.jpg"
+ },
+ "hero-who": {
+  "file": "hero-who",
+  "sizes": [
+   500,
+   900,
+   1400
+  ],
+  "w": 1400,
+  "h": 2258,
+  "color": "#7b6760",
+  "alt": "Marchers with rainbow flags at the Kerala Pride March in Thrissur",
+  "title": "Kerala Pride March 2018 IMG 20181007 162531",
+  "author": "Ambadyanands",
+  "source": "Wikimedia Commons",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "pageUrl": "https://commons.wikimedia.org/wiki/File:Kerala_Pride_March_2018_IMG_20181007_162531.jpg"
+ },
+ "hero-science": {
+  "file": "hero-science",
+  "sizes": [
+   800,
+   1400,
+   2200
+  ],
+  "w": 2200,
+  "h": 917,
+  "color": "#223318",
+  "alt": "Cells under a fluorescence microscope, nuclei in blue, mitochondria in red, filaments in green",
+  "title": "Fibroblastid",
+  "author": "Heiti Paves",
+  "source": "Wikimedia Commons",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "pageUrl": "https://commons.wikimedia.org/wiki/File:Fibroblastid.jpg"
+ },
+ "hero-timeline": {
+  "file": "hero-timeline",
+  "sizes": [
+   800,
+   1400,
+   2200
+  ],
+  "w": 2200,
+  "h": 917,
+  "color": "#84663f",
+  "alt": "Carved stone sculpture on the Chitragupta Temple at Khajuraho",
+  "title": "Khajuraho India, Chitragupta Temple, Sculpture 01",
+  "author": "Rajenver",
+  "source": "Wikimedia Commons",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "pageUrl": "https://commons.wikimedia.org/wiki/File:Khajuraho_India,_Chitragupta_Temple,_Sculpture_01.JPG"
+ }
+}
