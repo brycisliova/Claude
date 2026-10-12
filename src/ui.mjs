@@ -52,7 +52,7 @@ export function photo(ctx, id, o = {}) {
   const srcset = m.sizes.map((w) => `${ctx.base}assets/img/photos/${m.file}-${w}.webp ${w}w`).join(", ");
   const src = `${ctx.base}assets/img/photos/${m.file}-${m.sizes[Math.min(1, m.sizes.length - 1)]}.webp`;
   const eager = o.eager ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"';
-  return `<figure class="${cls} ph--photo"${st} style="--ar:${ratio.toFixed(3)};--bg-photo:${m.color || "#999"}"><div class="ph-in"><img src="${src}" srcset="${srcset}" sizes="${o.sizes || "100vw"}" width="${m.w}" height="${m.h}" alt="${esc(m.alt || "")}" ${eager} decoding="async"></div>${o.credit === false ? "" : `<figcaption class="credit">${o.credit === "text" ? `<span title="${esc(m.license)}">${esc(m.author)} · ${esc(m.source)}</span>` : `<a href="${esc(m.pageUrl)}" target="_blank" rel="noopener noreferrer" title="${esc(m.license)}">${esc(m.author)} · ${esc(m.source)}</a>`}</figcaption>`}</figure>`;
+  return `<figure class="${cls} ph--photo"${st} style="--ar:${ratio.toFixed(3)};--bg-photo:${m.color || "#999"}"><div class="ph-in"><img src="${src}" srcset="${srcset}" sizes="${o.sizes || "100vw"}" width="${m.w}" height="${m.h}" alt="${esc(m.alt || "")}" ${eager} decoding="async"></div>${o.credit === false ? "" : `<figcaption class="credit">${o.credit === "text" ? `<span title="${esc(m.license)}">${esc(m.author === m.source ? m.source : m.author + " · " + m.source)}</span>` : `<a href="${esc(m.pageUrl)}" target="_blank" rel="noopener noreferrer" title="${esc(m.license)}">${esc(m.author === m.source ? m.source : m.author + " · " + m.source)}</a>`}</figcaption>`}</figure>`;
 }
 
 // ---- section scaffolding ----

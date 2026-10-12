@@ -119,6 +119,9 @@ addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimat
 addEventListener("resize", tone);
 tone();
 
+// Overlays (like the games window) call this to stop the page scrolling behind them.
+export function lockScroll(on) { if (on) lenis?.stop(); else if (!menuOpen) lenis?.start(); root.classList.toggle("scroll-locked", !!on); }
+
 /* ---------- full-screen menu ---------- */
 const menu = $("#menu"), mbtn = $("#menuBtn");
 if (menu) menu.setAttribute("data-lenis-prevent", "");
