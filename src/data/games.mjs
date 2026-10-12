@@ -8,11 +8,14 @@ export const GAMES = [
   { id: "lantern", title: "Release a lantern", how: "Type something heavy on your mind and watch it float away into the night.", cat: "relax", mins: 2, lvl: 1, c: "violet" },
   { id: "chimes", title: "Wind chimes", how: "Tap or drag across the bars. Every combination sounds gentle.", cat: "relax", mins: 2, lvl: 1, c: "yellow" },
   { id: "aurora", title: "Aurora", how: "Move through the light and the particles follow, then drift free.", cat: "relax", mins: 2, lvl: 1, c: "blue" },
+  { id: "snake", title: "Glow snake", how: "Steer a soft glowing snake to the light. The edges wrap around and a bump only trims your tail.", cat: "play", mins: 5, lvl: 2, c: "green", best: { unit: "long" } },
   { id: "bubbles", title: "Pop the bubbles", how: "No score to beat. Tap and watch them burst into colour.", cat: "play", mins: 2, lvl: 1, c: "pink", best: { unit: "popped" } },
-  { id: "paint", title: "Paint with light", how: "Draw glowing trails that shift through the spectrum and slowly fade.", cat: "create", mins: 3, lvl: 1, c: "orange" },
+  { id: "fog", title: "Clear the window", how: "Wipe the misty glass to see the rainy city behind it, and save the view.", cat: "relax", mins: 3, lvl: 1, c: "sky" },
+  { id: "paint", title: "Paint with light", how: "Draw glowing trails in rainbow, sunset or ocean colours, then save your picture.", cat: "create", mins: 3, lvl: 1, c: "orange" },
   { id: "kaleido", title: "Kaleidoscope", how: "Draw anywhere and your strokes mirror into a mandala.", cat: "create", mins: 3, lvl: 1, c: "violet" },
   { id: "sand", title: "Zen sand garden", how: "Rake patterns in the sand, or place stones and rake around them.", cat: "create", mins: 4, lvl: 1, c: "yellow" },
   { id: "garden", title: "Grow a garden", how: "Tap the ground to plant. Watch each flower grow and sway.", cat: "create", mins: 3, lvl: 1, c: "green" },
+  { id: "mandala", title: "Mandala colouring", how: "Colour a mandala with ten colours and mirrored patterns, then save your picture.", cat: "create", mins: 8, lvl: 1, c: "pink" },
   { id: "stars", title: "Constellations", how: "Connect the stars to draw your own sky.", cat: "create", mins: 3, lvl: 1, c: "blue" },
   { id: "hue", title: "Colour harmony", how: "Swap tiles to restore a smooth gradient. Dotted corners stay fixed.", cat: "puzzle", mins: 5, lvl: 2, c: "pink", best: { unit: "swaps", low: true } },
   { id: "slide", title: "Sliding puzzle", how: "Slide the tiles into order, 1 to 8. Take all the time you like.", cat: "puzzle", mins: 5, lvl: 2, c: "violet", best: { unit: "moves", low: true } },
@@ -41,3 +44,7 @@ export const FACTS = [
   { q: "Attempts to change someone's sexual orientation are linked to higher rates of suicide attempts.", e: "There is nothing to cure, and change efforts do harm." },
   { q: "Higher rates of depression among queer people are linked to stigma and rejection.", e: "Acceptance by family and community is protective." }
 ];
+
+// List games grouped by theme, keeping the order above inside each group.
+const order = CATS.map(([k]) => k);
+GAMES.sort((a, b) => order.indexOf(a.cat) - order.indexOf(b.cat));

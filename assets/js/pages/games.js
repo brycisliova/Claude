@@ -4,6 +4,7 @@ import "../games/calm.js";
 import "../games/play.js";
 import "../games/puzzle.js";
 import "../games/mind.js";
+import "../games/create.js";
 
 const gm = $("#gm"), panel = $("#gmPanel"), body = $("#gmBody");
 const cards = $$(".gcard"), byId = (id) => cards.find((c) => c.dataset.id === id);

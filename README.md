@@ -18,11 +18,13 @@ Address: <https://shiningforever.in>
 | What | Where |
 | --- | --- |
 | Papers, timeline, people, films, helplines, glossary, quotes, sources | `src/data/content.mjs` |
+| Game catalogue (titles, themes, timings) and the true statements for Myth or fact | `src/data/games.mjs` |
 | Text of each page | `src/pages/*.mjs` |
 | Navigation, menu, header, footer | `src/layout.mjs` |
 | Shared components (hero, photo, marquee, buttons) | `src/ui.mjs` |
 | Styles and design tokens | `assets/css/site.css` |
-| Animation engine, games, sound | `assets/js/` (`core.js` plus one script per page) |
+| Animation engine and sound | `assets/js/` (`core.js` plus one script per page) |
+| Games | `assets/js/games/` (`calm`, `create`, `play`, `puzzle`, `mind`, with shared helpers) |
 | Animation libraries (GSAP, ScrollTrigger, Lenis) and their licences | `assets/vendor/` |
 | Fonts and brand images | `assets/fonts/`, `assets/img/` |
 | Photographs and their credits | `src/data/photos.json`, `src/data/photo-slots.mjs` |
@@ -43,6 +45,12 @@ python3 -m http.server 8080   # preview at http://localhost:8080
 After changing anything in `src/`, `assets/` or `site.config.json`, run the build and commit the regenerated files. Changes to `data/*.json` need no build.
 
 To change the address, edit `url` in `site.config.json` (or run `SITE_URL=https://example.org node tools/build.mjs`) and rebuild.
+
+## Games
+
+The Games page lists every game as a compact card. Opening one fills the screen with a play window that has next and previous buttons, full screen, and keyboard support (Esc closes). Each game has its own link, such as `/games/#g-sudoku`. Personal bests are saved in the visitor's browser only and are cleared by the button on the privacy page.
+
+To add a game: add an entry to `src/data/games.mjs`, then register it in one of the files in `assets/js/games/` with `game(id, bodyHtml, init)`. `init` can return `frame`, `resize`, `key` and `destroy` handlers and can call `report(score)` to save a best.
 
 ## Design and animation
 
