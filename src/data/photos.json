@@ -465,5 +465,56 @@
   "license": "CC0",
   "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
   "pageUrl": "https://stocksnap.io/photo/group-friends-M16QHPDGYJ"
+ },
+ "portrait-ritu-dalmia": {
+  "file": "portrait-ritu-dalmia",
+  "sizes": [
+   400,
+   546
+  ],
+  "w": 546,
+  "h": 682,
+  "color": "#4a413a",
+  "alt": "Ritu Dalmia on stage holding a microphone",
+  "title": "Ritu Dalmia",
+  "author": "TEDxBITSGoa 2019",
+  "source": "Flickr",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "pageUrl": "https://www.flickr.com/photos/142320870@N07/27401267255"
+ },
+ "portrait-grace-banu": {
+  "file": "portrait-grace-banu",
+  "sizes": [
+   400,
+   577
+  ],
+  "w": 577,
+  "h": 721,
+  "color": "#402e2a",
+  "alt": "Portrait of Grace Banu smiling",
+  "title": "Grace Banu is a Dalit and transgender activist. She is the first transgender person to be admitted to an engineering college in the state of Tamil Nadu in India. Image: P.ABHIJITH, CC BY-SA 4.0",
+  "author": "WhoseKnowledge?",
+  "source": "Flickr",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "pageUrl": "https://www.flickr.com/photos/139896191@N03/39869230510"
+ },
+ "portrait-manvendra-singh-gohil": {
+  "file": "portrait-manvendra-singh-gohil",
+  "sizes": [
+   400,
+   720
+  ],
+  "w": 720,
+  "h": 900,
+  "color": "#976e41",
+  "alt": "Painting of Manvendra Singh Gohil in royal dress",
+  "title": "Painting of Manvendra Singh Gohil",
+  "author": "Hemant Bhavsar",
+  "source": "Wikimedia Commons",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "pageUrl": "https://commons.wikimedia.org/wiki/File:Painting_of_Manvendra_Singh_Gohil.JPG"
  }
 }
