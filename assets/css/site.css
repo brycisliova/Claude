@@ -909,3 +909,46 @@ h1 em,h2 em,h3 em,.feature-q em{font-family:inherit;font-style:normal;font-size:
 .sd-head{margin-bottom:.3rem}
 .sd-head .game-msg{flex-basis:auto}
 .gm-body [hidden],.gm [hidden]{display:none!important}
+
+/* ---- echo, flags, myth or fact, word garden, jar ---- */
+.ec{max-width:min(100%,calc(var(--gh) * 1.1));margin-inline:auto}
+.ec-pads{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,1.6vw,14px);aspect-ratio:1.4;margin:.8rem 0}
+.ec-pad{border:0;border-radius:18px;background:var(--c);opacity:.72;transition:opacity .15s,transform .15s,box-shadow .2s;touch-action:manipulation}
+.ec-pad.lit,.ec-pad:active{opacity:1;transform:scale(.97);box-shadow:0 0 50px -4px var(--c)}
+.ec-tip,.gj-tip{text-align:center;margin-top:1rem}
+.fl,.mf{max-width:min(100%,calc(var(--gh) * 1.25));margin-inline:auto}
+.fl-flag{height:calc(var(--gh) * .42);border-radius:8px;position:relative;display:grid;place-items:center;overflow:hidden;box-shadow:0 20px 50px -28px rgba(0,0,0,.5);margin:.6rem 0 1rem}
+.fl-ring{width:calc(var(--gh) * .22);height:calc(var(--gh) * .22);border-radius:50%;border:calc(var(--gh) * .035) solid #7A00AC}
+.fl-score{font-size:clamp(3rem,10vw,6rem);font-weight:500;letter-spacing:-.04em}
+.fl-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+@media (max-width:520px){.fl-opts{grid-template-columns:1fr}}
+.fl-o{padding:1rem 1.1rem;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);font-weight:600;font-size:1rem;text-align:left;transition:border-color .25s,background .25s}
+.fl-o:hover:not(:disabled){border-color:var(--fg)}
+.fl-o.ok{background:var(--green);border-color:transparent;color:#0e0e10}
+.fl-o.no{background:var(--r);border-color:transparent;color:#0e0e10}
+.fl-o:disabled{cursor:default}
+.fl-fact{min-height:3.2em;margin:1rem 0 .4rem;line-height:1.45;max-width:60ch;margin-inline:auto;text-align:center}
+.mf-card{padding:clamp(1.4rem,3vw,2.4rem);border-radius:10px;background:var(--surface2);min-height:calc(var(--gh) * .5);margin:.8rem 0;transition:background .4s}
+.mf-card.ok{background:color-mix(in srgb,var(--green) 55%,var(--surface))}
+.mf-card.no{background:color-mix(in srgb,var(--r) 55%,var(--surface))}
+.mf-q{font-size:clamp(1.4rem,3.2vw,2.3rem);line-height:1.12;letter-spacing:-.02em;font-weight:500;margin:0 0 1rem;text-wrap:balance}
+.mf-e{margin:0;line-height:1.5;color:var(--fg)}
+.mf-btns{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem}
+.mf-b{padding:1.2rem;border:0;border-radius:12px;font-size:1.4rem;font-weight:600;color:#0e0e10;transition:transform .3s var(--ease),opacity .3s}
+.mf-m{background:var(--r)}.mf-f{background:var(--green)}
+.mf-b:hover:not(:disabled){transform:translateY(-2px)}.mf-b:disabled{opacity:.45}
+.ws{max-width:min(100%,calc(var(--gh) * 1.1));margin-inline:auto}
+.ws-board{display:grid;aspect-ratio:1;max-height:calc(var(--gh) * .86);margin-inline:auto;touch-action:none;user-select:none;-webkit-user-select:none;border:1.5px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.ws-c{display:grid;place-items:center;font-weight:600;font-size:clamp(.95rem,3.2vw,1.7rem);letter-spacing:.02em;color:var(--fg);transition:background .2s}
+.ws-c.s{background:var(--yellow);color:#0e0e10}
+.ws-c.f{color:#0e0e10}
+.ws-c.f0{background:var(--pink)}.ws-c.f1{background:var(--sky)}.ws-c.f2{background:var(--green)}.ws-c.f3{background:var(--violet)}.ws-c.f4{background:var(--orange)}.ws-c.f5{background:var(--blue)}
+.ws-c.hint{animation:wshint 1s ease-in-out 2;background:var(--yellow);color:#0e0e10}
+@keyframes wshint{50%{transform:scale(1.35)}}
+.ws-list{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem .9rem;list-style:none;padding:0;margin:.9rem 0;font-weight:600;letter-spacing:.06em;font-size:.9rem}
+.ws-list li.done{text-decoration:line-through;color:var(--fg2);opacity:.6}
+.gj{max-width:min(100%,calc(var(--gh) * 1.1));margin-inline:auto}
+.gj-form{margin-bottom:.8rem}
+.gj-form .text-in{flex:1 1 14rem;font-size:1.05rem}
+.gm-body #gjCv{height:calc(var(--gh) * .82);background:transparent;cursor:pointer}
+.gj-note{min-height:3em;text-align:center;font-size:1.15rem;line-height:1.4;margin:.6rem 0;font-weight:500}
