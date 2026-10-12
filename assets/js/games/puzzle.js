@@ -164,7 +164,7 @@ game("lights",
 
 /* ---------------------------------------------------------------- Mini sudoku */
 game("sudoku",
-  `<div class="sd"><div class="row sd-head"><select class="mini" id="sdSize" aria-label="Grid size"><option value="4">4 × 4</option><option value="6" selected>6 × 6</option></select><select class="mini" id="sdLevel" aria-label="Difficulty"><option value="0">Gentle</option><option value="1" selected>Medium</option><option value="2">Tricky</option></select><span class="game-msg" id="sdMsg"></span></div><div class="sd-board" id="sdBoard" role="grid" aria-label="Sudoku board"></div><div class="sd-pad" id="sdPad"></div><div class="row"><button class="${B}" id="sdHint">Hint</button><button class="${B}" id="sdNew">New puzzle</button></div><p class="muted small sd-tip">Every row, column and box holds each number once. Pick a square, then a number. Wrong repeats turn red. Keys 1 to 6 and the arrows work too.</p></div>`,
+  `<div class="sd"><div class="row sd-head"><select class="mini" id="sdSize" aria-label="Grid size"><option value="4">4 × 4</option><option value="6" selected>6 × 6</option></select><select class="mini" id="sdLevel" aria-label="Difficulty"><option value="0">Gentle</option><option value="1" selected>Medium</option><option value="2">Tricky</option></select><span class="game-msg" id="sdMsg"></span></div><div class="sd-board" id="sdBoard" role="group" aria-label="Sudoku board"></div><div class="sd-pad" id="sdPad"></div><div class="row"><button class="${B}" id="sdHint">Hint</button><button class="${B}" id="sdNew">New puzzle</button></div><p class="muted small sd-tip">Every row, column and box holds each number once. Pick a square, then a number. Wrong repeats turn red. Keys 1 to 6 and the arrows work too.</p></div>`,
   () => {
     const board = $("#sdBoard"), pad = $("#sdPad"), msg = $("#sdMsg");
     let N, br, bc, sol, giv, cur, sel = -1, t0, done, hints, timer;
@@ -203,7 +203,7 @@ game("sudoku",
     function paintMsg() { msg.textContent = done ? `Solved in ${clock()}${hints ? ` with ${hints} hint${hints > 1 ? "s" : ""}` : ""}. Lovely.` : `${cur.filter(Boolean).length} of ${N * N} filled · ${clock()}`; }
     function build() {
       board.style.gridTemplateColumns = `repeat(${N},1fr)`; board.className = "sd-board n" + N; board.innerHTML = "";
-      for (let i = 0; i < N * N; i++) { const b = h("button", { class: "sd-c", role: "gridcell", "data-i": i }); b.addEventListener("click", () => { sel = i; paint(); }); board.appendChild(b); }
+      for (let i = 0; i < N * N; i++) { const b = h("button", { class: "sd-c", "data-i": i }); b.addEventListener("click", () => { sel = i; paint(); }); board.appendChild(b); }
       pad.innerHTML = "";
       for (let v = 1; v <= N; v++) { const b = h("button", { class: "sd-k", "aria-label": `Number ${v}` }, v); b.addEventListener("click", () => put(v)); pad.appendChild(b); }
       const e = h("button", { class: "sd-k sd-e", "aria-label": "Erase" }, "⌫"); e.addEventListener("click", () => put(0)); pad.appendChild(e);
