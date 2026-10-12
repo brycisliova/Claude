@@ -3,6 +3,7 @@ import { REG, setCurrent, countPlay, progress } from "../games/shared.js";
 import "../games/calm.js";
 import "../games/play.js";
 import "../games/puzzle.js";
+import "../games/mind.js";
 
 const gm = $("#gm"), panel = $("#gmPanel"), body = $("#gmBody");
 const cards = $$(".gcard"), byId = (id) => cards.find((c) => c.dataset.id === id);
