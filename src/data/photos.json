@@ -38,20 +38,19 @@
  "hero-who": {
   "file": "hero-who",
   "sizes": [
-   500,
-   900,
-   1400
+   600,
+   952
   ],
-  "w": 1400,
-  "h": 2258,
-  "color": "#7b6760",
-  "alt": "Marchers with rainbow flags at the Kerala Pride March in Thrissur",
-  "title": "Kerala Pride March 2018 IMG 20181007 162531",
-  "author": "Ambadyanands",
-  "source": "Wikimedia Commons",
-  "license": "CC BY-SA 4.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-  "pageUrl": "https://commons.wikimedia.org/wiki/File:Kerala_Pride_March_2018_IMG_20181007_162531.jpg"
+  "w": 952,
+  "h": 1535,
+  "color": "#33367c",
+  "alt": "Hands reaching up toward a huge rainbow flag at a pride parade",
+  "title": "Hands raised up toward a rainbow flag with buildings in the background",
+  "author": "Claudia Di Dio",
+  "source": "WordPress Photo Directory",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pageUrl": "https://wordpress.org/photos/photo/969668574f/"
  },
  "hero-science": {
   "file": "hero-science",

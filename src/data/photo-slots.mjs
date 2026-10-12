@@ -9,7 +9,7 @@ export const PHOTO_SLOTS = [
   // home hero panels
   S("hero-choice", 0.62, "pink", "Open sky at dawn or a rainbow over a landscape. Hope, horizon, nothing forced.", ["rainbow sky dawn landscape", "sunrise horizon sky"]),
   S("hero-illness", 0.62, "yellow", "Hands held in care or support. Warmth, not medical imagery.", ["holding hands support", "hands together comfort"]),
-  S("hero-who", 0.62, "blue", "Queer pride march in India, crowd with flags, daylight.", ["pride march India", "Mumbai Queer Azaadi Mumbai pride", "Delhi queer pride parade"]),
+  S("hero-who", 0.62, "blue", "Pride parade crowd with a large rainbow flag, daylight.", ["pride march India", "Mumbai Queer Azaadi Mumbai pride", "Delhi queer pride parade"]),
   // page heroes (wide band under the title)
   S("hero-learn", 2.4, "pink", "Rainbow and progress flags in the wind against sky.", ["pride flag wind sky", "progress pride flag"]),
   S("hero-science", 2.4, "orange", "Microscope, laboratory or cell imagery. Research without cliché.", ["microscope laboratory research", "cell culture fluorescence microscopy"]),
