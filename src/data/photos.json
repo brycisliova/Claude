@@ -516,5 +516,21 @@
   "license": "CC BY-SA 3.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "pageUrl": "https://commons.wikimedia.org/wiki/File:Painting_of_Manvendra_Singh_Gohil.JPG"
+ },
+ "portrait-anjali-gopalan": {
+  "file": "portrait-anjali-gopalan",
+  "sizes": [
+   320
+  ],
+  "w": 320,
+  "h": 400,
+  "color": "#827177",
+  "alt": "Portrait of Anjali Gopalan",
+  "title": "Anjali Gopalan",
+  "author": "Athlour",
+  "source": "Wikimedia Commons",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "pageUrl": "https://commons.wikimedia.org/wiki/File:Anjali_Gopalan.jpg"
  }
 }
