@@ -1,6 +1,6 @@
 // Shared helpers for the games: the registry, pointer maths, and a small progress store kept in the browser.
-import { $, h, esc, fit, reduce, store } from "../core.js";
-export { $, h, esc, fit, reduce };
+import { $, $$, h, esc, fit, reduce, store } from "../core.js";
+export { $, $$, h, esc, fit, reduce };
 
 export const REG = new Map();
 // game(id, bodyHtml, init): init() builds behaviour inside the opened game and may return

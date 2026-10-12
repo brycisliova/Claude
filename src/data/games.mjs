@@ -16,5 +16,9 @@ export const GAMES = [
   { id: "stars", title: "Constellations", how: "Connect the stars to draw your own sky.", cat: "create", mins: 3, lvl: 1, c: "blue" },
   { id: "hue", title: "Colour harmony", how: "Swap tiles to restore a smooth gradient. Dotted corners stay fixed.", cat: "puzzle", mins: 5, lvl: 2, c: "pink", best: { unit: "swaps", low: true } },
   { id: "slide", title: "Sliding puzzle", how: "Slide the tiles into order, 1 to 8. Take all the time you like.", cat: "puzzle", mins: 5, lvl: 2, c: "violet", best: { unit: "moves", low: true } },
+  { id: "merge", title: "Merge", how: "Slide the tiles and merge equal numbers. See how high you can grow, with no clock.", cat: "puzzle", mins: 8, lvl: 2, c: "yellow", best: { unit: "points" } },
+  { id: "lights", title: "Lights out", how: "Flip a light and its neighbours until the board is dark. Every level can be solved.", cat: "puzzle", mins: 6, lvl: 2, c: "sky", best: { unit: "levels" } },
+  { id: "sudoku", title: "Mini sudoku", how: "4 by 4 and 6 by 6 puzzles with live checking, hints and three difficulties.", cat: "puzzle", mins: 8, lvl: 3, c: "green", best: { unit: "s", low: true } },
+  { id: "maze", title: "Quiet maze", how: "Walk your light to the glow. Each level grows a little bigger.", cat: "puzzle", mins: 6, lvl: 2, c: "violet", best: { unit: "levels" } },
   { id: "memory", title: "Gentle memory", how: "Find the matching pairs. There is no timer.", cat: "puzzle", mins: 4, lvl: 1, c: "green", best: { unit: "turns", low: true } }
 ];
