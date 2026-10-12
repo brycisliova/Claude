@@ -1,8 +1,8 @@
-import { $, h, fit, pos, B, game, report } from "./shared.js";
+import { $, h, fit, pos, B, game, report, savePng } from "./shared.js";
 import { ac, masterGain, reverbNode, blip, bowl, tone, PENTA, ready } from "../audio.js";
 
 game("breathe",
-  `<div class="stage"><span class="bcount" id="bCount">Ready when you are</span><div class="orb" id="orb"></div><div class="ring"></div><span class="blabel" id="bLabel">Press start</span></div><div class="row"><select class="mini" id="bMode" aria-label="Breathing pattern"><option value="box">Box 4-4-4-4</option><option value="478">Relax 4-7-8</option><option value="coh">Coherent 5-5</option></select><button class="btn btn-primary btn-sm" id="bStart">Start</button></div>`,
+  `<div class="stage"><span class="bcount" id="bCount">Ready when you are</span><div class="orb" id="orb"></div><div class="ring"></div><span class="blabel" id="bLabel">Press start</span></div><div class="row"><select class="mini" id="bMode" aria-label="Breathing pattern"><option value="box">Box 4-4-4-4</option><option value="478">Relax 4-7-8</option><option value="coh">Coherent 5-5</option></select><select class="mini" id="bRounds" aria-label="Length"><option value="0">Keep going</option><option value="5">5 breaths</option><option value="10">10 breaths</option></select><label class="chk"><input type="checkbox" id="bSound" checked> Soft tones</label><button class="btn btn-primary btn-sm" id="bStart">Start</button></div>`,
   () => {
     const P = { box: [["Breathe in", 4, 1], ["Hold", 4, 1], ["Breathe out", 4, 0], ["Hold", 4, 0]], "478": [["Breathe in", 4, 1], ["Hold", 7, 1], ["Breathe out", 8, 0]], coh: [["Breathe in", 5, 1], ["Breathe out", 5, 0]] };
     const orb = $("#orb"), bl = $("#bLabel"), bc = $("#bCount"), bs = $("#bStart");
@@ -10,13 +10,14 @@ game("breathe",
     function run(i) {
       const ph = P[$("#bMode").value], [txt, s, big] = ph[i];
       orb.style.transitionDuration = s + "s"; orb.classList.toggle("grow", !!big); bl.textContent = txt;
+      if ($("#bSound").checked && ready()) tone(big ? PENTA[4] : PENTA[1], 2, 0.05);
       let k = s; bc.textContent = `${txt}… ${k}`;
       clearInterval(IV); IV = setInterval(() => { k--; if (k > 0) bc.textContent = `${txt}… ${k}`; }, 1000);
-      T = setTimeout(() => { if (i === ph.length - 1) cyc++; run((i + 1) % ph.length); }, s * 1000);
+      T = setTimeout(() => { if (i === ph.length - 1) { cyc++; const lim = +$("#bRounds").value; if (lim && cyc >= lim) return bs.click(); } run((i + 1) % ph.length); }, s * 1000);
     }
     bs.addEventListener("click", () => {
-      if (T) { clearTimeout(T); clearInterval(IV); T = null; if (cyc) report(cyc); orb.classList.remove("grow"); bl.textContent = cyc ? `Well done. ${cyc} full breath${cyc > 1 ? "s" : ""}.` : "Press start"; bc.textContent = "Ready when you are"; bs.textContent = "Start"; }
-      else { cyc = 0; bs.textContent = "Stop"; run(0); }
+      if (T) { clearTimeout(T); clearInterval(IV); T = null; if (cyc) report(cyc); bs.textContent = "Start"; orb.classList.remove("grow"); bl.textContent = cyc ? `Well done. ${cyc} full breath${cyc > 1 ? "s" : ""}.` : "Press start"; bc.textContent = "Ready when you are"; bs.textContent = "Start"; }
+      else { cyc = 0; bs.textContent = "Stop"; if ($("#bSound").checked) ac(); run(0); }
     });
     return { destroy() { clearTimeout(T); clearInterval(IV); } };
   });
@@ -37,23 +38,24 @@ game("lantern",
   });
 
 game("paint",
-  `<canvas id="gPaint" aria-label="Light painting canvas"></canvas><div class="row"><button class="${B}" id="pClear">Clear</button></div>`,
+  `<canvas id="gPaint" aria-label="Light painting canvas"></canvas><div class="row"><button class="${B}" id="pClear">Clear</button><select class="mini" id="pMode" aria-label="Colours"><option value="rainbow">Rainbow</option><option value="sunset">Sunset</option><option value="ocean">Ocean</option><option value="mono">White glow</option></select><select class="mini" id="pSize" aria-label="Brush size"><option value="4">Fine</option><option value="7" selected>Medium</option><option value="14">Bold</option></select><button class="${B}" id="pSave">Save picture</button></div>`,
   () => {
     const c = $("#gPaint"); let g = fit(c), down = false, last = null, hue = 0;
     function st(p) {
       if (!last) { last = p; return; }
-      hue = (hue + 3) % 360; g.lineCap = "round"; g.shadowBlur = 18; g.shadowColor = `hsl(${hue},90%,60%)`; g.strokeStyle = `hsl(${hue},90%,62%)`; g.lineWidth = 7;
+      hue = (hue + 3) % 360; const m = $("#pMode").value, hh = m === "sunset" ? (hue % 80) + 340 : m === "ocean" ? 170 + (hue % 90) : hue, ss = m === "mono" ? 0 : 90, ll = m === "mono" ? 95 : 62; g.lineCap = "round"; g.shadowBlur = 18; g.shadowColor = `hsl(${hh % 360},${ss}%,${m === "mono" ? 80 : 60}%)`; g.strokeStyle = `hsl(${hh % 360},${ss}%,${ll}%)`; g.lineWidth = +$("#pSize").value;
       g.beginPath(); g.moveTo(...last); g.lineTo(...p); g.stroke(); g.shadowBlur = 0; last = p;
     }
     c.addEventListener("pointerdown", (e) => { down = true; last = null; c.setPointerCapture(e.pointerId); st(pos(c, e)); });
     c.addEventListener("pointermove", (e) => { if (down) st(pos(c, e)); });
     ["pointerup", "pointercancel"].forEach((ev) => c.addEventListener(ev, () => { down = false; last = null; }));
     $("#pClear").addEventListener("click", () => g.clearRect(0, 0, c.clientWidth, c.clientHeight));
+    $("#pSave").addEventListener("click", () => savePng(c, null, "light-painting"));
     return { resize() { g = fit(c); }, frame() { g.globalCompositeOperation = "destination-out"; g.fillStyle = "rgba(0,0,0,.025)"; g.fillRect(0, 0, c.clientWidth, c.clientHeight); g.globalCompositeOperation = "source-over"; } };
   });
 
 game("kaleido",
-  `<canvas id="gKal" style="background:#0b0a14" aria-label="Kaleidoscope canvas"></canvas><div class="row"><select class="mini" id="kN" aria-label="Symmetry"><option value="6">6-fold</option><option value="8" selected>8-fold</option><option value="12">12-fold</option></select><button class="${B}" id="kClear">Clear</button></div>`,
+  `<canvas id="gKal" style="background:#0b0a14" aria-label="Kaleidoscope canvas"></canvas><div class="row"><select class="mini" id="kN" aria-label="Symmetry"><option value="6">6-fold</option><option value="8" selected>8-fold</option><option value="12">12-fold</option></select><button class="${B}" id="kClear">Clear</button><button class="${B}" id="kSave">Save picture</button></div>`,
   () => {
     const c = $("#gKal"); let g = fit(c), down = false, last = null, hue = 200;
     function seg(a, b) {
@@ -66,11 +68,12 @@ game("kaleido",
     c.addEventListener("pointermove", (e) => { if (!down) return; const p = pos(c, e); seg(last, p); last = p; });
     ["pointerup", "pointercancel"].forEach((ev) => c.addEventListener(ev, () => (down = false)));
     $("#kClear").addEventListener("click", () => g.clearRect(0, 0, c.clientWidth, c.clientHeight));
+    $("#kSave").addEventListener("click", () => savePng(c, null, "kaleidoscope"));
     return { resize() { g = fit(c); } };
   });
 
 game("sand",
-  `<canvas id="gSand" aria-label="Sand garden"></canvas><div class="row"><button class="${B}" id="sMode">Mode: rake</button><button class="${B}" id="sSmooth">Smooth the sand</button></div>`,
+  `<canvas id="gSand" aria-label="Sand garden"></canvas><div class="row"><button class="${B}" id="sMode">Mode: rake</button><button class="${B}" id="sSmooth">Smooth the sand</button><button class="${B}" id="sSave">Save picture</button></div>`,
   () => {
     const c = $("#gSand"); let g = fit(c), mode = "rake", down = false, last = null;
     function smooth() {
@@ -96,6 +99,7 @@ game("sand",
     ["pointerup", "pointercancel"].forEach((ev) => c.addEventListener(ev, () => (down = false)));
     $("#sMode").addEventListener("click", function () { mode = mode === "rake" ? "stone" : "rake"; this.textContent = "Mode: " + mode; });
     $("#sSmooth").addEventListener("click", smooth);
+    $("#sSave").addEventListener("click", () => savePng(c, null, "sand-garden"));
     return { resize() { g = fit(c); smooth(); } };
   });
 
