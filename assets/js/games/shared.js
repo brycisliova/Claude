@@ -27,3 +27,11 @@ export function report(value, opts = {}) {
   document.dispatchEvent(new CustomEvent("game:score", { detail: { id: current, value, best: better ? value : old, isBest: better && old != null } }));
   return better;
 }
+
+// Save a canvas (over a background colour) as a PNG the player keeps on their own device.
+export function savePng(c, bg, name = "my-picture") {
+  bg = bg || getComputedStyle(c).backgroundColor || "#ffffff";
+  const t = document.createElement("canvas"); t.width = c.width; t.height = c.height;
+  const g = t.getContext("2d"); g.fillStyle = bg; g.fillRect(0, 0, t.width, t.height); g.drawImage(c, 0, 0);
+  t.toBlob((b) => { if (!b) return; const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = name + ".png"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }, "image/png");
+}
