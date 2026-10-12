@@ -20,5 +20,24 @@ export const GAMES = [
   { id: "lights", title: "Lights out", how: "Flip a light and its neighbours until the board is dark. Every level can be solved.", cat: "puzzle", mins: 6, lvl: 2, c: "sky", best: { unit: "levels" } },
   { id: "sudoku", title: "Mini sudoku", how: "4 by 4 and 6 by 6 puzzles with live checking, hints and three difficulties.", cat: "puzzle", mins: 8, lvl: 3, c: "green", best: { unit: "s", low: true } },
   { id: "maze", title: "Quiet maze", how: "Walk your light to the glow. Each level grows a little bigger.", cat: "puzzle", mins: 6, lvl: 2, c: "violet", best: { unit: "levels" } },
+  { id: "echo", title: "Echo tones", how: "Listen to a pattern of tones, then play it back. It grows by one each round and never ends in failure.", cat: "mind", mins: 5, lvl: 2, c: "pink", best: { unit: "tones" } },
+  { id: "flags", title: "Know the flags", how: "Name each pride flag, then read the story behind its colours.", cat: "mind", mins: 4, lvl: 2, c: "blue", best: { unit: "of 8" } },
+  { id: "myth", title: "Myth or fact?", how: "Ten statements, one question each. Learn what the evidence really says.", cat: "mind", mins: 4, lvl: 2, c: "orange", best: { unit: "of 10" } },
+  { id: "words", title: "Word garden", how: "A word search of kind words. Drag across the letters in a straight line.", cat: "mind", mins: 6, lvl: 2, c: "green", best: { unit: "s", low: true } },
+  { id: "jar", title: "Gratitude jar", how: "Add small good things and watch them settle as glowing marbles. Pull one out on a hard day.", cat: "mind", mins: 3, lvl: 1, c: "yellow" },
   { id: "memory", title: "Gentle memory", how: "Find the matching pairs. There is no timer.", cat: "puzzle", mins: 4, lvl: 1, c: "green", best: { unit: "turns", low: true } }
+];
+
+// True statements for "Myth or fact?". Myths come from the Myths page (src/data/content.mjs).
+export const FACTS = [
+  { q: "The World Health Organization removed homosexuality from its list of diseases in 1990.", e: "Major health bodies worldwide agree it is a natural variation of human life, not an illness." },
+  { q: "American psychiatrists removed homosexuality from their list of mental disorders in 1973.", e: "The vote followed years of research that found no evidence it was a disorder." },
+  { q: "India's Supreme Court decriminalised same-sex love in 2018.", e: "The Navtej Singh Johar judgment struck down the part of Section 377 that criminalised consenting adults." },
+  { q: "Indian courts have recognised transgender people as a third gender since 2014.", e: "The NALSA judgment affirmed that people can determine their own gender identity." },
+  { q: "Same-sex behaviour has been recorded in hundreds of animal species.", e: "Researchers have documented it widely across mammals, birds and insects." },
+  { q: "Studies generally find children raised by same-sex parents do as well as other children.", e: "A loving, stable home is what matters most for a child." },
+  { q: "India's law against same-sex love was written by British colonial rulers.", e: "Older Indian traditions, from temple art to hijra communities, show wide gender and sexual diversity." },
+  { q: "Tele-MANAS (14416) is a free, confidential mental health helpline in India.", e: "It runs 24 hours a day in many Indian languages." },
+  { q: "Attempts to change someone's sexual orientation are linked to higher rates of suicide attempts.", e: "There is nothing to cure, and change efforts do harm." },
+  { q: "Higher rates of depression among queer people are linked to stigma and rejection.", e: "Acceptance by family and community is protective." }
 ];

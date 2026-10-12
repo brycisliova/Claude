@@ -1,7 +1,8 @@
 import { esc, icon } from "../layout.mjs";
 import { hero } from "../ui.mjs";
 import { QUOTES } from "../data/content.mjs";
-import { GAMES, CATS } from "../data/games.mjs";
+import { GAMES, CATS, FACTS } from "../data/games.mjs";
+import { MYTHS } from "../data/content.mjs";
 
 const CAT = Object.fromEntries(CATS);
 const LVL = ["", "Easy", "Medium", "Thoughtful"];
@@ -46,6 +47,8 @@ ${hero(ctx, { eyebrow: "Games", title: "Calm <em>games</em>", lede: `${GAMES.len
     </div>
   </div>
 </section>
+
+<script type="application/json" id="gameData">${JSON.stringify({ myths: MYTHS.filter((m) => m[0] === "Myth").map((m) => ({ q: m[1].replace(/^"|"$/g, ""), e: m[2] })), facts: FACTS }).replace(/</g, "\\u003c")}</script>
 
 <div class="gm" id="gm" role="dialog" aria-modal="true" aria-labelledby="gmTitle" hidden>
   <div class="gm-panel" id="gmPanel">
