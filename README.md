@@ -50,7 +50,24 @@ To change the address, edit `url` in `site.config.json` (or run `SITE_URL=https:
 
 The Games page lists every game as a compact card. Opening one fills the screen with a play window that has next and previous buttons, full screen, and keyboard support (Esc closes). Each game has its own link, such as `/games/#g-sudoku`. Personal bests are saved in the visitor's browser only and are cleared by the button on the privacy page.
 
+Word guess uses the lists in `assets/js/data/words.js`: about 640 everyday answers, 37 kind words, and 12,500 valid guesses taken from the MIT-licensed `word-list` package.
+
 To add a game: add an entry to `src/data/games.mjs`, then register it in one of the files in `assets/js/games/` with `game(id, bodyHtml, init)`. `init` can return `frame`, `resize`, `key` and `destroy` handlers and can call `report(score)` to save a best.
+
+## Playing together
+
+Six games can be played with friends on their own devices: Gentle memory (2 to 4 players, and the board grows with every player), Word guess (2 to 6, everyone races to the same word), Myth or fact and Know the flags (2 to 8, a live quiz), Word garden (2 to 6, a word-search race) and Four in a row (2 players).
+
+How it works: one player is the host and runs the game; everyone else sends their moves to the host, who sends back the state. Players join with a six-character room code or a link such as `/games/#r-ABC123`. There is no server to run. Messages travel through a free public MQTT broker over secure WebSockets, on topics named after the room code, using a small client in `assets/js/mp/mqtt.js`. Only nicknames and moves are sent, nothing is stored, and a room disappears when its host leaves.
+
+- `assets/js/mp/room.js` creates and joins rooms and keeps presence.
+- `assets/js/mp/ui.js` is the create, join and lobby screens.
+- `assets/js/games/together/` holds each game's host rules and its view.
+- Brokers are listed in `assets/js/config.js` (`MULTIPLAYER.brokers`). They are tried in order, and the last character of a room code records which one a room uses. To use your own broker, put its `wss://` address first.
+
+To test locally without the public brokers, run any MQTT broker that offers WebSockets (for example `aedes` with `ws`) and open the site on `localhost` with `?mqtt=ws://localhost:9001` added to the address. That override works only on localhost.
+
+Public brokers are free but best-effort. Some school and work networks block them. See the privacy page for what is shared.
 
 ## Design and animation
 
