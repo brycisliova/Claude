@@ -1,4 +1,4 @@
-import { $, $$, h, esc, fit, pos, B, game, report, shuffle, rnd, reduce } from "./shared.js";
+import { $, $$, h, esc, fit, pos, B, game, report, shuffle, rnd, reduce, sprite, glow } from "./shared.js";
 import { tone, bowl, PENTA, ready } from "../audio.js";
 import { store } from "../core.js";
 
@@ -180,6 +180,8 @@ game("words",
 game("jar",
   `<div class="gj"><div class="row gj-form"><input class="text-in" id="gjIn" type="text" maxlength="80" placeholder="Something good, big or small…" aria-label="Something you are grateful for"><button class="btn btn-primary btn-sm" id="gjAdd">Add to the jar</button></div><canvas id="gjCv" aria-label="A glass jar of glowing marbles, one for each thing you are grateful for. Tap a marble to read it."></canvas><p class="gj-note" id="gjNote" aria-live="polite">Tap a marble to read it.</p><div class="row"><button class="${B}" id="gjShake">Shake the jar</button><button class="${B}" id="gjPick">Pull one out</button><button class="${B}" id="gjClear">Empty the jar</button></div><p class="muted small gj-tip">Your jar is saved only in this browser, on this device. Nobody else can see it.</p></div>`,
   () => {
+    const ink = { fg: "#111" }; const readInk = () => { ink.fg = getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#111"; }; readInk(); addEventListener("themechange", readInk);
+    const marble = (k) => sprite("marble" + k, 96, 96, (x) => { const gr = x.createRadialGradient(34, 30, 2, 48, 48, 46); gr.addColorStop(0, "rgba(255,255,255,.95)"); gr.addColorStop(0.35, `hsl(${k},85%,70%)`); gr.addColorStop(1, `hsl(${(k + 30) % 360},75%,52%)`); x.fillStyle = gr; x.beginPath(); x.arc(48, 48, 46, 0, 7); x.fill(); });
     const c = $("#gjCv"), KEY = "wwa-jar"; let g = fit(c), M = [], clearArm = false, selected = -1;
     const load = () => { const s = store(KEY); return Array.isArray(s) ? s.slice(-80) : []; };
     let notes = load();
@@ -197,6 +199,7 @@ game("jar",
     $("#gjClear").addEventListener("click", function () { if (!clearArm) { clearArm = true; this.textContent = "Tap again to empty it"; setTimeout(() => { clearArm = false; this.textContent = "Empty the jar"; }, 3000); return; } notes = []; store(KEY, notes); M = []; selected = -1; note.textContent = "The jar is empty and ready for new things."; clearArm = false; this.textContent = "Empty the jar"; });
     c.addEventListener("pointerdown", (e) => { const [x, y] = pos(c, e); let best = null; M.forEach((m) => { if (Math.hypot(m.x - x, m.y - y) < m.r + 6) best = m; }); if (best) { selected = best.i; note.textContent = best.n; if (ready()) tone(PENTA[best.i % PENTA.length] * 2, 0.5, 0.05); } });
     return {
+      destroy() { removeEventListener("themechange", readInk); },
       resize() { g = fit(c); rebuild(); },
       frame() {
         const W = c.clientWidth, H = c.clientHeight, J = jar(); g.clearRect(0, 0, W, H);
@@ -207,14 +210,13 @@ game("jar",
             if (d < min) { const o = (min - d) / 2, nx = dx / d, ny = dy / d; A.x -= nx * o; A.y -= ny * o; Bm.x += nx * o; Bm.y += ny * o; const rv = (Bm.vx - A.vx) * nx + (Bm.vy - A.vy) * ny; if (rv < 0) { A.vx += nx * rv * 0.5; A.vy += ny * rv * 0.5; Bm.vx -= nx * rv * 0.5; Bm.vy -= ny * rv * 0.5; } }
           }
         }
-        const fg = getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#111";
+        const fg = ink.fg;
         g.lineWidth = 3; g.strokeStyle = fg; g.globalAlpha = 0.55; g.beginPath(); g.roundRect ? g.roundRect(J.x, J.y, J.w, J.h, 36) : g.rect(J.x, J.y, J.w, J.h); g.stroke(); g.globalAlpha = 1;
         g.beginPath(); g.moveTo(J.x + J.w * 0.12, J.y - 4); g.lineTo(J.x + J.w * 0.88, J.y - 4); g.stroke();
         M.forEach((m) => {
-          const sel = m.i === selected, gr = g.createRadialGradient(m.x - m.r * 0.35, m.y - m.r * 0.4, 1, m.x, m.y, m.r);
-          gr.addColorStop(0, "rgba(255,255,255,.95)"); gr.addColorStop(0.35, `hsl(${m.h},85%,${sel ? 78 : 70}%)`); gr.addColorStop(1, `hsl(${(m.h + 30) % 360},75%,52%)`);
-          if (sel) { g.shadowColor = `hsl(${m.h},90%,70%)`; g.shadowBlur = 22; }
-          g.fillStyle = gr; g.beginPath(); g.arc(m.x, m.y, m.r, 0, Math.PI * 2); g.fill(); g.shadowBlur = 0;
+          const sel = m.i === selected, k = Math.round(m.h / 12) * 12 % 360;
+          if (sel) g.drawImage(glow("sel" + k, 40, "255,236,170"), m.x - m.r * 1.9, m.y - m.r * 1.9, m.r * 3.8, m.r * 3.8);
+          g.drawImage(marble(k), m.x - m.r, m.y - m.r, m.r * 2, m.r * 2);
         });
       }
     };

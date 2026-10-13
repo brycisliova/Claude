@@ -1,4 +1,4 @@
-import { $, $$, h, fit, pos, B, game, report, shuffle, rnd, reduce } from "./shared.js";
+import { $, $$, h, fit, pos, B, game, report, shuffle, rnd, reduce, glow } from "./shared.js";
 import { SCENES } from "./scenes.js";
 import { ac, masterGain, reverbNode, blip, bowl, tone, PENTA, ready } from "../audio.js";
 
@@ -257,6 +257,12 @@ game("maze",
     // d: 0 right, 1 up, 2 down, 3 left
     const DX = [1, 0, 0, -1], DY = [0, -1, 1, 0], OPP = [3, 2, 1, 0];
     const colours = () => { const s = getComputedStyle(document.documentElement); ink = { fg: s.getPropertyValue("--fg").trim() || "#111", line: s.getPropertyValue("--fg2").trim() || "#666" }; };
+    // Recompute where the maze sits without building a new one (used when the window changes size).
+    function place() {
+      const W = c.clientWidth, H = c.clientHeight;
+      cell = Math.floor(Math.min(W / cols, H / rows)); ox = Math.floor((W - cell * cols) / 2); oy = Math.floor((H - cell * rows) / 2);
+      px = ox + (me % cols + 0.5) * cell; py = oy + (Math.floor(me / cols) + 0.5) * cell;
+    }
     function make() {
       const W = c.clientWidth, H = c.clientHeight;
       cols = Math.min(6 + level * 2, 28); rows = Math.max(5, Math.min(Math.round(cols * H / W), 20));
@@ -293,7 +299,7 @@ game("maze",
     const KEYS = { ArrowRight: 0, d: 0, D: 0, ArrowUp: 1, w: 1, W: 1, ArrowDown: 2, s: 2, S: 2, ArrowLeft: 3, a: 3, A: 3 };
     colours(); make();
     return {
-      resize() { g = fit(c); make(); },
+      resize() { g = fit(c); if (open) place(); else make(); },
       destroy() { removeEventListener("themechange", colours); },
       key(e) { if (e.key in KEYS) { move(KEYS[e.key]); return true; } return false; },
       frame(t) {
@@ -310,10 +316,9 @@ game("maze",
         }
         g.stroke();
         const pulse = 0.5 + Math.sin(t / 300) * 0.5, gcx = gx(goal) + cell / 2, gcy = gy(goal) + cell / 2;
-        const gr = g.createRadialGradient(gcx, gcy, 1, gcx, gcy, cell * (0.55 + pulse * 0.2)); gr.addColorStop(0, "rgba(255,214,120,1)"); gr.addColorStop(1, "rgba(255,214,120,0)");
-        g.fillStyle = gr; g.beginPath(); g.arc(gcx, gcy, cell * 0.8, 0, Math.PI * 2); g.fill();
+        const gs = cell * (1.3 + pulse * 0.5); g.drawImage(glow("goal", 48, "255,214,120"), gcx - gs, gcy - gs, gs * 2, gs * 2);
         px += (gx(me) + cell / 2 - px) * 0.28; py += (gy(me) + cell / 2 - py) * 0.28;
-        g.fillStyle = "#c2b0f6"; g.shadowColor = "#a78bfa"; g.shadowBlur = 14; g.beginPath(); g.arc(px, py, cell * 0.28, 0, Math.PI * 2); g.fill(); g.shadowBlur = 0;
+        g.drawImage(glow("me", 40, "167,139,250"), px - cell * 0.9, py - cell * 0.9, cell * 1.8, cell * 1.8); g.fillStyle = "#c2b0f6"; g.beginPath(); g.arc(px, py, cell * 0.28, 0, Math.PI * 2); g.fill();
       }
     };
   });

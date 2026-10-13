@@ -29,8 +29,9 @@ export function toast(msg) {
 }
 
 // Size a canvas to its CSS box at device resolution and return a 2D context.
-export function fit(c) {
-  const d = Math.min(2, window.devicePixelRatio || 1);
+export const coarse = matchMedia("(pointer: coarse)").matches;
+export function fit(c, cap) {
+  const d = Math.min(cap ?? (coarse ? 1.5 : 2), window.devicePixelRatio || 1);
   c.width = Math.max(1, Math.round(c.clientWidth * d));
   c.height = Math.max(1, Math.round(c.clientHeight * d));
   const g = c.getContext("2d");

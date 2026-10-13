@@ -1,4 +1,4 @@
-import { $, h, fit, pos, B, game, report, savePng } from "./shared.js";
+import { $, h, fit, pos, B, game, report, savePng, coarse } from "./shared.js";
 import { ac, masterGain, reverbNode, blip, bowl, tone, PENTA, ready } from "../audio.js";
 
 game("breathe",
@@ -43,15 +43,17 @@ game("paint",
     const c = $("#gPaint"); let g = fit(c), down = false, last = null, hue = 0;
     function st(p) {
       if (!last) { last = p; return; }
-      hue = (hue + 3) % 360; const m = $("#pMode").value, hh = m === "sunset" ? (hue % 80) + 340 : m === "ocean" ? 170 + (hue % 90) : hue, ss = m === "mono" ? 0 : 90, ll = m === "mono" ? 95 : 62; g.lineCap = "round"; g.shadowBlur = 18; g.shadowColor = `hsl(${hh % 360},${ss}%,${m === "mono" ? 80 : 60}%)`; g.strokeStyle = `hsl(${hh % 360},${ss}%,${ll}%)`; g.lineWidth = +$("#pSize").value;
-      g.beginPath(); g.moveTo(...last); g.lineTo(...p); g.stroke(); g.shadowBlur = 0; last = p;
+      hue = (hue + 3) % 360; const m = $("#pMode").value, hh = m === "sunset" ? (hue % 80) + 340 : m === "ocean" ? 170 + (hue % 90) : hue, ss = m === "mono" ? 0 : 90, ll = m === "mono" ? 95 : 62; g.lineCap = "round"; const sz = +$("#pSize").value;
+      g.strokeStyle = `hsla(${hh % 360},${ss}%,${m === "mono" ? 80 : 60}%,.18)`; g.lineWidth = sz * 3.2; g.beginPath(); g.moveTo(...last); g.lineTo(...p); g.stroke();
+      g.strokeStyle = `hsl(${hh % 360},${ss}%,${ll}%)`; g.lineWidth = sz; g.beginPath(); g.moveTo(...last); g.lineTo(...p); g.stroke(); last = p;
     }
     c.addEventListener("pointerdown", (e) => { down = true; last = null; c.setPointerCapture(e.pointerId); st(pos(c, e)); });
     c.addEventListener("pointermove", (e) => { if (down) st(pos(c, e)); });
     ["pointerup", "pointercancel"].forEach((ev) => c.addEventListener(ev, () => { down = false; last = null; }));
     $("#pClear").addEventListener("click", () => g.clearRect(0, 0, c.clientWidth, c.clientHeight));
     $("#pSave").addEventListener("click", () => savePng(c, null, "light-painting"));
-    return { resize() { g = fit(c); }, frame() { g.globalCompositeOperation = "destination-out"; g.fillStyle = "rgba(0,0,0,.025)"; g.fillRect(0, 0, c.clientWidth, c.clientHeight); g.globalCompositeOperation = "source-over"; } };
+    let tick = 0;
+    return { resize() { const keep = document.createElement("canvas"); keep.width = c.width; keep.height = c.height; keep.getContext("2d").drawImage(c, 0, 0); g = fit(c); g.drawImage(keep, 0, 0, c.clientWidth, c.clientHeight); }, frame() { if (++tick % 3) return; g.globalCompositeOperation = "destination-out"; g.fillStyle = "rgba(0,0,0,.07)"; g.fillRect(0, 0, c.clientWidth, c.clientHeight); g.globalCompositeOperation = "source-over"; } };
   });
 
 game("kaleido",
@@ -60,9 +62,12 @@ game("kaleido",
     const c = $("#gKal"); let g = fit(c), down = false, last = null, hue = 200;
     function seg(a, b) {
       const W = c.clientWidth, H = c.clientHeight, cx = W / 2, cy = H / 2, n = +$("#kN").value;
-      hue = (hue + 1.5) % 360; g.strokeStyle = `hsl(${hue},85%,65%)`; g.lineWidth = 2.5; g.lineCap = "round"; g.shadowBlur = 10; g.shadowColor = g.strokeStyle;
-      for (let i = 0; i < n; i++) for (const m of [1, -1]) { g.save(); g.translate(cx, cy); g.rotate((i * Math.PI * 2) / n); g.scale(1, m); g.beginPath(); g.moveTo(a[0] - cx, a[1] - cy); g.lineTo(b[0] - cx, b[1] - cy); g.stroke(); g.restore(); }
-      g.shadowBlur = 0;
+      hue = (hue + 1.5) % 360; g.lineCap = "round";
+      for (const [col, w] of [[`hsla(${hue},85%,65%,.2)`, 8], [`hsl(${hue},85%,68%)`, 2.5]]) {
+        g.strokeStyle = col; g.lineWidth = w; g.beginPath();
+        for (let i = 0; i < n; i++) for (const m of [1, -1]) { const an = (i * Math.PI * 2) / n, co = Math.cos(an), si = Math.sin(an), pt = (p) => { const x = p[0] - cx, y = (p[1] - cy) * m; return [cx + x * co - y * si, cy + x * si + y * co]; }; g.moveTo(...pt(a)); g.lineTo(...pt(b)); }
+        g.stroke();
+      }
     }
     c.addEventListener("pointerdown", (e) => { down = true; c.setPointerCapture(e.pointerId); last = pos(c, e); });
     c.addEventListener("pointermove", (e) => { if (!down) return; const p = pos(c, e); seg(last, p); last = p; });
@@ -100,7 +105,7 @@ game("sand",
     $("#sMode").addEventListener("click", function () { mode = mode === "rake" ? "stone" : "rake"; this.textContent = "Mode: " + mode; });
     $("#sSmooth").addEventListener("click", smooth);
     $("#sSave").addEventListener("click", () => savePng(c, null, "sand-garden"));
-    return { resize() { g = fit(c); smooth(); } };
+    return { resize() { const keep = document.createElement("canvas"); keep.width = c.width; keep.height = c.height; keep.getContext("2d").drawImage(c, 0, 0); g = fit(c); smooth(); g.drawImage(keep, 0, 0, c.clientWidth, c.clientHeight); } };
   });
 
 game("stars",
@@ -122,8 +127,7 @@ game("stars",
       resize() { g = fit(c); },
       frame() {
         const W = c.clientWidth, H = c.clientHeight; g.clearRect(0, 0, W, H);
-        g.strokeStyle = "rgba(190,170,255,.75)"; g.lineWidth = 1.6; g.shadowBlur = 8; g.shadowColor = "#b58cff";
-        L.forEach(([a, b]) => { g.beginPath(); g.moveTo(S[a].x * W, S[a].y * H); g.lineTo(S[b].x * W, S[b].y * H); g.stroke(); }); g.shadowBlur = 0;
+        for (const [col, w] of [["rgba(181,140,255,.22)", 6], ["rgba(205,190,255,.85)", 1.6]]) { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); L.forEach(([a, b]) => { g.moveTo(S[a].x * W, S[a].y * H); g.lineTo(S[b].x * W, S[b].y * H); }); g.stroke(); }
         S.forEach((s, i) => { s.p += 0.03; g.globalAlpha = 0.6 + Math.sin(s.p) * 0.4; g.fillStyle = i === sel ? "#ffd27a" : "#fff"; g.beginPath(); g.arc(s.x * W, s.y * H, s.r + (i === sel ? 2 : 0), 0, Math.PI * 2); g.fill(); });
         g.globalAlpha = 1;
         if (!shoot && Math.random() < 0.004) shoot = { x: Math.random() * W, y: Math.random() * H * 0.4, l: 1 };
@@ -200,7 +204,8 @@ game("aurora",
   () => {
     const c = $("#gAur"); let g = fit(c), P = [], m = null, t = 0;
     const spawn = (p) => { p.x = Math.random() * c.clientWidth; p.y = Math.random() * c.clientHeight; p.life = 80 + Math.random() * 220; return p; };
-    const reset = () => { P = Array.from({ length: 420 }, () => spawn({ h: 200 + Math.random() * 140 })); };
+    const COL = Array.from({ length: 36 }, (_, i) => `hsla(${i * 10},90%,65%,.75)`);
+    const reset = () => { P = Array.from({ length: coarse ? 190 : 400 }, () => spawn({ h: 200 + Math.random() * 140 })); };
     reset();
     c.addEventListener("pointermove", (e) => { m = pos(c, e); });
     c.addEventListener("pointerleave", () => (m = null));
@@ -215,7 +220,7 @@ game("aurora",
           if (m) { const dx = m[0] - p.x, dy = m[1] - p.y, d = Math.hypot(dx, dy) + 1; if (d < 160) { vx += (dx / d) * 1.6; vy += (dy / d) * 1.6; } }
           p.x += vx; p.y += vy; if (--p.life <= 0) spawn(p);
           if (p.x < 0) p.x += W; if (p.x > W) p.x -= W; if (p.y < 0) p.y += H; if (p.y > H) p.y -= H;
-          g.fillStyle = `hsla(${(p.h + t * 60) % 360},90%,65%,.75)`; g.fillRect(p.x, p.y, 1.8, 1.8);
+          g.fillStyle = COL[Math.floor(((p.h + t * 60) % 360) / 10) % 36]; g.fillRect(p.x, p.y, coarse ? 2.6 : 1.8, coarse ? 2.6 : 1.8);
         });
       }
     };

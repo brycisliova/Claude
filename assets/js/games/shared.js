@@ -1,6 +1,12 @@
 // Shared helpers for the games: the registry, pointer maths, and a small progress store kept in the browser.
-import { $, $$, h, esc, fit, reduce, store } from "../core.js";
-export { $, $$, h, esc, fit, reduce };
+import { $, $$, h, esc, fit as coreFit, reduce, store, coarse } from "../core.js";
+export { $, $$, h, esc, reduce, coarse };
+// Heavy canvases draw at a lower pixel density on touch screens, where fill rate is the bottleneck.
+export const fit = (c, cap) => coreFit(c, cap ?? (coarse ? 1.25 : 2));
+// Pre-draw something once and reuse it with drawImage, which is far cheaper than a gradient every frame.
+const SP = new Map();
+export function sprite(key, w, h, draw) { let s = SP.get(key); if (!s) { s = document.createElement("canvas"); s.width = w; s.height = h; draw(s.getContext("2d"), w, h); SP.set(key, s); } return s; }
+export const glow = (key, r, rgb) => sprite("glow" + key, r * 2, r * 2, (x) => { const g = x.createRadialGradient(r, r, 0, r, r, r); g.addColorStop(0, `rgba(${rgb},.95)`); g.addColorStop(0.35, `rgba(${rgb},.35)`); g.addColorStop(1, `rgba(${rgb},0)`); x.fillStyle = g; x.fillRect(0, 0, r * 2, r * 2); });
 
 export const REG = new Map();
 // game(id, bodyHtml, init): init() builds behaviour inside the opened game and may return

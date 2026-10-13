@@ -1,9 +1,11 @@
-import { $, $$, h, fit, pos, B, game, report, rnd, reduce } from "./shared.js";
+import { $, $$, h, fit, pos, B, game, report, rnd, reduce, sprite, glow } from "./shared.js";
 import { ac, masterGain, reverbNode, blip, bowl, tone, PENTA, ready } from "../audio.js";
 
 game("bubbles",
   `<canvas id="gBub" aria-label="Bubbles to pop"></canvas><div class="row"><span class="muted small" id="popCount">0 popped</span></div>`,
   () => {
+    const bubble = (hh) => sprite("bub" + (Math.floor(hh / 30) % 12), 96, 96, (x) => { const k = (Math.floor(hh / 30) % 12) * 30, gr = x.createRadialGradient(32, 32, 2, 48, 48, 46); gr.addColorStop(0, "rgba(255,255,255,.9)"); gr.addColorStop(0.3, `hsla(${k},80%,70%,.35)`); gr.addColorStop(1, `hsla(${(k + 60) % 360},80%,60%,.6)`); x.fillStyle = gr; x.beginPath(); x.arc(48, 48, 46, 0, 7); x.fill(); });
+    const BITC = Array.from({ length: 12 }, (_, i) => `hsl(${i * 30 + 15},85%,60%)`);
     const c = $("#gBub"); let g = fit(c), Bs = [], bits = [], pops = 0;
     const add = (y) => Bs.push({ x: Math.random() * c.clientWidth, y: y ?? c.clientHeight + 30, r: 14 + Math.random() * 24, v: 0.35 + Math.random() * 0.6, h: Math.random() * 360, w: Math.random() * 6 });
     for (let i = 0; i < 10; i++) add(Math.random() * c.clientHeight);
@@ -12,7 +14,7 @@ game("bubbles",
       for (let i = Bs.length - 1; i >= 0; i--) {
         const b = Bs[i];
         if (Math.hypot(mx - b.cx, my - b.y) < b.r + 6) {
-          for (let k = 0; k < 18; k++) { const a = Math.random() * Math.PI * 2, s = 1 + Math.random() * 3; bits.push({ x: b.cx, y: b.y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, h: (b.h + k * 20) % 360, l: 1 }); }
+          for (let k = 0; k < 10; k++) { const a = Math.random() * Math.PI * 2, s = 1 + Math.random() * 3; bits.push({ x: b.cx, y: b.y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, h: (b.h + k * 20) % 360, l: 1 }); }
           tone(PENTA[Math.floor(Math.random() * PENTA.length)] * 2, 0.25, 0.06);
           Bs.splice(i, 1); pops++; $("#popCount").textContent = pops + " popped"; if (pops % 5 === 0) report(pops); break;
         }
@@ -25,12 +27,10 @@ game("bubbles",
         if (Bs.length < 15 && Math.random() < 0.045) add();
         Bs.forEach((b) => {
           b.y -= b.v; b.w += 0.02; const x = b.x + Math.sin(b.w) * 8; b.cx = x;
-          const gr = g.createRadialGradient(x - b.r * 0.35, b.y - b.r * 0.35, 1, x, b.y, b.r);
-          gr.addColorStop(0, "rgba(255,255,255,.9)"); gr.addColorStop(0.3, `hsla(${b.h},80%,70%,.35)`); gr.addColorStop(1, `hsla(${(b.h + 60) % 360},80%,60%,.6)`);
-          g.beginPath(); g.arc(x, b.y, b.r, 0, Math.PI * 2); g.fillStyle = gr; g.fill();
+          g.drawImage(bubble(b.h), x - b.r, b.y - b.r, b.r * 2, b.r * 2);
         });
         Bs = Bs.filter((b) => b.y > -40);
-        bits.forEach((p) => { p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.l -= 0.02; g.globalAlpha = Math.max(0, p.l); g.fillStyle = `hsl(${p.h},85%,60%)`; g.beginPath(); g.arc(p.x, p.y, 3, 0, Math.PI * 2); g.fill(); });
+        bits.forEach((p) => { p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.l -= 0.025; g.globalAlpha = Math.max(0, p.l); g.fillStyle = BITC[Math.floor(p.h / 30) % 12]; g.fillRect(p.x - 2, p.y - 2, 4, 4); });
         g.globalAlpha = 1; bits = bits.filter((p) => p.l > 0);
       }
     };
@@ -69,7 +69,7 @@ game("snake",
         g.fillStyle = "rgba(120,110,160,.10)"; g.fillRect(ox, oy, cell * N, cell * N);
         for (let i = 0; i < N * N; i++) if ((i + Math.floor(i / N)) % 2 === 0) { g.fillStyle = "rgba(120,110,160,.07)"; g.fillRect(ox + (i % N) * cell, oy + Math.floor(i / N) * cell, cell, cell); }
         const pulse = 0.75 + Math.sin(t / 220) * 0.25;
-        g.shadowColor = "#ffd27a"; g.shadowBlur = 18; g.fillStyle = "#ffd27a"; g.beginPath(); g.arc(ox + (food[0] + 0.5) * cell, oy + (food[1] + 0.5) * cell, cell * 0.32 * pulse + cell * 0.08, 0, 7); g.fill(); g.shadowBlur = 0;
+        const fx = ox + (food[0] + 0.5) * cell, fy = oy + (food[1] + 0.5) * cell; g.drawImage(glow("food", 40, "255,210,122"), fx - cell * 1.1, fy - cell * 1.1, cell * 2.2, cell * 2.2); g.fillStyle = "#ffd27a"; g.beginPath(); g.arc(fx, fy, cell * 0.3 * pulse + cell * 0.08, 0, 7); g.fill();
         snake.forEach((s, i) => { const k = 1 - i / (snake.length + 6); g.fillStyle = `hsl(${(260 + i * 7) % 360},70%,${52 + k * 14}%)`; const r = cell * (0.46 - Math.min(0.12, i * 0.004)); g.beginPath(); g.arc(ox + (s[0] + 0.5) * cell, oy + (s[1] + 0.5) * cell, r, 0, 7); g.fill(); });
         const hd = snake[0]; g.fillStyle = "#fff"; g.beginPath(); g.arc(ox + (hd[0] + 0.5 + DX[dir] * 0.14) * cell - DY[dir] * cell * 0.12, oy + (hd[1] + 0.5 + DY[dir] * 0.14) * cell + DX[dir] * cell * 0.12, cell * 0.07, 0, 7); g.arc(ox + (hd[0] + 0.5 + DX[dir] * 0.14) * cell + DY[dir] * cell * 0.12, oy + (hd[1] + 0.5 + DY[dir] * 0.14) * cell - DX[dir] * cell * 0.12, cell * 0.07, 0, 7); g.fill();
       }
