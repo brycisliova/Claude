@@ -969,3 +969,21 @@ h1 em,h2 em,h3 em,.feature-q em{font-family:inherit;font-style:normal;font-size:
 .gm-body #snCv{height:calc(var(--gh) * .86);background:var(--surface2);border-radius:6px;outline:none}
 .gm-body #snCv:focus-visible{box-shadow:0 0 0 3px var(--fg)}
 @media (hover:hover) and (pointer:fine){.gm-body .mz-pad{display:none}}
+
+/* ---- small windows: the game only, no title, text or footer ---- */
+@media (max-width:640px),(max-height:520px){
+  .gm-panel{position:relative}
+  .gm-head{position:absolute;top:max(.5rem,env(safe-area-inset-top));right:.6rem;z-index:3;display:block;padding:0;border:0;background:none}
+  .gm-id,.gm-how,.gm-best,#gmFull{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .gm-close{width:2.6rem;height:2.6rem;padding:0;justify-content:center;border-radius:50%;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+  .gm-close-t{display:none}
+  .gm-foot{display:none}
+  .gm-body{padding:3.4rem .7rem .9rem}
+  .gm-body{--gh:clamp(280px,56vh,600px)}
+}
+.mg-board{grid-template-rows:repeat(4,1fr)}
+.mg-cell{min-height:0}
+.lo-board{grid-template-rows:repeat(5,1fr)}
+.ec-pads{grid-template-rows:1fr 1fr}
+.mg-cell{background:color-mix(in srgb,var(--fg) 10%,var(--bg2))}
+.lo-c{background:color-mix(in srgb,var(--fg) 10%,var(--bg2))}

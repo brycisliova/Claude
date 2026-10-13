@@ -56,7 +56,7 @@ ${hero(ctx, { eyebrow: "Games", title: "Calm <em>games</em>", lede: `${GAMES.len
       <div class="gm-id"><p class="gm-cat" id="gmCat"></p><h2 id="gmTitle"></h2></div>
       <p class="gm-how" id="gmHow"></p>
       <p class="gm-best" id="gmBest" aria-live="polite"></p>
-      <div class="gm-tools"><button class="gm-btn" id="gmFull" type="button" hidden>Full screen</button><button class="gm-btn gm-close" id="gmClose" type="button" aria-label="Close game">Close ${icon("close", 16)}</button></div>
+      <div class="gm-tools"><button class="gm-btn" id="gmFull" type="button" hidden>Full screen</button><button class="gm-btn gm-close" id="gmClose" type="button" aria-label="Close game"><span class="gm-close-t">Close</span> ${icon("close", 16)}</button></div>
     </header>
     <div class="gm-body" id="gmBody" data-lenis-prevent></div>
     <footer class="gm-foot"><button class="gm-btn" id="gmPrev" type="button">&larr; Previous game</button><span class="gm-hint">Esc to close</span><button class="gm-btn" id="gmNext" type="button">Next game &rarr;</button></footer>
