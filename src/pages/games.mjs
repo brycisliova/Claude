@@ -51,7 +51,7 @@ ${hero(ctx, { eyebrow: "Games", title: "Calm <em>games</em>", lede: `${GAMES.len
 <script type="application/json" id="gameData">${JSON.stringify({ myths: MYTHS.filter((m) => m[0] === "Myth").map((m) => ({ q: m[1].replace(/^"|"$/g, ""), e: m[2] })), facts: FACTS }).replace(/</g, "\\u003c")}</script>
 
 <div class="gm" id="gm" role="dialog" aria-modal="true" aria-labelledby="gmTitle" hidden>
-  <div class="gm-panel" id="gmPanel">
+  <div class="gm-panel" id="gmPanel" tabindex="-1">
     <header class="gm-head">
       <div class="gm-id"><p class="gm-cat" id="gmCat"></p><h2 id="gmTitle"></h2></div>
       <p class="gm-how" id="gmHow"></p>

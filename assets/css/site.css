@@ -536,7 +536,7 @@ select.mini{padding:.55rem .9rem;border-radius:999px;border:1.5px solid var(--li
 .star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;animation:twinkle 3s infinite alternate}
 @keyframes twinkle{from{opacity:.2}to{opacity:1}}
 .memory{display:grid;gap:.5rem;height:var(--gh)}
-.mcard{border:0;border-radius:6px;background:var(--fg);font-size:1.5rem;color:transparent;transition:transform .5s,background .5s}
+.mcard{border:0;border-radius:10px;background:var(--fg);font-size:1.5rem;color:transparent;transition:transform .5s,background .5s}
 .mcard.open,.mcard.done{background:var(--yellow);color:#0e0e10;transform:rotateY(180deg)}
 .mcard.open span,.mcard.done span{display:inline-block;transform:rotateY(180deg)}
 .mcard.done{opacity:.55}
@@ -987,3 +987,41 @@ h1 em,h2 em,h3 em,.feature-q em{font-family:inherit;font-style:normal;font-size:
 .ec-pads{grid-template-rows:1fr 1fr}
 .mg-cell{background:color-mix(in srgb,var(--fg) 10%,var(--bg2))}
 .lo-c{background:color-mix(in srgb,var(--fg) 10%,var(--bg2))}
+
+/* memory cards with illustrated faces */
+.mcard{position:relative;padding:0;overflow:hidden;color:transparent;background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--fg) 92%,var(--violet)) 0 10px,color-mix(in srgb,var(--fg) 86%,var(--violet)) 10px 20px);box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--bg) 22%,transparent)}
+.mcard::after{content:"";position:absolute;inset:34%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff8,transparent 55%),conic-gradient(#a8e3f0,#c2b0f6,#f5a9c4,#a8e3f0);opacity:.9}
+.mcard.open,.mcard.done{background:var(--bg2);transform:rotateY(180deg);box-shadow:none}
+.mcard.open::after,.mcard.done::after{display:none}
+.mcard .mc-art{display:block;width:100%;height:100%;opacity:0;transition:opacity .2s .15s}
+.mcard.open .mc-art,.mcard.done .mc-art{opacity:1;transform:rotateY(180deg);display:block}
+.mc-art svg{display:block;width:100%;height:100%}
+.mcard.done{opacity:.6}
+
+/* ---- word guess ---- */
+.wd{max-width:min(100%,26rem);margin-inline:auto}
+.wd-head{justify-content:space-between;margin-bottom:.6rem}
+.wd-head .game-msg{flex:1;flex-basis:auto;text-align:right;min-height:1.4em;font-size:.95rem}
+.wd-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:.9rem}
+.wd-t{aspect-ratio:1;display:grid;place-items:center;border:2px solid var(--line);border-radius:6px;font-size:clamp(1.5rem,6vw,2.4rem);font-weight:650;text-transform:uppercase;color:var(--fg);transition:border-color .15s,transform .12s}
+.wd-t.on{border-color:var(--fg);transform:scale(1.05)}
+.wd-t.c,.wd-t.p,.wd-t.a{border-color:transparent;color:#0e0e10}
+.wd-t.c{background:#7fd6a0}.wd-t.p{background:#f4cf5a}.wd-t.a{background:color-mix(in srgb,var(--fg) 24%,var(--bg2));color:var(--fg)}
+.wd-t.flip{animation:wdflip .55s ease both}
+@keyframes wdflip{0%{transform:rotateX(0)}50%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
+.wd-t.shake{animation:wdshake .4s}
+@keyframes wdshake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.wd-kb{display:flex;flex-direction:column;gap:6px;margin-bottom:.8rem}
+.wd-kr{display:flex;justify-content:center;gap:5px}
+.wd-k{flex:1 1 0;max-width:2.8rem;height:3.2rem;border:0;border-radius:6px;background:color-mix(in srgb,var(--fg) 13%,var(--bg2));color:var(--fg);font-weight:650;font-size:1rem;text-transform:uppercase;touch-action:manipulation;padding:0}
+.wd-k.wide{flex:1.7 1 0;max-width:4.4rem;font-size:.78rem}
+.wd-k.c{background:#7fd6a0;color:#0e0e10}.wd-k.p{background:#f4cf5a;color:#0e0e10}.wd-k.a{background:color-mix(in srgb,var(--fg) 30%,var(--bg2));opacity:.55}
+.wd-stats{margin-top:1rem}
+.wd-sn{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;margin-bottom:.8rem}
+.wd-sn b{display:block;font-size:1.7rem;font-weight:500}.wd-sn span{font-size:.75rem;color:var(--fg2)}
+.wd-dist div{display:flex;align-items:center;gap:.5rem;margin:3px 0;font-size:.8rem}
+.wd-dist span{width:1rem;text-align:right;color:var(--fg2)}
+.wd-dist i{display:block;background:#7fd6a0;color:#0e0e10;font-style:normal;padding:1px 6px;text-align:right;border-radius:3px;font-weight:600}
+.gm-panel:focus{outline:none}
+.wd{max-width:min(100%,max(17rem,calc(var(--gh) * .7)))}
+.wd-k{height:2.8rem}

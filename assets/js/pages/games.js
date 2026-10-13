@@ -5,6 +5,7 @@ import "../games/play.js";
 import "../games/puzzle.js";
 import "../games/mind.js";
 import "../games/create.js";
+import "../games/words.js";
 
 const gm = $("#gm"), panel = $("#gmPanel"), body = $("#gmBody");
 const cards = $$(".gcard"), byId = (id) => cards.find((c) => c.dataset.id === id);
@@ -51,7 +52,7 @@ function render(id) {
   unframe = onFrame((t) => G.api?.frame?.(t));
   ro = new ResizeObserver(() => { clearTimeout(ro.t); ro.t = setTimeout(() => G.api?.resize?.(), 120); });
   ro.observe(body);
-  setTimeout(() => $("#gmClose").focus({ preventScroll: true }), 60);
+  setTimeout(() => panel.focus({ preventScroll: true }), 60);
   $("#gmFull").hidden = !(panel.requestFullscreen || panel.webkitRequestFullscreen);
 }
 function teardown() {
