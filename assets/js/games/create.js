@@ -1,4 +1,4 @@
-import { $, $$, h, fit, pos, B, game, report, shuffle, rnd, reduce, savePng } from "./shared.js";
+import { $, $$, h, fit, pos, B, game, report, shuffle, rnd, reduce, savePng, coarse, sprite } from "./shared.js";
 import { tone, PENTA, ready } from "../audio.js";
 
 /* ---------------------------------------------------------------- Mandala colouring */
@@ -55,36 +55,43 @@ game("mandala",
   });
 
 /* ---------------------------------------------------------------- Clear the window */
+// Three stacked canvases keep this light: the scene is drawn once, the mist is the only layer that changes
+// while you wipe, and the raindrops sit on a small canvas of their own.
 game("fog",
-  `<canvas id="fgCv" aria-label="A rainy window covered in mist. Drag to wipe it clear."></canvas><div class="row"><span class="muted small">Drag to wipe the glass. The mist drifts back slowly.</span><button class="${B}" id="fgFog">Fog it up again</button><button class="${B}" id="fgSave">Save picture</button></div>`,
+  `<div class="fg-wrap" id="fgWrap"><canvas id="fgScene" aria-hidden="true"></canvas><canvas id="fgCv" aria-label="A rainy window covered in mist. Drag to wipe it clear."></canvas><canvas id="fgDrops" aria-hidden="true"></canvas></div><div class="row"><span class="muted small">Drag to wipe the glass. The mist drifts back slowly.</span><button class="${B}" id="fgFog">Fog it up again</button><button class="${B}" id="fgSave">Save picture</button></div>`,
   () => {
-    const c = $("#fgCv"); let g = fit(c), scene, fog, fgx, drops = [], down = false, last = null, W, H, bokeh = [];
+    const scene = $("#fgScene"), c = $("#fgCv"), dc = $("#fgDrops"), cap = coarse ? 1 : 1.5;
+    let sg = fit(scene, cap), g = fit(c, cap), dg = fit(dc, cap), drops = [], down = false, last = null, W, H, bokeh = null, tick = 0;
+    const brush = sprite("fogbrush", 96, 96, (x) => { const rg = x.createRadialGradient(48, 48, 0, 48, 48, 48); rg.addColorStop(0, "rgba(0,0,0,1)"); rg.addColorStop(0.62, "rgba(0,0,0,.85)"); rg.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = rg; x.fillRect(0, 0, 96, 96); });
     function paintScene() {
-      W = c.clientWidth; H = c.clientHeight; const d = Math.min(2, devicePixelRatio || 1);
-      scene = document.createElement("canvas"); scene.width = W * d; scene.height = H * d; const s = scene.getContext("2d"); s.scale(d, d);
-      const gr = s.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, "#1a1a3a"); gr.addColorStop(0.6, "#3b2a55"); gr.addColorStop(1, "#7a3b57"); s.fillStyle = gr; s.fillRect(0, 0, W, H);
-      bokeh = Array.from({ length: 46 }, () => ({ x: Math.random() * W, y: H * (0.35 + Math.random() * 0.6), r: 10 + Math.random() * 44, h: [20, 35, 200, 320, 280][rnd(5)], a: 0.25 + Math.random() * 0.5 }));
-      bokeh.forEach((b) => { const rg = s.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r); rg.addColorStop(0, `hsla(${b.h},90%,65%,${b.a})`); rg.addColorStop(1, `hsla(${b.h},90%,60%,0)`); s.fillStyle = rg; s.beginPath(); s.arc(b.x, b.y, b.r, 0, 7); s.fill(); });
-      fog = document.createElement("canvas"); fog.width = W * d; fog.height = H * d; fgx = fog.getContext("2d"); fgx.scale(d, d); refog();
+      W = c.clientWidth; H = c.clientHeight;
+      const gr = sg.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, "#1a1a3a"); gr.addColorStop(0.6, "#3b2a55"); gr.addColorStop(1, "#7a3b57"); sg.fillStyle = gr; sg.fillRect(0, 0, W, H);
+      bokeh ||= Array.from({ length: 46 }, () => ({ x: Math.random(), y: 0.35 + Math.random() * 0.6, r: 0.02 + Math.random() * 0.09, h: [20, 35, 200, 320, 280][rnd(5)], a: 0.25 + Math.random() * 0.5 }));
+      bokeh.forEach((b) => { const R = b.r * Math.min(W, H) * 1.6, x = b.x * W, y = b.y * H, rg = sg.createRadialGradient(x, y, 0, x, y, R); rg.addColorStop(0, `hsla(${b.h},90%,65%,${b.a})`); rg.addColorStop(1, `hsla(${b.h},90%,60%,0)`); sg.fillStyle = rg; sg.beginPath(); sg.arc(x, y, R, 0, 7); sg.fill(); });
     }
-    function refog() { fgx.globalCompositeOperation = "source-over"; fgx.clearRect(0, 0, W, H); fgx.fillStyle = "rgba(214,220,232,.84)"; fgx.fillRect(0, 0, W, H); for (let i = 0; i < W * H / 60; i++) { fgx.fillStyle = `rgba(255,255,255,${Math.random() * 0.12})`; fgx.fillRect(Math.random() * W, Math.random() * H, 2, 2); } }
-    function wipe(x, y, r = 34) { fgx.globalCompositeOperation = "destination-out"; const rg = fgx.createRadialGradient(x, y, 0, x, y, r); rg.addColorStop(0, "rgba(0,0,0,1)"); rg.addColorStop(0.65, "rgba(0,0,0,.85)"); rg.addColorStop(1, "rgba(0,0,0,0)"); fgx.fillStyle = rg; fgx.beginPath(); fgx.arc(x, y, r, 0, 7); fgx.fill(); fgx.globalCompositeOperation = "source-over"; }
-    function seg(a, b) { const n = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 8) || 1; for (let i = 0; i <= n; i++) wipe(a[0] + (b[0] - a[0]) * i / n, a[1] + (b[1] - a[1]) * i / n); }
-    paintScene();
+    function refog() { g.globalCompositeOperation = "source-over"; g.clearRect(0, 0, W, H); g.fillStyle = "rgba(214,220,232,.86)"; g.fillRect(0, 0, W, H); for (let i = 0; i < Math.min(2500, W * H / 120); i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * 0.12})`; g.fillRect(Math.random() * W, Math.random() * H, 2, 2); } }
+    function wipe(x, y, r = 34) { g.globalCompositeOperation = "destination-out"; g.drawImage(brush, x - r, y - r, r * 2, r * 2); g.globalCompositeOperation = "source-over"; }
+    function seg(a, b) { const n = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 10) || 1; for (let i = 0; i <= n; i++) wipe(a[0] + (b[0] - a[0]) * i / n, a[1] + (b[1] - a[1]) * i / n); }
+    paintScene(); refog();
     c.addEventListener("pointerdown", (e) => { down = true; c.setPointerCapture(e.pointerId); last = pos(c, e); wipe(...last); });
     c.addEventListener("pointermove", (e) => { if (!down) return; const p = pos(c, e); seg(last, p); last = p; });
     ["pointerup", "pointercancel"].forEach((ev) => c.addEventListener(ev, () => (down = false)));
     $("#fgFog").addEventListener("click", refog);
-    $("#fgSave").addEventListener("click", () => { const t = document.createElement("canvas"); t.width = scene.width; t.height = scene.height; const x = t.getContext("2d"); x.drawImage(scene, 0, 0); x.drawImage(fog, 0, 0); savePng(t, "#1a1a3a", "rainy-window"); });
+    $("#fgSave").addEventListener("click", () => { const t = document.createElement("canvas"); t.width = scene.width; t.height = scene.height; const x = t.getContext("2d"); x.drawImage(scene, 0, 0); x.drawImage(c, 0, 0); savePng(t, "#1a1a3a", "rainy-window"); });
     return {
-      resize() { g = fit(c); paintScene(); },
+      resize() { sg = fit(scene, cap); g = fit(c, cap); dg = fit(dc, cap); paintScene(); refog(); },
       frame() {
-        if (Math.random() < 0.08 && drops.length < 26) drops.push({ x: Math.random() * W, y: -6, v: 0.6 + Math.random() * 1.4, r: 2 + Math.random() * 3.5, w: Math.random() * 6 });
-        fgx.fillStyle = "rgba(214,220,232,.012)"; fgx.fillRect(0, 0, W, H);
-        drops.forEach((d) => { d.w += 0.06; d.y += d.v; d.x += Math.sin(d.w) * 0.25; if (Math.random() < 0.05) d.v = 0.4 + Math.random() * 2; wipe(d.x, d.y, d.r * 1.3); });
+        tick++;
+        if (tick % 14 === 0 && drops.length < (coarse ? 8 : 16)) drops.push({ x: Math.random() * W, y: -6, v: 0.6 + Math.random() * 1.4, r: 2 + Math.random() * 3.5, w: Math.random() * 6 });
+        if (tick % 8 === 0) { g.fillStyle = "rgba(214,220,232,.05)"; g.fillRect(0, 0, W, H); }
+        dg.clearRect(0, 0, W, H);
+        drops.forEach((d) => {
+          d.w += 0.06; d.y += d.v; d.x += Math.sin(d.w) * 0.25; if (Math.random() < 0.05) d.v = 0.4 + Math.random() * 2;
+          wipe(d.x, d.y, d.r * 1.5);
+          dg.fillStyle = "rgba(255,255,255,.55)"; dg.beginPath(); dg.ellipse(d.x, d.y, d.r * 0.8, d.r * 1.15, 0, 0, 7); dg.fill();
+          dg.fillStyle = "rgba(255,255,255,.9)"; dg.beginPath(); dg.arc(d.x - d.r * 0.25, d.y - d.r * 0.3, d.r * 0.28, 0, 7); dg.fill();
+        });
         drops = drops.filter((d) => d.y < H + 10);
-        g.clearRect(0, 0, W, H); g.drawImage(scene, 0, 0, W, H); g.drawImage(fog, 0, 0, W, H);
-        drops.forEach((d) => { g.fillStyle = "rgba(255,255,255,.55)"; g.beginPath(); g.ellipse(d.x, d.y, d.r * 0.8, d.r * 1.15, 0, 0, 7); g.fill(); g.fillStyle = "rgba(255,255,255,.9)"; g.beginPath(); g.arc(d.x - d.r * 0.25, d.y - d.r * 0.3, d.r * 0.28, 0, 7); g.fill(); });
       }
     };
   });

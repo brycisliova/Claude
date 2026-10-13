@@ -812,7 +812,7 @@ h1 em,h2 em,h3 em,.feature-q em{font-family:inherit;font-style:normal;font-size:
 .gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,19rem),1fr));gap:clamp(.7rem,1.4vw,1.1rem);margin-top:1.4rem}
 .gcard{all:unset;box-sizing:border-box;position:relative;display:flex;flex-direction:column;gap:.7rem;min-height:15.5rem;padding:1.3rem 1.3rem 1.2rem;border-radius:6px;background:var(--c);color:#0e0e10;cursor:pointer;overflow:hidden;isolation:isolate;transition:transform .6s var(--ease),box-shadow .6s var(--ease)}
 .gcard[hidden]{display:none}
-.gcard::before{content:"";position:absolute;right:-22%;top:-26%;width:68%;aspect-ratio:1;border-radius:50%;background:conic-gradient(from var(--a),rgba(255,255,255,.55),rgba(255,255,255,0) 40%,rgba(14,14,16,.1) 70%,rgba(255,255,255,.55));opacity:.55;z-index:-1;transition:transform 1.2s var(--ease)}
+.gcard::before{display:none;content:"";position:absolute;right:-22%;top:-26%;width:68%;aspect-ratio:1;border-radius:50%;background:conic-gradient(from var(--a),rgba(255,255,255,.55),rgba(255,255,255,0) 40%,rgba(14,14,16,.1) 70%,rgba(255,255,255,.55));opacity:.55;z-index:-1;transition:transform 1.2s var(--ease)}
 .gcard:hover,.gcard:focus-visible{transform:translateY(-4px);box-shadow:0 18px 40px -22px rgba(14,14,16,.55)}
 .gcard:hover::before{transform:scale(1.18) rotate(24deg)}
 .gcard:focus-visible{outline:2px solid #0e0e10;outline-offset:3px}
@@ -1158,3 +1158,58 @@ h1 em,h2 em,h3 em,.feature-q em{font-family:inherit;font-style:normal;font-size:
 .hu-board{aspect-ratio:1}
 .gm-modes.locked{display:none}
 .note p{white-space:pre-line}
+.fg-wrap{position:relative;width:100%;height:var(--gh);border-radius:6px;overflow:hidden;background:#1a1a3a}
+.fg-wrap canvas{position:absolute;inset:0;width:100%!important;height:100%!important;border-radius:0;background:transparent}
+#fgDrops{pointer-events:none}
+
+/* Game card illustrations: transform and opacity only, paused whenever the card is off screen or a game is open */
+.gc-art{display:block;margin:-.3rem -.3rem 0;aspect-ratio:20/9;border-radius:4px;overflow:hidden;background:rgba(255,255,255,.34)}
+.ga{display:block;width:100%;height:100%}
+.g-a{transform-box:fill-box;transform-origin:center}
+.g-a{animation-duration:var(--t,4s);animation-delay:var(--d,0s);animation-iteration-count:infinite;animation-timing-function:ease-in-out;animation-fill-mode:both}
+.gcard:not(.vis) .g-a,.scroll-locked .g-a{animation-play-state:paused}
+.g-o-t{transform-origin:50% 0}.g-o-b{transform-origin:50% 100%}.g-wv,.g-hl{transform-origin:0 50%}
+.g-br{animation-name:ga-br}.g-ri{animation-name:ga-ri;animation-timing-function:linear}.g-sw{animation-name:ga-sw;animation-direction:alternate}
+.g-dr{animation-name:ga-dr;animation-direction:alternate}.g-sn{animation-name:ga-sn;animation-timing-function:linear}.g-fa{animation-name:ga-fa;animation-timing-function:ease-in}
+.g-dp{animation-name:ga-dp;animation-timing-function:cubic-bezier(.5,0,.9,.6)}.g-pop{animation-name:ga-pop}.g-pu{animation-name:ga-pu;animation-direction:alternate}
+.g-fl{animation-name:ga-fl;animation-direction:alternate}.g-dw{animation-name:ga-dw;stroke-dasharray:100}.g-sp{animation-name:ga-sp;animation-timing-function:linear}
+.g-tw{animation-name:ga-tw;animation-direction:alternate}.g-sw1{animation-name:ga-sw1}.g-sw2{animation-name:ga-sw2}.g-sl{animation-name:ga-sl}
+.g-m1{animation-name:ga-m1}.g-m2{animation-name:ga-m2}.g-po2{animation-name:ga-po2}.g-lt{animation-name:ga-lt}.g-po3{animation-name:ga-po3}
+.g-mz{animation-name:ga-mz;animation-timing-function:linear}.g-ec{animation-name:ga-ec}.g-wv{animation-name:ga-wv;animation-direction:alternate}
+.g-fl1{animation-name:ga-fl1;animation-timing-function:linear}.g-fl2{animation-name:ga-fl2;animation-timing-function:linear}.g-fp{animation-name:ga-fp}
+.g-hl{animation-name:ga-hl}.g-fa2{animation-name:ga-fa2;animation-timing-function:ease-in}.g-bl{animation-name:ga-bl;animation-direction:alternate}
+.g-rv{animation-direction:reverse}
+@keyframes ga-br{0%,100%{transform:scale(.74)}50%{transform:scale(1.14)}}
+@keyframes ga-ri{0%{transform:translateY(12px);opacity:0}15%,80%{opacity:1}100%{transform:translateY(-92px);opacity:0}}
+@keyframes ga-sw{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+@keyframes ga-dr{from{transform:translateX(0)}to{transform:translateX(-70px)}}
+@keyframes ga-sn{from{stroke-dashoffset:52}to{stroke-dashoffset:-400}}
+@keyframes ga-fa{0%{transform:translateY(0);opacity:0}12%{opacity:1}100%{transform:translateY(112px);opacity:.6}}
+@keyframes ga-dp{0%{transform:translateY(0);opacity:0}8%{opacity:1}50%,85%{transform:translateY(67px);opacity:1}100%{transform:translateY(67px);opacity:0}}
+@keyframes ga-pop{0%,60%{transform:scale(.3);opacity:0}70%{transform:scale(1);opacity:.9}100%{transform:scale(1.8);opacity:0}}
+@keyframes ga-pu{from{transform:scale(.88)}to{transform:scale(1.12)}}
+@keyframes ga-fl{from{transform:translateY(-3px)}to{transform:translateY(3px)}}
+@keyframes ga-dw{0%{stroke-dashoffset:100;opacity:1}55%{stroke-dashoffset:0;opacity:1}85%{stroke-dashoffset:0;opacity:0}100%{stroke-dashoffset:100;opacity:0}}
+@keyframes ga-sp{to{transform:rotate(360deg)}}
+@keyframes ga-tw{from{opacity:.35;transform:scale(.7)}to{opacity:1;transform:scale(1.15)}}
+@keyframes ga-sw1{0%,15%{transform:translateX(0)}40%,70%{transform:translateX(22px)}95%,100%{transform:translateX(0)}}
+@keyframes ga-sw2{0%,15%{transform:translateX(0)}40%,70%{transform:translateX(-22px)}95%,100%{transform:translateX(0)}}
+@keyframes ga-sl{0%,15%{transform:translateX(0)}40%,70%{transform:translateX(27px)}95%,100%{transform:translateX(0)}}
+@keyframes ga-m1{0%,15%{transform:translateX(0);opacity:1}45%{transform:translateX(56px);opacity:1}46%,88%{transform:translateX(56px);opacity:0}100%{transform:translateX(0);opacity:1}}
+@keyframes ga-m2{0%,15%{transform:translateX(0);opacity:1}45%{transform:translateX(28px);opacity:1}46%,88%{transform:translateX(28px);opacity:0}100%{transform:translateX(0);opacity:1}}
+@keyframes ga-po2{0%,44%{transform:scale(.4);opacity:0}54%{transform:scale(1.15);opacity:1}62%,88%{transform:scale(1);opacity:1}100%{transform:scale(.4);opacity:0}}
+@keyframes ga-lt{0%,100%{opacity:1}40%,62%{opacity:.04}}
+@keyframes ga-po3{0%,12%{transform:scale(.4);opacity:0}28%{transform:scale(1.2);opacity:1}38%,82%{transform:scale(1);opacity:1}100%{opacity:0}}
+@keyframes ga-mz{0%{transform:translate(0,0)}18%{transform:translate(0,46px)}44%{transform:translate(66px,46px)}58%{transform:translate(66px,10px)}82%{transform:translate(132px,10px)}95%{transform:translate(132px,48px);opacity:1}100%{transform:translate(132px,48px);opacity:0}}
+@keyframes ga-ec{0%,100%{opacity:0;transform:scale(.9)}6%,16%{opacity:1;transform:scale(1.12)}30%{opacity:0;transform:scale(1)}}
+@keyframes ga-wv{from{transform:skewY(-3deg) scaleX(1)}to{transform:skewY(3deg) scaleX(.96)}}
+@keyframes ga-fl1{0%,40%{transform:scaleX(1)}50%,90%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+@keyframes ga-fl2{0%,40%{transform:scaleX(0)}50%,90%{transform:scaleX(1)}100%{transform:scaleX(0)}}
+@keyframes ga-fp{0%,55%{transform:scaleY(1)}70%{transform:scaleY(.04)}85%,100%{transform:scaleY(1)}}
+@keyframes ga-hl{0%,8%{transform:scaleX(0);opacity:1}42%,74%{transform:scaleX(1);opacity:1}92%,100%{transform:scaleX(1);opacity:0}}
+@keyframes ga-fa2{0%{transform:translateY(0);opacity:0}15%{opacity:1}70%{transform:translateY(40px);opacity:1}100%{transform:translateY(40px);opacity:0}}
+@keyframes ga-bl{from{opacity:.2}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.g-a{animation:none}}
+@media (max-width:760px),(pointer:coarse){.gm,.credit{-webkit-backdrop-filter:none;backdrop-filter:none}.gm{background:rgba(14,14,16,.94)}}
+button,.chip,.gm-btn,.btn,.gcard{touch-action:manipulation}
+canvas{-webkit-tap-highlight-color:transparent}
