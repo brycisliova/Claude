@@ -23,14 +23,21 @@ ${hero(ctx, { eyebrow: "Games", title: "Calm <em>games</em>", lede: `${GAMES.len
       <div class="gfeat-t"><p class="label"><span>Today's pick</span></p><h2 id="gFeatT"></h2><p id="gFeatH"></p></div>
       <div class="gfeat-a"><button class="btn btn-primary" id="gFeatGo" type="button"><span class="btn-t">Play it now</span><span class="btn-i">${icon("arrow", 18)}</span></button><button class="btn btn-ghost" id="gSurprise" type="button"><span class="btn-t">Surprise me</span></button></div>
     </div>
+    <div class="gtogether reveal" id="gTogether">
+      <div class="gtg-t"><p class="label"><span>Play together</span></p><h2>Play with friends on their own devices</h2><p>Make a room, share the code or link, and play in real time. No accounts, nothing to install. The board grows with every player who joins.</p></div>
+      <div class="gtg-a">
+        <div class="gtg-box"><label for="gtGame">Pick a game</label><div class="row"><select class="mini" id="gtGame">${GAMES.filter((g) => g.mp).map((g) => `<option value="${g.id}">${esc(g.title)} (${g.mp[0] === g.mp[1] ? g.mp[0] : g.mp[0] + " to " + g.mp[1]} players)</option>`).join("")}</select><button class="btn btn-primary" id="gtCreate" type="button"><span class="btn-t">Create a room</span></button></div></div>
+        <div class="gtg-box"><label for="gtCode">Have a code?</label><div class="row"><input class="text-in tg-codein" id="gtCode" maxlength="7" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC DEF" aria-label="Room code"><button class="btn btn-ghost" id="gtJoin" type="button"><span class="btn-t">Join</span></button></div></div>
+      </div>
+    </div>
     <div class="gtools">
       <div class="chips" id="gChips" role="group" aria-label="Filter games">${CATS.map(([k, l]) => `<button class="chip" type="button" data-f="${k}" aria-pressed="${k === "all"}">${l}</button>`).join("")}</div>
       <p class="muted small" id="gCount" aria-live="polite">${GAMES.length} games</p>
     </div>
     <h2 class="sr-only">All games</h2>
     <div class="gcards" id="gameGrid">
-      ${GAMES.map((g, i) => `<button class="gcard reveal" type="button" data-id="${g.id}" data-cat="${g.cat}" data-unit="${esc(g.best?.unit || "")}" style="--c:var(--${g.c});--i:${i % 4};--a:${(i * 47) % 360}deg" aria-haspopup="dialog">
-        <span class="gc-top"><span class="gc-no">${String(i + 1).padStart(2, "0")}</span><span class="gc-played" hidden>Played</span></span>
+      ${GAMES.map((g, i) => `<button class="gcard reveal" type="button" data-id="${g.id}" data-cat="${g.cat}" data-mp="${g.mp ? g.mp.join("-") : ""}" data-unit="${esc(g.best?.unit || "")}" style="--c:var(--${g.c});--i:${i % 4};--a:${(i * 47) % 360}deg" aria-haspopup="dialog">
+        <span class="gc-top"><span class="gc-no">${String(i + 1).padStart(2, "0")}</span>${g.mp ? `<span class="gc-tg">Together ${g.mp[0] === g.mp[1] ? g.mp[0] : g.mp[0] + "-" + g.mp[1]}</span>` : ""}<span class="gc-played" hidden>Played</span></span>
         <span class="gc-t">${esc(g.title)}</span>
         <span class="gc-how">${esc(g.how)}</span>
         <span class="gc-meta"><span>${esc(CAT[g.cat])}</span><span>${g.mins} min</span><span title="${LVL[g.lvl]}" aria-label="${LVL[g.lvl]}">${dots(g.lvl)}</span></span>

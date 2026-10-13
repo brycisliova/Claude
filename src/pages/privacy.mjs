@@ -16,6 +16,7 @@ ${hero(ctx, { eyebrow: "Privacy", title: "Privacy <em>and safety</em>", lede: "F
     <ul>
       <li><strong>No tracking.</strong> No analytics, no advertising, no cookies, no social-media buttons or pixels.</li>
       <li><strong>No third-party fonts.</strong> Fonts are served from this site itself, so your browser doesn't contact Google or anyone else to draw the page.</li>
+      <li><strong>Playing together uses a public relay, only when you choose to.</strong> If you create or join a room, your browser connects to a free public message server run by a third party. It receives your nickname and your game moves for that room, and, as with any website you visit, it can see your internet address. Nothing is saved, there is no chat, and a room disappears when its host leaves. Anyone who has a room code or link can join, so share it only with people you trust.</li>
       <li><strong>Videos play only when you press play.</strong> The player then comes from YouTube's privacy-enhanced mode (youtube-nocookie.com). The small preview picture on each film and song is loaded from YouTube's image server (i.ytimg.com) as you scroll to it, so YouTube can see that the picture was requested, but no player or cookie is loaded until you press play.</li>
       <li><strong>Your writing and mood check-ins stay on your device.</strong> They're saved in your browser's local storage, not sent anywhere.</li>
       <li><strong>Sounds and games run in your browser.</strong> Nothing is uploaded.</li>

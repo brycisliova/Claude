@@ -9,6 +9,7 @@ export const GAMES = [
   { id: "chimes", title: "Wind chimes", how: "Tap or drag across the bars. Every combination sounds gentle.", cat: "relax", mins: 2, lvl: 1, c: "yellow" },
   { id: "aurora", title: "Aurora", how: "Move through the light and the particles follow, then drift free.", cat: "relax", mins: 2, lvl: 1, c: "blue" },
   { id: "snake", title: "Glow snake", how: "Steer a soft glowing snake to the light. The edges wrap around and a bump only trims your tail.", cat: "play", mins: 5, lvl: 2, c: "green", best: { unit: "long" } },
+  { id: "four", title: "Four in a row", how: "Drop discs and line up four. Play the computer, or a friend on their own device.", cat: "play", mins: 8, lvl: 2, c: "blue", mp: [2, 2] },
   { id: "bubbles", title: "Pop the bubbles", how: "No score to beat. Tap and watch them burst into colour.", cat: "play", mins: 2, lvl: 1, c: "pink", best: { unit: "popped" } },
   { id: "fog", title: "Clear the window", how: "Wipe the misty glass to see the rainy city behind it, and save the view.", cat: "relax", mins: 3, lvl: 1, c: "sky" },
   { id: "paint", title: "Paint with light", how: "Draw glowing trails in rainbow, sunset or ocean colours, then save your picture.", cat: "create", mins: 3, lvl: 1, c: "orange" },
@@ -24,12 +25,12 @@ export const GAMES = [
   { id: "sudoku", title: "Mini sudoku", how: "4 by 4 and 6 by 6 puzzles with live checking, hints and three difficulties.", cat: "puzzle", mins: 8, lvl: 3, c: "green", best: { unit: "s", low: true } },
   { id: "maze", title: "Quiet maze", how: "Walk your light to the glow. Each level grows a little bigger.", cat: "puzzle", mins: 6, lvl: 2, c: "violet", best: { unit: "levels" } },
   { id: "echo", title: "Echo tones", how: "Listen to a pattern of tones, then play it back. It grows by one each round and never ends in failure.", cat: "mind", mins: 5, lvl: 2, c: "pink", best: { unit: "tones" } },
-  { id: "flags", title: "Know the flags", how: "Name each pride flag, then read the story behind its colours.", cat: "mind", mins: 4, lvl: 2, c: "blue", best: { unit: "of 8" } },
-  { id: "myth", title: "Myth or fact?", how: "Ten statements, one question each. Learn what the evidence really says.", cat: "mind", mins: 4, lvl: 2, c: "orange", best: { unit: "of 10" } },
-  { id: "wordle", title: "Word guess", how: "Find the hidden five-letter word in six tries. A daily word, random words, and a set of kind words.", cat: "mind", mins: 5, lvl: 2, c: "sky", best: { unit: "guesses", low: true } },
-  { id: "words", title: "Word garden", how: "A word search of kind words. Drag across the letters in a straight line.", cat: "mind", mins: 6, lvl: 2, c: "green", best: { unit: "s", low: true } },
+  { id: "flags", title: "Know the flags", how: "Name each pride flag, then read the story behind its colours.", cat: "mind", mins: 4, lvl: 2, c: "blue", best: { unit: "of 8" }, mp: [2, 8] },
+  { id: "myth", title: "Myth or fact?", how: "Ten statements, one question each. Learn what the evidence really says.", cat: "mind", mins: 4, lvl: 2, c: "orange", best: { unit: "of 10" }, mp: [2, 8] },
+  { id: "wordle", title: "Word guess", how: "Find the hidden five-letter word in six tries. A daily word, random words, and a set of kind words.", cat: "mind", mins: 5, lvl: 2, c: "sky", best: { unit: "guesses", low: true }, mp: [2, 6] },
+  { id: "words", title: "Word garden", how: "A word search of kind words. Drag across the letters in a straight line.", cat: "mind", mins: 6, lvl: 2, c: "green", best: { unit: "s", low: true }, mp: [2, 6] },
   { id: "jar", title: "Gratitude jar", how: "Add small good things and watch them settle as glowing marbles. Pull one out on a hard day.", cat: "mind", mins: 3, lvl: 1, c: "yellow" },
-  { id: "memory", title: "Gentle memory", how: "Find the matching pairs. There is no timer.", cat: "puzzle", mins: 4, lvl: 1, c: "green", best: { unit: "turns", low: true } }
+  { id: "memory", title: "Gentle memory", how: "Find the matching pairs. There is no timer.", cat: "puzzle", mins: 4, lvl: 1, c: "green", best: { unit: "turns", low: true }, mp: [2, 4] }
 ];
 
 // True statements for "Myth or fact?". Myths come from the Myths page (src/data/content.mjs).
