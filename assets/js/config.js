@@ -13,6 +13,6 @@ export const MULTIPLAYER = {
   brokers: [
     "wss://broker.emqx.io:8084/mqtt",
     "wss://broker.hivemq.com:8884/mqtt",
-    "wss://test.mosquitto.org:8081/mqtt"
+    "wss://test.mosquitto.org:8081"
   ]
 };
