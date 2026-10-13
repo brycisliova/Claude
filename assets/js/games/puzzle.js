@@ -1,4 +1,5 @@
 import { $, $$, h, fit, pos, B, game, report, shuffle, rnd, reduce } from "./shared.js";
+import { SCENES } from "./scenes.js";
 import { ac, masterGain, reverbNode, blip, bowl, tone, PENTA, ready } from "../audio.js";
 
 game("hue",
@@ -55,21 +56,22 @@ game("slide",
   });
 
 game("memory",
-  `<div class="memory" id="memory"></div><div class="row"><span class="game-msg" id="mMsg"></span><select class="mini" id="mLevel" aria-label="Number of pairs"><option value="6">6 pairs</option><option value="8">8 pairs</option><option value="10">10 pairs</option></select><button class="${B}" id="mReset">Shuffle</button></div>`,
+  `<div class="memory" id="memory"></div><div class="row"><span class="game-msg" id="mMsg"></span><select class="mini" id="mLevel" aria-label="Number of pairs"><option value="6">6 pairs</option><option value="8">8 pairs</option><option value="10">10 pairs</option><option value="12">12 pairs</option><option value="15">15 pairs</option></select><button class="${B}" id="mReset">Shuffle</button></div>`,
   () => {
-    const icons = ["🌈", "🌸", "🌙", "⭐", "🍃", "🦋", "🌻", "🐚", "🕊️", "🍵"], mem = $("#memory");
+    const mem = $("#memory");
     let open = [], found = 0, lock = false, n, turns = 0;
     function deal() {
       n = +$("#mLevel").value; mem.innerHTML = ""; open = []; found = 0; turns = 0; lock = false; $("#mMsg").textContent = "";
-      mem.style.gridTemplateColumns = `repeat(${n === 10 ? 5 : 4},1fr)`;
-      [...icons.slice(0, n), ...icons.slice(0, n)].sort(() => Math.random() - 0.5).forEach((ic) => {
-        const b = h("button", { class: "mcard", "aria-label": "Hidden card" }, `<span>${ic}</span>`); b.dataset.ic = ic;
+      mem.style.gridTemplateColumns = `repeat(${n <= 8 ? 4 : n <= 10 ? 5 : 6},1fr)`;
+      const picks = shuffle([...SCENES.keys()]).slice(0, n);
+      shuffle([...picks, ...picks]).forEach((k) => {
+        const b = h("button", { class: "mcard", "aria-label": "Hidden card" }, `<span class="mc-art">${SCENES[k].svg}</span>`); b.dataset.k = k;
         b.addEventListener("click", () => {
           if (lock || b.classList.contains("open") || b.classList.contains("done")) return;
-          b.classList.add("open"); b.setAttribute("aria-label", ic); open.push(b);
+          b.classList.add("open"); b.setAttribute("aria-label", SCENES[k].n); open.push(b);
           if (open.length === 2) {
             lock = true; turns++; const [a, c] = open;
-            if (a.dataset.ic === c.dataset.ic) setTimeout(() => { a.classList.add("done"); c.classList.add("done"); open = []; lock = false; found++; tone(PENTA[found % PENTA.length], 0.5, 0.08); if (found === n) { $("#mMsg").textContent = `All pairs found in ${turns} turns. Lovely.`; if (n === 6) report(turns, { low: true }); } }, 450);
+            if (a.dataset.k === c.dataset.k) setTimeout(() => { a.classList.add("done"); c.classList.add("done"); open = []; lock = false; found++; tone(PENTA[found % PENTA.length], 0.5, 0.08); if (found === n) { $("#mMsg").textContent = `All pairs found in ${turns} turns. Lovely.`; if (n === 6) report(turns, { low: true }); } }, 450);
             else setTimeout(() => { [a, c].forEach((x) => { x.classList.remove("open"); x.setAttribute("aria-label", "Hidden card"); }); open = []; lock = false; }, 900);
           }
         });
