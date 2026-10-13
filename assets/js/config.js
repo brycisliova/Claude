@@ -5,3 +5,14 @@ export const FORMS = {
   formspreeId: "",    // from https://formspree.io (the part after /f/ in your form endpoint)
   email: "shiningforevr@gmail.com"
 };
+
+// Together mode (playing games with friends on other devices). Rooms are relayed through a free public MQTT broker,
+// so there is nothing to host. Brokers are tried in order when someone creates a room, and the last character of a
+// room code records which broker it uses. To use your own broker, put its WebSocket address first.
+export const MULTIPLAYER = {
+  brokers: [
+    "wss://broker.emqx.io:8084/mqtt",
+    "wss://broker.hivemq.com:8884/mqtt",
+    "wss://test.mosquitto.org:8081/mqtt"
+  ]
+};
