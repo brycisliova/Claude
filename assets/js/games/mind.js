@@ -2,7 +2,7 @@ import { $, $$, h, esc, fit, pos, B, game, report, shuffle, rnd, reduce } from "
 import { tone, bowl, PENTA, ready } from "../audio.js";
 import { store } from "../core.js";
 
-const DATA = (() => { try { return JSON.parse(document.getElementById("gameData").textContent); } catch (e) { return { myths: [], facts: [] }; } })();
+export const DATA = (() => { try { return JSON.parse(document.getElementById("gameData").textContent); } catch (e) { return { myths: [], facts: [] }; } })();
 
 /* ---------------------------------------------------------------- Echo tones */
 game("echo",
@@ -35,7 +35,7 @@ game("echo",
   });
 
 /* ---------------------------------------------------------------- Know the flags */
-const FLAGS = [
+export const FLAGS = [
   { n: "Rainbow pride flag", s: ["#E40303", "#FF8C00", "#FFED00", "#008026", "#004DFF", "#750787"], f: "Designed by Gilbert Baker and first flown in San Francisco in 1978. Today's six-stripe version is the one most people know." },
   { n: "Transgender pride flag", s: ["#5BCEFA", "#F5A9B8", "#FFFFFF", "#F5A9B8", "#5BCEFA"], f: "Designed by Monica Helms in 1999. Light blue and pink, with white in the middle for people who are transitioning, intersex or have a neutral gender." },
   { n: "Bisexual pride flag", s: ["#D60270", "#D60270", "#9B4F96", "#0038A8", "#0038A8"], f: "Designed by Michael Page in 1998. The purple stripe blends pink, for same-gender attraction, with blue, for attraction to another gender." },
@@ -46,7 +46,7 @@ const FLAGS = [
   { n: "Lesbian pride flag", s: ["#D52D00", "#EF7627", "#FF9A56", "#FFFFFF", "#D362A4", "#B55690", "#A30262"], f: "Orange to pink in seven stripes. Several lesbian flags have been used over the years, and this one is widely flown today." },
   { n: "Intersex flag", ring: true, f: "Created by Morgan Carpenter in 2013. Yellow and purple were chosen to avoid the usual gendered colours, and the unbroken circle stands for wholeness." }
 ];
-const flagCss = (F) => F.ring ? "background:#FFD800" : `background:linear-gradient(${F.s.map((c, i) => `${c} ${(i / F.s.length) * 100}% ${((i + 1) / F.s.length) * 100}%`).join(",")})`;
+export const flagCss = (F) => F.ring ? "background:#FFD800" : `background:linear-gradient(${F.s.map((c, i) => `${c} ${(i / F.s.length) * 100}% ${((i + 1) / F.s.length) * 100}%`).join(",")})`;
 game("flags",
   `<div class="fl"><div class="row fl-head"><span class="game-msg" id="flMsg"></span></div><div class="fl-flag" id="flFlag"></div><div class="fl-opts" id="flOpts"></div><p class="fl-fact" id="flFact" aria-live="polite"></p><div class="row"><button class="btn btn-primary btn-sm" id="flNext" hidden>Next flag</button><button class="${B}" id="flNew">New round</button></div></div>`,
   () => {

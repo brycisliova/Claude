@@ -22,7 +22,7 @@ game("wordle",
     const grid = $("#wdGrid"), kb = $("#wdKb"), msg = $("#wdMsg"), box = $("#wdBox");
     let W = null, secret = "", rows = [], cur = "", done = false, won = false, mode = "daily", busy = false, killed = false;
     const tiles = [];
-    for (let r = 0; r < 6; r++) for (let c = 0; c < 5; c++) { const t = h("div", { class: "wd-t", "aria-label": "empty" }); grid.appendChild(t); tiles.push(t); }
+    for (let r = 0; r < 6; r++) for (let c = 0; c < 5; c++) { const t = h("div", { class: "wd-t", role: "img", "aria-label": "empty" }); grid.appendChild(t); tiles.push(t); }
     const keys = {};
     KEYROWS.forEach((row) => { const d = h("div", { class: "wd-kr" }); [...row].forEach((k) => { const lab = k === "+" ? "Enter" : k === "-" ? "⌫" : k; const b = h("button", { class: "wd-k" + (k === "+" || k === "-" ? " wide" : ""), "data-k": k, "aria-label": k === "+" ? "Enter" : k === "-" ? "Delete" : k }, lab); b.addEventListener("click", () => { press(k); b.blur(); }); keys[k] = b; d.appendChild(b); }); kb.appendChild(d); });
 
