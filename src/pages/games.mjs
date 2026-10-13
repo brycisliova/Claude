@@ -3,6 +3,7 @@ import { hero } from "../ui.mjs";
 import { QUOTES } from "../data/content.mjs";
 import { GAMES, CATS, FACTS } from "../data/games.mjs";
 import { MYTHS } from "../data/content.mjs";
+import { gameArt } from "../data/game-art.mjs";
 
 const CAT = Object.fromEntries(CATS);
 const LVL = ["", "Easy", "Medium", "Thoughtful"];
@@ -37,6 +38,7 @@ ${hero(ctx, { eyebrow: "Games", title: "Calm <em>games</em>", lede: `${GAMES.len
     <h2 class="sr-only">All games</h2>
     <div class="gcards" id="gameGrid">
       ${GAMES.map((g, i) => `<button class="gcard reveal" type="button" data-id="${g.id}" data-cat="${g.cat}" data-mp="${g.mp ? g.mp.join("-") : ""}" data-unit="${esc(g.best?.unit || "")}" style="--c:var(--${g.c});--i:${i % 4};--a:${(i * 47) % 360}deg" aria-haspopup="dialog">
+        <span class="gc-art">${gameArt(g.id)}</span>
         <span class="gc-top"><span class="gc-no">${String(i + 1).padStart(2, "0")}</span>${g.mp ? `<span class="gc-tg">Together ${g.mp[0] === g.mp[1] ? g.mp[0] : g.mp[0] + "-" + g.mp[1]}</span>` : ""}<span class="gc-played" hidden>Played</span></span>
         <span class="gc-t">${esc(g.title)}</span>
         <span class="gc-how">${esc(g.how)}</span>

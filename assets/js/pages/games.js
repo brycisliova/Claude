@@ -16,6 +16,9 @@ import { mountTogether } from "../mp/ui.js";
 
 const gm = $("#gm"), panel = $("#gmPanel"), body = $("#gmBody");
 const cards = $$(".gcard"), byId = (id) => cards.find((c) => c.dataset.id === id);
+// Only cards on screen animate their picture; the rest stay paused.
+if ("IntersectionObserver" in window) { const io = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle("vis", e.isIntersecting)), { rootMargin: "80px" }); cards.forEach((c) => io.observe(c)); }
+else cards.forEach((c) => c.classList.add("vis"));
 const HASH = "g-";
 let cur = null, pushed = false, lastFocus = null, unframe = null, ro = null;
 
@@ -75,7 +78,9 @@ function render(id) {
   } else startSolo(G, body);
   wantMode = "";
   unframe = onFrame((t) => G.api?.frame?.(t));
-  ro = new ResizeObserver(() => { clearTimeout(ro.t); ro.t = setTimeout(() => G.api?.resize?.(), 120); });
+  let rw = body.clientWidth, rh = body.clientHeight;
+  // Phones fire this every time the address bar slides away; only a real change is worth a redraw.
+  ro = new ResizeObserver(() => { clearTimeout(ro.t); ro.t = setTimeout(() => { const w = body.clientWidth, hh = body.clientHeight; if (Math.abs(w - rw) < 3 && Math.abs(hh - rh) < 90) return; rw = w; rh = hh; G.api?.resize?.(); }, 160); });
   ro.observe(body);
   setTimeout(() => panel.focus({ preventScroll: true }), 60);
   $("#gmFull").hidden = !(panel.requestFullscreen || panel.webkitRequestFullscreen);
