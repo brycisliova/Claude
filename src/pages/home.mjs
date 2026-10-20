@@ -20,7 +20,7 @@ export default {
   scripts: ["home"],
   body: (ctx) => {
     const { href } = ctx;
-    const GAMES_HOME = PICKS.map((id, i) => GAMES.find((g) => g.id === id)).map((g, i) => `<a class="gcard arc-card reveal" role="listitem" href="${href("games")}#g-${g.id}" style="--c:var(--${g.c});--i:${i % 3}" aria-label="Play ${esc(g.title)}">
+    const GAMES_HOME = PICKS.map((id, i) => GAMES.find((g) => g.id === id)).map((g, i) => `<a class="gcard arc-card reveal" href="${href("games")}#g-${g.id}" style="--c:var(--${g.c});--i:${i % 3}" aria-label="Play ${esc(g.title)}">
         <span class="gc-art">${gameArt(g.id)}</span>
         <span class="gc-top"><span class="gc-no">${String(i + 1).padStart(2, "0")}</span>${g.mp ? `<span class="gc-tg">Together ${g.mp[0] === g.mp[1] ? g.mp[0] : g.mp[0] + "-" + g.mp[1]}</span>` : ""}</span>
         <span class="gc-t">${esc(g.title)}</span>
@@ -82,7 +82,7 @@ export default {
       <p>${GAMES.length} gentle games to breathe, create, puzzle and think with. No timers chasing you and nothing to lose. Open one and it fills the screen. Some can be played with friends on their own phones: make a room, share the code, and play together.</p>
       <div class="cta-row" style="margin:0">${arrowBtn(href("games"), `Open all ${GAMES.length} games`)}${arrowBtn(href("games") + "#gTogether", "Play with friends", "btn--ghost")}</div>
     </div>
-    <div class="arc-row" role="list">${GAMES_HOME}</div>
+    <div class="arc-row">${GAMES_HOME}</div>
   </div>
 </section>
 
