@@ -3,15 +3,20 @@
 import { mp, h, esc, shuffle, results, timerBar, byId, dot } from "./common.js";
 import { game, report, $ as q$ } from "../shared.js";
 import { BANK, TOPICS } from "../../data/pop.js";
+import { MORE } from "../../data/pop-more.js";
+import { PICS } from "../../data/pop-pics.js";
+import { PHOTOS } from "../../data/pop-photos.js";
 import { tone, PENTA, ready } from "../../audio.js";
 
-const TIME = { mc: 15000, tf: 10000, who: 15000, emoji: 15000, clue: 21000, odd: 15000, first: 10000, num: 20000 };
+const ALL = [...BANK, ...MORE, ...PICS];
+const TIME = { pic: 20000, place: 20000, mc: 15000, tf: 10000, who: 15000, emoji: 15000, clue: 21000, odd: 15000, first: 10000, num: 20000 };
 const REVEAL_MS = 6000;
-const LABEL = { mc: "Quick question", tf: "True or false?", who: "Who said it?", emoji: "Emoji decoder", clue: "Who am I?", odd: "Odd one out", first: "Which came first?", num: "Closest wins" };
-const WILD = new Set(["emoji", "clue", "odd", "who", "first"]);
+const LABEL = { pic: "Who is this?", place: "Spot the place", mc: "Quick question", tf: "True or false?", who: "Who said it?", emoji: "Emoji decoder", clue: "Who am I?", odd: "Odd one out", first: "Which came first?", num: "Closest wins" };
+const WILD = new Set(["emoji", "clue", "odd", "who", "first", "pic", "place"]);
 const RIGHT = ["Slay.", "Iconic.", "Correct, and fabulous.", "Serving knowledge.", "Gagged, in a good way.", "Encyclopaedia energy.", "Sashay to the next one.", "Not even a hint of shade. You're right."];
 const WRONG = ["Not this time, babe.", "The tea was elsewhere.", "Plot twist!", "Honey, no. But kindly.", "That one stung a little.", "Learn it, love it, move on.", "Shade. But with love."];
 const SLOW = ["Too slow. The music stopped.", "The clock won that round.", "Time's up, darling."];
+const picUrl = (id) => new URL(`../../../img/pop/${id}.webp`, import.meta.url).href;
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const RANKS = [[0.9, "Pride encyclopaedia"], [0.75, "Certified icon"], [0.55, "Ally with receipts"], [0.35, "Rising star"], [0, "Every legend starts somewhere"]];
 
@@ -23,20 +28,35 @@ function prep(src) {
   if (q.t === "first") { q.o = shuffle(q.o.slice()); q.a = q.o.indexOf(right); }
   return q;
 }
+// Questions already seen on this device are skipped until the topic runs out, so every game feels fresh.
+const SEEN_KEY = "wwa-pop-seen";
+const fnv = (str) => { let x = 2166136261; for (let i = 0; i < str.length; i++) x = Math.imul(x ^ str.charCodeAt(i), 16777619); return (x >>> 0).toString(36); };
+export const qid = (b) => fnv(b.t + "|" + (b.img || b.code || (b.t === "clue" ? b.clues[0] : b.t === "first" ? b.o.slice().sort().join("|") : b.q)));
+const readSeen = () => { try { const v = JSON.parse(localStorage.getItem(SEEN_KEY)); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
+const writeSeen = (a) => { try { localStorage.setItem(SEEN_KEY, JSON.stringify(a.slice(-2000))); } catch (e) { /* private mode */ } };
+export const forgetSeen = () => writeSeen([]);
+const inTopic = (topic) => ALL.filter((b) => (topic === "mix" ? true : topic === "wild" ? WILD.has(b.t) : b.cat === topic));
+export function freshCount(topic) { const seen = new Set(readSeen()), pool = inTopic(topic); return { fresh: pool.filter((b) => !seen.has(qid(b))).length, total: pool.length }; }
 export function buildQuestions(topic, total) {
-  let pool = BANK.filter((b) => (topic === "mix" ? true : topic === "wild" ? WILD.has(b.t) : b.cat === topic));
-  if (pool.length < total) pool = BANK.slice();
-  pool = shuffle(pool.slice());
-  const out = [], seen = []; let nums = 0; const maxNum = Math.max(2, Math.ceil(total / 5));
+  let pool = inTopic(topic);
+  if (pool.length < total) pool = ALL.slice();
+  const seen0 = readSeen(), seenSet = new Set(seen0);
+  let fresh = shuffle(pool.filter((b) => !seenSet.has(qid(b)))), rest = shuffle(pool.filter((b) => seenSet.has(qid(b))));
+  // not enough unseen ones left: use what is new first, then start the topic over
+  if (fresh.length < total) { const ids = new Set(pool.map(qid)); writeSeen(seen0.filter((id) => !ids.has(id))); }
+  pool = fresh.concat(rest);
+  const out = [], kinds = []; let nums = 0; const maxNum = Math.max(2, Math.ceil(total / 5)); const maxPic = Math.max(3, Math.ceil(total / 4)); let pics = 0;
+  const isPic = (b) => b.t === "pic" || b.t === "place";
   while (out.length < total && pool.length) {
-    let i = pool.findIndex((b) => b.t !== seen[0] && !(b.t === "num" && nums >= maxNum) && !(b.t === seen[1] && b.t === seen[0]));
+    let i = pool.findIndex((b) => b.t !== kinds[0] && !(b.t === "num" && nums >= maxNum) && !(isPic(b) && pics >= maxPic));
     if (i < 0) i = 0;
-    const b = pool.splice(i, 1)[0]; if (b.t === "num") nums++;
-    seen.unshift(b.t); out.push(prep(b));
+    const b = pool.splice(i, 1)[0]; if (b.t === "num") nums++; if (isPic(b)) pics++;
+    kinds.unshift(b.t); out.push(prep(b));
   }
+  writeSeen(readSeen().concat(out.map(qid)));
   return out;
 }
-const pub = (q, i) => ({ t: q.t, q: q.q, o: q.o, clues: q.clues, code: q.code, unit: q.unit, x2: (i + 1) % 5 === 0 });
+const pub = (q, i) => ({ t: q.t, q: q.q, o: q.o, clues: q.clues, code: q.code, img: q.img, unit: q.unit, x2: (i + 1) % 5 === 0 });
 
 /* ---------- the host: scoring and pacing ---------- */
 function makeHost(ctx, manual) {
@@ -44,7 +64,7 @@ function makeHost(ctx, manual) {
   const ms = (q) => Math.round(TIME[q.t] * S.pace);
   const view = (ph) => {
     const base = { ph, i: S.i, total: S.qs.length, scores: S.scores, order: S.order, right: S.right, streak: S.streak, manual };
-    if (ph === "q") return { ...base, q: pub(S.qs[S.i], S.i), ms: S.ms, tl: Math.max(0, S.dl - Date.now()), answered: Object.keys(S.picks) };
+    if (ph === "q") return { ...base, pre: S.i === 0 ? S.qs.filter((x) => x.img).map((x) => x.img) : undefined, q: pub(S.qs[S.i], S.i), ms: S.ms, tl: Math.max(0, S.dl - Date.now()), answered: Object.keys(S.picks) };
     if (ph === "r") { const q = S.qs[S.i]; return { ...base, q: pub(q, S.i), ms: S.ms, a: q.a, e: q.e, picks: S.picks, gain: S.gain, good: S.good }; }
     return base;
   };
@@ -95,7 +115,7 @@ function makeHost(ctx, manual) {
 
 /* ---------- the shared view ---------- */
 function mountView(root, api, solo) {
-  root.innerHTML = `<div class="mp mp-quiz pq"><div class="mp-head"><p class="mp-turn" id="pqInfo"></p><div class="mp-tl"><i id="pqTl"></i></div></div><p class="pq-tag" id="pqTag"></p><div class="qz-card pq-card" id="pqCard"></div><div class="qz-opts" id="pqOpts"></div><form class="pq-num" id="pqNum" hidden><label class="sr-only" for="pqIn">Your guess</label><input class="text-in" id="pqIn" type="number" inputmode="numeric" step="1" placeholder="Type a number"><button class="btn btn-primary" type="submit"><span class="btn-t">Lock it in</span></button></form><p class="qz-fact" id="pqFact" aria-live="polite"></p><div class="row pq-nextrow" id="pqNextRow" hidden><button class="btn btn-primary" id="pqNext" type="button"><span class="btn-t">Next question</span></button></div><ul class="mp-score" id="pqScore"></ul><div id="pqEnd"></div></div>`;
+  root.innerHTML = `<div class="mp mp-quiz pq"><div class="mp-head"><p class="mp-turn" id="pqInfo"></p><div class="mp-tl"><i id="pqTl"></i></div></div><p class="pq-tag" id="pqTag"></p><div class="qz-card pq-card" id="pqCard"></div><div class="qz-opts" id="pqOpts"></div><form class="pq-num" id="pqNum" hidden><label class="sr-only" for="pqIn">Your guess</label><input class="text-in" id="pqIn" type="number" inputmode="numeric" step="1" placeholder="Type a number"><button class="btn btn-primary" type="submit"><span class="btn-t">Lock it in</span></button></form><p class="qz-fact" id="pqFact" aria-live="polite"></p><p class="pq-credit" id="pqCredit"></p><div class="row pq-nextrow" id="pqNextRow" hidden><button class="btn btn-primary" id="pqNext" type="button"><span class="btn-t">Next question</span></button></div><ul class="mp-score" id="pqScore"></ul><div id="pqEnd"></div></div>`;
   const $ = (s) => root.querySelector(s);
   let st = null, mine = null, builtKey = "", timers = [], quip = "";
   const clearT = () => { timers.forEach(clearTimeout); timers = []; };
@@ -108,6 +128,7 @@ function mountView(root, api, solo) {
     if (q.t === "emoji") return `<p class="pq-emoji" aria-label="Emoji clue">${esc(q.code)}</p><p class="qz-q pq-sub">${esc(q.q)}</p>`;
     if (q.t === "who") return `<p class="pq-quote">&ldquo;${esc(q.q.replace(/^'|'$/g, ""))}&rdquo;</p>`;
     if (q.t === "clue") return `<ol class="pq-clues" id="pqClues">${q.clues.map((c, i) => `<li data-i="${i}" data-t="${esc(c)}" class="${i === 0 ? "on" : ""}"><span>${i + 1}</span><i>${i === 0 ? esc(c) : "Next clue is on its way…"}</i></li>`).join("")}</ol>`;
+    if (q.t === "pic" || q.t === "place") return `<figure class="pq-photo" id="pqPhoto" style="--ms:${Math.round(Math.max(0, s.tl || 0) * 0.85)}ms"><img src="${picUrl(q.img)}" alt="A photograph to identify" decoding="async"></figure><p class="qz-q pq-sub">${esc(q.q)}</p>`;
     if (q.t === "first") return `<p class="qz-q">Which came first?</p>`;
     return `<p class="qz-q">${esc(q.q)}</p>`;
   }
@@ -153,6 +174,8 @@ function mountView(root, api, solo) {
         fact.innerHTML = `${head} ${ans} ${esc(s.e)}${q.t === "num" && s.order.length > 1 ? `<span class="pq-guesses">${s.order.map((id) => { const p = byId(api, id); const c = s.picks[id]; return p ? `<i>${dot(p)}${esc(p.name)}: ${c ? esc(String(c.v)) : "no guess"}</i>` : ""; }).join("")}</span>` : ""}`;
         void good;
       } else fact.textContent = s.ph === "q" && mine !== null ? (solo ? "Locked in." : "Locked in. Waiting for the others…") : "";
+      const cr = $("#pqCredit"), ph = PHOTOS[q.img];
+      if (s.ph === "r" && ph) { const img = root.querySelector("#pqPhoto img"); if (img) img.alt = q.o[s.a]; root.querySelector("#pqPhoto")?.classList.add("done"); cr.innerHTML = `Photo: <a href="${esc(ph.pageUrl)}" target="_blank" rel="noopener noreferrer">${esc(ph.title)}</a> by ${esc(ph.author)}, ${esc(ph.license)}, via Wikimedia Commons`; } else cr.textContent = "";
       $("#pqNextRow").hidden = !(solo && s.ph === "r");
       if (solo && s.ph === "r") { $("#pqNext").querySelector(".btn-t").textContent = s.i + 1 >= s.total ? "See my result" : "Next question"; $("#pqNext").focus({ preventScroll: true }); }
     }
@@ -174,6 +197,7 @@ function mountView(root, api, solo) {
   function render(s) {
     if (!s || !s.ph) return;
     const newQ = s.ph === "q" && (!st || st.i !== s.i || st.ph !== "q");
+    if (s.pre) s.pre.forEach((id) => { const im = new Image(); im.src = picUrl(id); });
     if (newQ) { mine = s.answered?.includes(api.me?.id) ? (mine ?? "x") : null; builtKey = ""; clearT(); timerBar($("#pqTl"), s.tl); }
     if (s.ph === "q" && s.q.t === "clue") {
       // clues unlock one at a time: the quicker you guess, the fewer you need
@@ -190,6 +214,13 @@ function mountView(root, api, solo) {
     }
     if (s.ph === "end") { clearT(); timerBar($("#pqTl"), 0); }
     st = s; paint();
+    if (newQ && (s.q.t === "pic" || s.q.t === "place")) {
+      const f = root.querySelector("#pqPhoto"), im = f?.querySelector("img");
+      // tall portraits get a squarer frame so faces are not cropped away
+      const shape = () => { if (im.naturalHeight > im.naturalWidth * 0.9) f.classList.add("sq"); };
+      if (im) { if (im.complete && im.naturalWidth) shape(); else im.addEventListener("load", shape, { once: true }); }
+      if (f) requestAnimationFrame(() => requestAnimationFrame(() => f.classList.add("clearing")));
+    }
     if (s.ph === "r" && s.q.t === "clue") revealClues(2);
   }
   const keys = (e) => {
@@ -209,7 +240,7 @@ const OPTIONS = [
 mp({ id: "pop", title: "Pride pop quiz", min: 2, max: 8, options: OPTIONS, host: (ctx) => makeHost(ctx, false), view: (root, api) => mountView(root, api, false) });
 
 game("pop",
-  `<div class="pq-solo"><div class="pq-setup" id="pqSetup"><p class="pq-lede">${BANK.length} questions about queer music, film, TV, icons, ballroom, India and more. Guess who said it, decode the emoji, solve the riddles. Every answer comes with a little story.</p><div class="tg-opts">${OPTIONS.map((o) => `<label>${o.label}<select class="mini" data-o="${o.id}">${o.choices.map(([v, l]) => `<option value="${v}"${String(v) === String(o.def) ? " selected" : ""}>${l}</option>`).join("")}</select></label>`).join("")}</div><div class="row"><button class="btn btn-primary" id="pqGo" type="button"><span class="btn-t">Start the quiz</span></button></div></div><div id="pqStage" hidden></div></div>`,
+  `<div class="pq-solo"><div class="pq-setup" id="pqSetup"><p class="pq-lede">${ALL.length} questions about queer music, film, TV, icons, ballroom, India and more, with photographs, emoji and riddles. Each game draws a fresh set, and a question will not come back until you have seen the rest. Every answer comes with a little story.</p><div class="tg-opts">${OPTIONS.map((o) => `<label>${o.label}<select class="mini" data-o="${o.id}">${o.choices.map(([v, l]) => `<option value="${v}"${String(v) === String(o.def) ? " selected" : ""}>${l}</option>`).join("")}</select></label>`).join("")}</div><div class="row"><button class="btn btn-primary" id="pqGo" type="button"><span class="btn-t">Start the quiz</span></button></div><p class="pq-seen" id="pqSeen"></p></div><div id="pqStage" hidden></div></div>`,
   () => {
     const setup = q$("#pqSetup"), stage = q$("#pqStage");
     let host = null, view = null, last = null, timers = [];
@@ -217,11 +248,13 @@ game("pop",
     const get = () => Object.fromEntries([...setup.querySelectorAll("select")].map((s) => [s.dataset.o, s.value]));
     const ctx = { players: [me], after: (ms, fn) => { const t = setTimeout(fn, ms); timers.push(t); return t; }, push: (s) => { last = s; view?.render(s); if (s.ph === "end") report(s.scores.me); } };
     const api = { me, players: [me], isHost: true, solo: true, act: (a) => host.act("me", a), rematch: () => go(), leave: () => stop() };
-    function stop() { host?.destroy(); timers.forEach(clearTimeout); timers = []; view?.destroy(); view = null; host = null; stage.hidden = true; stage.innerHTML = ""; setup.hidden = false; }
+    function stop() { host?.destroy(); timers.forEach(clearTimeout); timers = []; view?.destroy(); view = null; host = null; stage.hidden = true; stage.innerHTML = ""; setup.hidden = false; seenNote(); }
     function go() {
       host?.destroy(); timers.forEach(clearTimeout); timers = []; view?.destroy(); const o = get();
       setup.hidden = true; stage.hidden = false; stage.innerHTML = ""; view = mountView(stage, api, true); host = makeHost(ctx, true); host.start(o);
     }
+    const seenNote = () => { const t = get().topic, { fresh, total } = freshCount(t); q$("#pqSeen").innerHTML = fresh >= total ? `${total} questions in this topic, and every one is new to you.` : `${fresh} of ${total} questions in this topic are new to you. <button class="pq-link" id="pqForget" type="button">Show me old ones again</button>`; q$("#pqForget")?.addEventListener("click", () => { forgetSeen(); seenNote(); }); };
+    setup.querySelector('[data-o="topic"]').addEventListener("change", seenNote); seenNote();
     q$("#pqGo").addEventListener("click", go);
     return { destroy() { host?.destroy(); timers.forEach(clearTimeout); view?.destroy(); } };
   });
