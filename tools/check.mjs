@@ -38,7 +38,7 @@ for (const file of htmlFiles) {
     if (!existsSync(target)) { console.log(`MISSING  ${relative(root, file)} -> ${url}`); bad++; continue; }
     if (hash && target.endsWith(".html") && !idsOf(target).has(hash)) {
       // some anchors are handled by JavaScript (tabs and filters), which is fine
-      if (!/^(lines|questioning|coming|family|allies|work|rights|illness|choice|change|health|nature|all|wall-section)$/.test(hash)) { console.log(`NO ANCHOR ${relative(root, file)} -> ${url}`); bad++; }
+      if (!/^(lines|questioning|coming|family|allies|work|rights|illness|choice|change|health|nature|all|wall-section|g-[a-z]+)$/.test(hash)) { console.log(`NO ANCHOR ${relative(root, file)} -> ${url}`); bad++; }
     }
   }
   const ids = [...src.matchAll(/\sid="([^"]+)"/g)].map((x) => x[1]);

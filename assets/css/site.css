@@ -1213,3 +1213,17 @@ h1 em,h2 em,h3 em,.feature-q em{font-family:inherit;font-style:normal;font-size:
 @media (max-width:760px),(pointer:coarse){.gm,.credit{-webkit-backdrop-filter:none;backdrop-filter:none}.gm{background:rgba(14,14,16,.94)}}
 button,.chip,.gm-btn,.btn,.gcard{touch-action:manipulation}
 canvas{-webkit-tap-highlight-color:transparent}
+
+/* Home: calm arcade band */
+.arc-intro{display:grid;grid-template-columns:minmax(0,1.3fr) auto;gap:clamp(1.2rem,3vw,3rem);align-items:end;margin:0 0 clamp(1.6rem,3vw,2.6rem)}
+.arc-intro p{max-width:56ch;margin:0;color:var(--fg2);font-size:clamp(1rem,1.3vw,1.2rem);line-height:1.5}
+.arc-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.7rem,1.4vw,1.1rem)}
+.arc-card{min-height:0}
+.arc-card .gc-t{font-size:clamp(1.4rem,2vw,1.9rem);margin-top:.3rem}
+.arc-card .gc-foot{margin-top:auto}
+@media (max-width:900px){
+  .arc-intro{grid-template-columns:1fr}
+  .arc-row{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:.8rem;margin-inline:calc(var(--gx) * -1);padding:0 var(--gx) .6rem;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .arc-row::-webkit-scrollbar{display:none}
+  .arc-card{flex:0 0 78%;scroll-snap-align:center}
+}

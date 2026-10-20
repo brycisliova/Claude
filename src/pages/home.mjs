@@ -1,12 +1,15 @@
 import { PAGES, NAV_GROUPS, esc, icon } from "../layout.mjs";
 import { photo, hasPhoto, arrowBtn } from "../ui.mjs";
 import { QUOTES } from "../data/content.mjs";
+import { GAMES } from "../data/games.mjs";
+import { gameArt } from "../data/game-art.mjs";
 
 const PANELS = [
   ["hero-choice", "pink", "science/#choice", "01", "Not a <em>choice.</em>", "Twins, genes and 477,522 people agree: nobody picks who they love.", "Read the science"],
   ["hero-illness", "yellow", "science/#illness", "02", "Not an <em>illness.</em>", "WHO, psychiatrists and India's own society settled this long ago.", "See who agrees"],
   ["hero-who", "blue", "stories/", "03", "Just who <em>we are.</em>", "Real stories, real history, and a place to be heard.", "Meet us"]
 ];
+const PICKS = ["breathe", "wordle", "memory", "four", "bubbles", "fog"];
 const QCOL = ["pink", "yellow", "blue", "green", "violet", "orange", "sky", "r"];
 
 export default {
@@ -17,6 +20,13 @@ export default {
   scripts: ["home"],
   body: (ctx) => {
     const { href } = ctx;
+    const GAMES_HOME = PICKS.map((id, i) => GAMES.find((g) => g.id === id)).map((g, i) => `<a class="gcard arc-card reveal" role="listitem" href="${href("games")}#g-${g.id}" style="--c:var(--${g.c});--i:${i % 3}" aria-label="Play ${esc(g.title)}">
+        <span class="gc-art">${gameArt(g.id)}</span>
+        <span class="gc-top"><span class="gc-no">${String(i + 1).padStart(2, "0")}</span>${g.mp ? `<span class="gc-tg">Together ${g.mp[0] === g.mp[1] ? g.mp[0] : g.mp[0] + "-" + g.mp[1]}</span>` : ""}</span>
+        <span class="gc-t">${esc(g.title)}</span>
+        <span class="gc-how">${esc(g.how)}</span>
+        <span class="gc-foot"><span class="gc-go">Play ${icon("arrow", 16)}</span></span>
+      </a>`).join("");
     const panels = PANELS.map(([id, c, to, no, title, sub, cta]) => `
       <a class="panel${hasPhoto(id) ? " has-photo" : ""}" href="${ctx.base}${to}" style="--c:var(--${c})" data-cursor="Open">
         ${photo(ctx, id, { class: "ph--panel", static: true, ratio: 0.62, sizes: "(max-width:820px) 100vw, 40vw", eager: true, credit: "text" })}
@@ -63,6 +73,17 @@ export default {
   </div>
   <div class="chapters" id="chapters">${groups}</div>
   <div class="peek" id="peek" aria-hidden="true">${peeks}</div>
+</section>
+
+<section class="sec arcade" aria-labelledby="arcadeT">
+  <div class="wrap-x">
+    <header class="sec-head"><p class="label reveal"><span class="no"></span>Play</p><div class="sec-head-main"><h2 class="sec-title" id="arcadeT" data-split>A <em>calm</em> arcade</h2></div></header>
+    <div class="arc-intro reveal">
+      <p>${GAMES.length} gentle games to breathe, create, puzzle and think with. No timers chasing you and nothing to lose. Open one and it fills the screen. Some can be played with friends on their own phones: make a room, share the code, and play together.</p>
+      <div class="cta-row" style="margin:0">${arrowBtn(href("games"), `Open all ${GAMES.length} games`)}${arrowBtn(href("games") + "#gTogether", "Play with friends", "btn--ghost")}</div>
+    </div>
+    <div class="arc-row" role="list">${GAMES_HOME}</div>
+  </div>
 </section>
 
 <section class="hs" data-hs data-tone="light">

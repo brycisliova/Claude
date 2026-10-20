@@ -19,3 +19,10 @@ if (peek && G && !reduce && matchMedia("(hover:hover) and (pointer:fine)").match
     row.addEventListener("pointerleave", () => { peek.classList.remove("on"); G.to(peek, { scale: 0.6, duration: 0.45, ease: "power3" }); });
   });
 }
+
+// Game pictures only move while their card is on screen.
+const arc = $$(".arc-card");
+if (arc.length) {
+  if ("IntersectionObserver" in window) { const io = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle("vis", e.isIntersecting)), { rootMargin: "80px" }); arc.forEach((c) => io.observe(c)); }
+  else arc.forEach((c) => c.classList.add("vis"));
+}
