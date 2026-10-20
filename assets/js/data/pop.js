@@ -15,14 +15,14 @@ export const TOPICS = [
   ["wild", "Wild mix (emoji, riddles, odd ones out)"]
 ];
 
-const mc = (cat, q, o, e) => ({ cat, t: "mc", q, o, e });
-const tf = (cat, q, v, e) => ({ cat, t: "tf", q, o: ["True", "False"], a: v ? 0 : 1, e });
-const who = (cat, q, o, e) => ({ cat, t: "who", q, o, e });
-const emoji = (cat, code, o, e, q = "Name the film, show or song.") => ({ cat, t: "emoji", code, q, o, e });
-const clue = (cat, clues, o, e) => ({ cat, t: "clue", q: "Who am I?", clues, o, e });
-const odd = (cat, q, o, e) => ({ cat, t: "odd", q, o, e });
-const first = (cat, A, ay, B, by, e) => ({ cat, t: "first", q: "Which came first?", o: ay < by ? [A, B] : [B, A], e: `${e} (${A}: ${ay}. ${B}: ${by}.)` });
-const num = (cat, q, a, tol, unit, e) => ({ cat, t: "num", q, a, tol, unit, e });
+export const mc = (cat, q, o, e) => ({ cat, t: "mc", q, o, e });
+export const tf = (cat, q, v, e) => ({ cat, t: "tf", q, o: ["True", "False"], a: v ? 0 : 1, e });
+export const who = (cat, q, o, e) => ({ cat, t: "who", q, o, e });
+export const emoji = (cat, code, o, e, q = "Name the film, show or song.") => ({ cat, t: "emoji", code, q, o, e });
+export const clue = (cat, clues, o, e) => ({ cat, t: "clue", q: "Who am I?", clues, o, e });
+export const odd = (cat, q, o, e) => ({ cat, t: "odd", q, o, e });
+export const first = (cat, A, ay, B, by, e) => ({ cat, t: "first", q: "Which came first?", o: ay < by ? [A, B] : [B, A], e: `${e} (${A}: ${ay}. ${B}: ${by}.)` });
+export const num = (cat, q, a, tol, unit, e) => ({ cat, t: "num", q, a, tol, unit, e });
 
 export const BANK = [
   /* ------------------------------------------------------------ music */
@@ -252,9 +252,9 @@ export const BANK = [
   clue("music", ["I am from Kansas City.", "My alter ego is an android named Cindi Mayweather.", "I starred in 'Hidden Figures' and made 'Dirty Computer'."], ["Janelle Monáe", "SZA", "Solange", "Rihanna"], "Janelle Monáe."),
 
   /* ------------------------------------------------------------ wild: odd one out */
-  odd("music", "Which of these is NOT a Madonna song?", ["Vogue", "Express Yourself", "Material Girl", "Believe"], "'Believe' is by Cher."),
-  odd("music", "Which of these is NOT a Lady Gaga album?", ["Born This Way", "Chromatica", "Joanne", "Renaissance"], "'Renaissance' is Beyoncé's."),
-  odd("music", "Which of these is NOT an Elton John song?", ["Rocket Man", "Tiny Dancer", "I'm Still Standing", "Dancing Queen"], "'Dancing Queen' is by ABBA."),
+  odd("music", "Which of these is NOT a Madonna song?", ["Believe", "Vogue", "Express Yourself", "Material Girl"], "'Believe' is by Cher."),
+  odd("music", "Which of these is NOT a Lady Gaga album?", ["Renaissance", "Born This Way", "Chromatica", "Joanne"], "'Renaissance' is Beyoncé's."),
+  odd("music", "Which of these is NOT an Elton John song?", ["Dancing Queen", "Rocket Man", "Tiny Dancer", "I'm Still Standing"], "'Dancing Queen' is by ABBA."),
   odd("music", "Which of these is NOT a member of Queen?", ["Elton John", "Freddie Mercury", "Brian May", "Roger Taylor"], "Elton John is a friend, not a member."),
   odd("music", "Which of these never won Eurovision?", ["Olly Alexander", "Conchita Wurst", "Dana International", "Nemo"], "Olly Alexander represented the UK in 2024 with 'Dizzy'."),
   odd("icons", "Which colour is NOT on the bisexual Pride flag?", ["Yellow", "Pink", "Purple", "Blue"], "It is pink, purple and blue."),
