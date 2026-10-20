@@ -19,7 +19,8 @@ Address: <https://shiningforever.in>
 | --- | --- |
 | Papers, timeline, people, films, helplines, glossary, quotes, sources | `src/data/content.mjs` |
 | Game catalogue (titles, themes, timings) and the true statements for Myth or fact | `src/data/games.mjs` |
-| Pride pop quiz questions (about 250, in eight formats) | `assets/js/data/pop.js` |
+| Pride pop quiz questions (about 410, in ten formats) | `assets/js/data/pop.js`, `pop-more.js`, and photo questions in `pop-pics.js` |
+| Quiz photo credits (shown in the quiz and on the credits page) | `src/data/pop-photos.json`, images in `assets/img/pop/` |
 | Text of each page | `src/pages/*.mjs` |
 | Navigation, menu, header, footer | `src/layout.mjs` |
 | Shared components (hero, photo, marquee, buttons) | `src/ui.mjs` |
