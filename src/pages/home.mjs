@@ -9,7 +9,7 @@ const PANELS = [
   ["hero-illness", "yellow", "science/#illness", "02", "Not an <em>illness.</em>", "WHO, psychiatrists and India's own society settled this long ago.", "See who agrees"],
   ["hero-who", "blue", "stories/", "03", "Just who <em>we are.</em>", "Real stories, real history, and a place to be heard.", "Meet us"]
 ];
-const PICKS = ["breathe", "wordle", "memory", "four", "bubbles", "fog"];
+const PICKS = ["pop", "breathe", "wordle", "memory", "four", "bubbles"];
 const QCOL = ["pink", "yellow", "blue", "green", "violet", "orange", "sky", "r"];
 
 export default {

@@ -8,6 +8,7 @@ import "../games/create.js";
 import "../games/words.js";
 import "../games/together/memory.js";
 import "../games/together/quiz.js";
+import "../games/together/pop.js";
 import "../games/together/four.js";
 import "../games/together/duel.js";
 import "../games/together/hunt.js";

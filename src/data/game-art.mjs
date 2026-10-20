@@ -45,6 +45,7 @@ const ART = {
     return `<polyline ${a("dw", 0, 6)} points="${S.map((s) => s.join(",")).join(" ")}" fill="none" stroke="${K}" stroke-opacity=".6" stroke-width="1.6" stroke-linejoin="round" pathLength="100"/>` + S.map(([x, y], i) => `<path ${a("tw", i * 0.5, 2.6)} d="M${x} ${y - 7} L${x + 2} ${y - 2} L${x + 7} ${y} L${x + 2} ${y + 2} L${x} ${y + 7} L${x - 2} ${y + 2} L${x - 7} ${y} L${x - 2} ${y - 2} Z" fill="${i % 2 ? P.yellow : W}"/>`).join("");
   },
 
+  pop: () => rect(46, 8, 108, 46, W, 10, 'fill-opacity=".92"') + `<g ${a("pu", 0, 2.4)}>${txt(100, 31, "?", 34, P.violet)}</g>` + [[50, 0], [104, 1.2]].map(([x, d], i) => rect(x, 62, 46, 20, [P.pink, P.yellow][i], 10, 'fill-opacity=".5"') + `<rect x="${x}" y="62" width="46" height="20" rx="10" fill="${[P.pink, P.yellow][i]}" ${a("ec", d, 3)}/>`).join("") + [[20, 24, P.pink, 0], [180, 28, P.yellow, 1.1], [30, 64, P.green, 2], [172, 66, P.violet, 0.6]].map(([x, y, c, d]) => `<g ${a("ri", -d - 0.4, 5)}>${circ(x, y, 4.5, c)}</g>`).join(""),
   hue: () => grid(6, 3, 44, 12, 22, (c, r, i, x, y) => rect(x, y, 20, 20, `hsl(${200 + c * 22 + r * 14},78%,${60 + r * 6}%)`, 4, i === 7 ? a("sw1", 0, 4) : i === 8 ? a("sw2", 0, 4) : "")),
 
   slide: () => grid(3, 3, 60, 6, 27, (c, r, i, x, y) => i === 8 ? "" : `<g ${i === 7 ? a("sl", 0, 4) : ""}>${rect(x, y, 25, 25, i % 2 ? P.blue : P.pink, 5)}${txt(x + 12.5, y + 13, i + 1, 14, W)}</g>`),

@@ -1227,3 +1227,38 @@ canvas{-webkit-tap-highlight-color:transparent}
   .arc-row::-webkit-scrollbar{display:none}
   .arc-card{flex:0 0 78%;scroll-snap-align:center}
 }
+
+/* Pride pop quiz */
+.pq-lede{max-width:56ch;margin:0 0 1rem;color:var(--fg2);line-height:1.5}
+.pq-setup{display:grid;gap:1rem;align-content:start;padding:clamp(.4rem,2vw,1rem) 0}
+.pq-tag{display:flex;gap:.5rem;flex-wrap:wrap;margin:0 0 .6rem;min-height:1.7rem}
+.pq-chip{padding:.25rem .75rem;border-radius:999px;font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#0e0e10;background:var(--yellow)}
+.pqc-tf{background:var(--blue)}.pqc-mc{background:var(--sky)}.pqc-who{background:var(--violet)}.pqc-emoji{background:var(--orange)}.pqc-clue{background:var(--pink)}.pqc-odd{background:var(--green)}.pqc-first{background:var(--yellow)}.pqc-num{background:var(--r)}
+.pqc-x2{background:#0e0e10;color:#f2efe9}
+.pq-card[hidden]{display:none}
+.pq-card{min-height:8.5rem;align-content:center}
+.pq-emoji{font-size:clamp(3rem,10vw,5.6rem);line-height:1.1;margin:0;letter-spacing:.1em;text-align:center}
+.pq-sub{font-size:clamp(1rem,2vw,1.3rem);color:var(--fg2);font-weight:450}
+.pq-quote{font-family:var(--serif,Georgia,serif);font-style:italic;font-size:clamp(1.4rem,3.2vw,2.3rem);line-height:1.2;margin:0;text-wrap:balance}
+.pq-clues{list-style:none;padding:0;margin:0;display:grid;gap:.6rem;width:min(100%,38rem);text-align:left}
+.pq-clues li{display:flex;gap:.8rem;align-items:flex-start;padding:.7rem 1rem;border-radius:10px;background:transparent;font-size:clamp(1rem,1.8vw,1.2rem);line-height:1.3;color:var(--fg2);transition:background .4s}
+.pq-clues li i{font-style:normal}
+.pq-clues li.on{color:var(--fg);background:var(--surface)}
+.pq-clues li span{flex:none;display:grid;place-items:center;width:1.6rem;height:1.6rem;border-radius:50%;background:#0e0e10;color:#f2efe9;font-size:.78rem;font-weight:700}
+.pq-k{display:inline-grid;place-items:center;width:1.4rem;height:1.4rem;margin-right:.6rem;border-radius:6px;background:rgba(14,14,16,.12);font-size:.78rem;font-weight:700;vertical-align:middle}
+.qz-o{position:relative}
+.pq-who{position:absolute;right:.6rem;top:50%;transform:translateY(-50%);display:flex;gap:2px}
+.pq-num[hidden]{display:none}
+.pq-num{display:flex;gap:.6rem;justify-content:center;margin:.2rem 0 .6rem}
+.pq-num input{width:min(14rem,60%);font-size:1.4rem;text-align:center}
+.pq-guesses{display:flex;flex-wrap:wrap;gap:.4rem .9rem;justify-content:center;margin-top:.6rem;font-size:.85rem;color:var(--fg2)}
+.pq-guesses i{font-style:normal;display:inline-flex;align-items:center;gap:.3rem}
+.pq-streak{color:#c25b00!important;font-weight:700}
+.pq-nextrow{justify-content:center;margin:.4rem 0 .8rem}
+.pq-final{margin:.2rem 0 1rem;color:var(--fg2)}
+@media (prefers-reduced-motion:reduce){.pq-clues li{transition:none}}
+
+.mp-score em.up{color:#1c6e41}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mp-score em.up{color:#7fdba5}}
+:root[data-theme="dark"] .mp-score em.up{color:#7fdba5}
+.qz-opts.two:not(.pq-tf) .qz-o{color:var(--fg);border:1.5px solid var(--line);font-size:1.1rem}

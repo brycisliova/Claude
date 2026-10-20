@@ -19,6 +19,7 @@ Address: <https://shiningforever.in>
 | --- | --- |
 | Papers, timeline, people, films, helplines, glossary, quotes, sources | `src/data/content.mjs` |
 | Game catalogue (titles, themes, timings) and the true statements for Myth or fact | `src/data/games.mjs` |
+| Pride pop quiz questions (about 250, in eight formats) | `assets/js/data/pop.js` |
 | Text of each page | `src/pages/*.mjs` |
 | Navigation, menu, header, footer | `src/layout.mjs` |
 | Shared components (hero, photo, marquee, buttons) | `src/ui.mjs` |
@@ -56,7 +57,7 @@ To add a game: add an entry to `src/data/games.mjs`, then register it in one of 
 
 ## Playing together
 
-Six games can be played with friends on their own devices: Gentle memory (2 to 4 players, and the board grows with every player), Word guess (2 to 6, everyone races to the same word), Myth or fact and Know the flags (2 to 8, a live quiz), Word garden (2 to 6, a word-search race) and Four in a row (2 players).
+Seven games can be played with friends on their own devices: the Pride pop quiz (2 to 8 players, solo too), Gentle memory (2 to 4 players, and the board grows with every player), Word guess (2 to 6, everyone races to the same word), Myth or fact and Know the flags (2 to 8, a live quiz), Word garden (2 to 6, a word-search race) and Four in a row (2 players).
 
 How it works: one player is the host and runs the game; everyone else sends their moves to the host, who sends back the state. Players join with a six-character room code or a link such as `/games/#r-ABC123`. There is no server to run. Messages travel through a free public MQTT broker over secure WebSockets, on topics named after the room code, using a small client in `assets/js/mp/mqtt.js`. Only nicknames and moves are sent, nothing is stored, and a room disappears when its host leaves.
 
