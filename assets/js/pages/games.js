@@ -10,6 +10,7 @@ import "../games/together/memory.js";
 import "../games/together/quiz.js";
 import "../games/together/pop.js";
 import "../games/together/atlas.js";
+import "../games/together/party.js";
 import "../games/together/four.js";
 import "../games/together/duel.js";
 import "../games/together/hunt.js";
@@ -74,9 +75,9 @@ function render(id) {
   G.api = null; G.tg = null;
   const mp = MP.get(id);
   if (mp) {
-    body.innerHTML = `<div class="gm-modes" role="group" aria-label="How to play"><button type="button" data-m="solo" aria-pressed="true">${mp.min === 2 && mp.max === 2 && id === "four" ? "Play the computer" : "Play solo"}</button><button type="button" data-m="together" aria-pressed="false">Play together</button></div><div class="gm-stage" id="gmStage"></div>`;
+    body.innerHTML = `<div class="gm-modes" role="group" aria-label="How to play"><button type="button" data-m="solo" aria-pressed="true"${mp.only ? " hidden" : ""}>${mp.min === 2 && mp.max === 2 && id === "four" ? "Play the computer" : "Play solo"}</button><button type="button" data-m="together" aria-pressed="false">Play together</button></div><div class="gm-stage" id="gmStage"></div>`;
     $$(".gm-modes button", body).forEach((b) => b.addEventListener("click", () => setMode(G, mp, b.dataset.m)));
-    setMode(G, mp, wantMode || "solo");
+    setMode(G, mp, wantMode || (mp.only ? "together" : "solo"));
   } else startSolo(G, body);
   wantMode = "";
   unframe = onFrame((t) => G.api?.frame?.(t));
