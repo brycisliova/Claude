@@ -11,12 +11,12 @@ const dots = (n) => "●".repeat(n) + "○".repeat(3 - n);
 
 export default {
   slug: "games",
-  title: "Calm arcade",
+  title: "Games",
   accent: "g",
-  desc: `${GAMES.length} gentle games to breathe, create, puzzle and think with: breathing orb, lanterns, light painting, sudoku, 2048, word search, flag quiz and more. No timers chasing you, no losing.`,
+  desc: `${GAMES.length} games: Truth or Dare, Name that tune, Where in the world, Atlas, Trivia night and party games to play with friends, plus calm games to breathe, create and puzzle with.`,
   scripts: ["games"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Games", title: "Calm <em>games</em>", lede: `${GAMES.length} gentle games to breathe, create, puzzle and think with. Open one and it fills the screen, so it is easy to see and easy to play. No timers chasing you, no losing.`, accent: "g" })}
+${hero(ctx, { eyebrow: "Games", title: "Games for <em>everyone</em>", lede: `${GAMES.length} games. Party games and quizzes to play with friends on their own phones, and calm ones to breathe, create and puzzle with on your own. Open one and it fills the screen. No sign-up, no ads.`, accent: "g" })}
 
 <section class="sec" style="padding-top:2.5rem">
   <div class="wrap-x">
@@ -32,14 +32,14 @@ ${hero(ctx, { eyebrow: "Games", title: "Calm <em>games</em>", lede: `${GAMES.len
       </div>
     </div>
     <div class="gtools">
-      <div class="chips" id="gChips" role="group" aria-label="Filter games">${CATS.map(([k, l]) => `<button class="chip" type="button" data-f="${k}" aria-pressed="${k === "all"}">${l}</button>`).join("")}</div>
+      <div class="chips" id="gChips" role="group" aria-label="Filter games">${[["all", "All games"], ["friends", "With friends"], ["new", "New"], ...CATS.filter(([k]) => k !== "all")].map(([k, l]) => `<button class="chip" type="button" data-f="${k}" aria-pressed="${k === "all"}">${l}</button>`).join("")}</div>
       <p class="muted small" id="gCount" aria-live="polite">${GAMES.length} games</p>
     </div>
     <h2 class="sr-only">All games</h2>
     <div class="gcards" id="gameGrid">
-      ${GAMES.map((g, i) => `<button class="gcard reveal" type="button" data-id="${g.id}" data-cat="${g.cat}" data-mp="${g.mp ? g.mp.join("-") : ""}" data-unit="${esc(g.best?.unit || "")}" style="--c:var(--${g.c});--i:${i % 4};--a:${(i * 47) % 360}deg" aria-haspopup="dialog">
+      ${GAMES.map((g, i) => `<button class="gcard reveal" type="button" data-id="${g.id}" data-cat="${g.cat}" data-mp="${g.mp ? g.mp.join("-") : ""}" data-unit="${esc(g.best?.unit || "")}"${g.isNew ? " data-new=\"1\"" : ""} style="--c:var(--${g.c});--i:${i % 4};--a:${(i * 47) % 360}deg" aria-haspopup="dialog">
         <span class="gc-art">${gameArt(g.id)}</span>
-        <span class="gc-top"><span class="gc-no">${String(i + 1).padStart(2, "0")}</span>${g.mp ? `<span class="gc-tg">Together ${g.mp[0] === g.mp[1] ? g.mp[0] : g.mp[0] + "-" + g.mp[1]}</span>` : ""}<span class="gc-played" hidden>Played</span></span>
+        <span class="gc-top"><span class="gc-no">${String(i + 1).padStart(2, "0")}</span>${g.mp ? `<span class="gc-tg">Together ${g.mp[0] === g.mp[1] ? g.mp[0] : g.mp[0] + "-" + g.mp[1]}</span>` : ""}${g.isNew ? `<span class="gc-new">New</span>` : ""}<span class="gc-played" hidden>Played</span></span>
         <span class="gc-t">${esc(g.title)}</span>
         <span class="gc-how">${esc(g.how)}</span>
         <span class="gc-meta"><span>${esc(CAT[g.cat])}</span><span>${g.mins} min</span><span title="${LVL[g.lvl]}" aria-label="${LVL[g.lvl]}">${dots(g.lvl)}</span></span>

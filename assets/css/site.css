@@ -1450,3 +1450,4 @@ html,body{touch-action:manipulation}
 .tn-rows small{grid-column:2 / -1;font-size:.72rem;color:var(--fg2);margin-top:-.3rem}
 @media (max-width:520px){.tn-rows li{grid-template-columns:auto 1fr auto}.tn-g{grid-column:1 / -1;grid-row:2}}
 @media (prefers-reduced-motion:reduce){.tn-stage.on .tn-eq i{animation:none;transform:scaleY(.7)}.tn-rev{animation:none}}
+.gc-new{padding:.1rem .55rem;border-radius:999px;background:#0e0e10;color:#f2efe9;font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}

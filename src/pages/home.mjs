@@ -9,7 +9,7 @@ const PANELS = [
   ["hero-illness", "yellow", "science/#illness", "02", "Not an <em>illness.</em>", "WHO, psychiatrists and India's own society settled this long ago.", "See who agrees"],
   ["hero-who", "blue", "stories/", "03", "Just who <em>we are.</em>", "Real stories, real history, and a place to be heard.", "Meet us"]
 ];
-const PICKS = ["pop", "breathe", "wordle", "memory", "four", "bubbles"];
+const PICKS = ["tod", "tune", "geo", "gk", "atlas", "breathe"];
 const QCOL = ["pink", "yellow", "blue", "green", "violet", "orange", "sky", "r"];
 
 export default {
@@ -77,9 +77,9 @@ export default {
 
 <section class="sec arcade" aria-labelledby="arcadeT">
   <div class="wrap-x">
-    <header class="sec-head"><p class="label reveal"><span class="no"></span>Play</p><div class="sec-head-main"><h2 class="sec-title" id="arcadeT" data-split>A <em>calm</em> arcade</h2></div></header>
+    <header class="sec-head"><p class="label reveal"><span class="no"></span>Play</p><div class="sec-head-main"><h2 class="sec-title" id="arcadeT" data-split>The <em>games</em> room</h2></div></header>
     <div class="arc-intro reveal">
-      <p>${GAMES.length} gentle games to breathe, create, puzzle and think with. No timers chasing you and nothing to lose. Open one and it fills the screen. Some can be played with friends on their own phones: make a room, share the code, and play together.</p>
+      <p>${GAMES.length} games: Truth or Dare, Name that tune, Where in the world, Atlas and quizzes to play with friends on their own phones, plus calm ones to breathe, create and puzzle with. Make a room, share the code, and play together. No sign-up.</p>
       <div class="cta-row" style="margin:0">${arrowBtn(href("games"), `Open all ${GAMES.length} games`)}${arrowBtn(href("games") + "#gTogether", "Play with friends", "btn--ghost")}</div>
     </div>
     <div class="arc-row">${GAMES_HOME}</div>

@@ -180,7 +180,7 @@ document.addEventListener("tg:room", (e) => { $(".gm-modes", body)?.classList.to
 document.addEventListener("game:score", (e) => { if (cur && e.detail.id === cur.id) setBest(cur.id); });
 
 /* ---- filter, featured pick, surprise ---- */
-chipFilter($("#gChips"), (f) => { cards.forEach((c) => { c.hidden = !(f === "all" || c.dataset.cat === f); }); paintProgress(); });
+chipFilter($("#gChips"), (f) => { cards.forEach((c) => { c.hidden = !(f === "all" || (f === "friends" ? !!c.dataset.mp : f === "new" ? !!c.dataset.new : c.dataset.cat === f)); }); paintProgress(); });
 const day = Math.floor(Date.now() / 864e5), pick = cards[day % cards.length];
 $("#gFeat").hidden = false;
 $("#gFeatT").textContent = $(".gc-t", pick).textContent;
