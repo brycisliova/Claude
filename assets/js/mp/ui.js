@@ -122,8 +122,8 @@ export function mountTogether(box, def, opts = {}) {
     const api = { room: r, get me() { return r.me; }, get players() { return r.players; }, isHost: r.isHost, act: (a) => r.act(a), rematch: () => r.rematch(), leave: () => { r.leave(); entry(); }, opts: o };
     view = curDef.view(box.querySelector("#tgView"), api);
     if (r.isHost) {
-      const ctx = { room: r, get players() { return r.players; }, push: (s) => r.push(s), after, reply: (pid, d) => r.reply(pid, d), opts: o };
-      engine = curDef.host(ctx); engine.start(o);
+      const ctx = { room: r, get players() { return r.players; }, push: (s) => r.push(s), after, reply: (pid, d) => (pid === r.pid ? r.emit("msg", d) : r.reply(pid, d)), opts: o };
+      engine = curDef.host(ctx); engine.start(o); r.on("left", (id) => engine?.left?.(id));
     } else if (late && r.state) view.render(r.state);
     else r.send("sync", {});
   }

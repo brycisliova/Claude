@@ -24,7 +24,7 @@ export const roomLink = (c) => `${location.origin}${location.pathname}#r-${c}`;
 export class Room {
   constructor(code, isHost, nick) {
     this.code = code; this.isHost = isHost; this.nick = cleanName(nick) || "Guest"; this.pid = uid(); this.h = {}; this.players = []; this.seq = 0; this.n = 0;
-    this.base = `${NS}/${code}`; this.started = false; this.left = false; this.lastHost = Date.now(); this.seen = {}; this.info = null; this.state = null; this.opts = {};
+    this.outbox = []; this.reconnecting = false; this.base = `${NS}/${code}`; this.started = false; this.left = false; this.lastHost = Date.now(); this.seen = {}; this.info = null; this.state = null; this.opts = {};
   }
   on(ev, fn) { (this.h[ev] ||= []).push(fn); return this; }
   off(ev, fn) { this.h[ev] = (this.h[ev] || []).filter((f) => f !== fn); }
@@ -71,6 +71,8 @@ export class Room {
   /* ---- plumbing ---- */
   async connect(url, will) {
     this.url = url; this.will = will || null;
+    // retire the previous socket first, with a clean goodbye, so its "last will" cannot wipe the room after we are back
+    const prev = this.mq; if (prev) { prev.handlers.clear(); prev.closeHandlers.clear(); try { prev.close(); } catch (e) { /* ignore */ } }
     this.mq = new Mqtt(url, { clientId: "sf" + this.pid + Math.random().toString(36).slice(2, 6), will: this.will });
     await this.mq.connect();
     this.mq.onMessage((t, p) => this.route(t, p));
@@ -78,22 +80,44 @@ export class Room {
     this.mq.subscribe(`${this.base}/m`); this.mq.subscribe(`${this.base}/room`);
   }
   async dropped() {
-    if (this.left) return; this.emit("status", "reconnecting");
-    for (let i = 0; i < 6 && !this.left; i++) {
-      await new Promise((r) => setTimeout(r, 1200 + i * 800));
-      try { await this.connect(this.url, this.will); this.emit("status", "online"); if (this.isHost) this.publishRoom(); else this.send("join", { name: this.nick }); return; } catch (e) { /* retry */ }
+    if (this.left || this.reconnecting) return;
+    this.reconnecting = true; this.emit("status", "reconnecting");
+    const t0 = Date.now(); let i = 0;
+    while (!this.left && Date.now() - t0 < 180000) {
+      await new Promise((r) => setTimeout(r, Math.min(900 + i * 600, 5000))); i++;
+      if (this.left) break;
+      // a sleeping tab cannot reconnect, so wait until it is looked at again (or a short while) before trying
+      if (typeof document !== "undefined" && document.hidden) await new Promise((r) => { const f = () => { if (!document.hidden) { document.removeEventListener("visibilitychange", f); r(); } }; document.addEventListener("visibilitychange", f); setTimeout(() => { document.removeEventListener("visibilitychange", f); r(); }, 12000); });
+      try {
+        await this.connect(this.url, this.will); this.reconnecting = false; this.emit("status", "online");
+        if (this.isHost) this.publishRoom(); else this.send("join", { name: this.nick });
+        this.flush(); return;
+      } catch (e) { /* try again */ }
     }
+    this.reconnecting = false;
     if (!this.left) this.emit("closed", "Lost the connection.");
   }
-  send(t, d, to) { if (!this.mq?.open) return; this.mq.publish(`${this.base}/m`, JSON.stringify({ v: 1, t, f: this.pid, to, d })); }
+  // messages typed while offline wait here and go out when the connection comes back
+  flush() { const now = Date.now(); const q = this.outbox.filter((m) => now - m.ts < 20000); this.outbox = []; q.forEach((m) => this.send(m.t, m.d, m.to)); }
+  // phones put tabs to sleep and change networks: check the line whenever the page wakes up or the network returns
+  poke() {
+    if (this.left || this.reconnecting) return;
+    if (!this.mq?.open || this.mq.ws?.readyState !== 1) return this.dropped();
+    this.send("hb", this.isHost ? { s: this.n } : {}); if (!this.isHost) this.send("sync", {});
+  }
+  send(t, d, to) { if (!this.mq?.open) { if (t === "act" && this.outbox.length < 20) this.outbox.push({ t, d, to, ts: Date.now() }); return; } this.mq.publish(`${this.base}/m`, JSON.stringify({ v: 1, t, f: this.pid, to, d })); }
   publishRoom() {
     if (!this.isHost || this.left) return;
     this.mq.publish(`${this.base}/room`, JSON.stringify({ g: this.game, h: this.nick, n: this.players.length, max: this.max, st: this.started ? "play" : "lobby", ts: Date.now() }), true);
   }
   beat() {
+    this.beats = 0;
+    this.wake = () => { if (!document.hidden) this.poke(); }; this.net = () => this.poke();
+    document.addEventListener("visibilitychange", this.wake); window.addEventListener("online", this.net); window.addEventListener("pageshow", this.net);
     this.hb = setInterval(() => {
       if (this.left) return clearInterval(this.hb);
       this.send("hb", this.isHost ? { s: this.n } : {});
+      if (this.isHost && ++this.beats % 6 === 0) this.publishRoom();
       const now = Date.now();
       if (this.isHost) {
         let changed = false;
@@ -165,5 +189,5 @@ export class Room {
     } catch (e) { /* ignore */ }
     setTimeout(() => this.cleanup(), 200);
   }
-  cleanup() { clearInterval(this.hb); try { this.mq?.close(); } catch (e) { /* ignore */ } }
+  cleanup() { clearInterval(this.hb); if (this.wake) { document.removeEventListener("visibilitychange", this.wake); window.removeEventListener("online", this.net); window.removeEventListener("pageshow", this.net); } try { this.mq?.close(); } catch (e) { /* ignore */ } }
 }

@@ -26,6 +26,7 @@ export class Mqtt {
         const body = vh.concat(pl); ws.send(new Uint8Array([0x10, ...varlen(body.length), ...body]));
       };
       ws.onmessage = (e) => {
+        this.lastRx = Date.now();
         const add = new Uint8Array(e.data); const nb = new Uint8Array(this.buf.length + add.length); nb.set(this.buf); nb.set(add, this.buf.length); this.buf = nb;
         for (;;) {
           if (this.buf.length < 2) return;
@@ -33,7 +34,7 @@ export class Mqtt {
           do { if (i >= this.buf.length) return; d = this.buf[i++]; len += (d & 127) * mult; mult *= 128; } while (d & 128 && i < 5);
           if (this.buf.length < i + len) return;
           const type = this.buf[0] >> 4, flagsB = this.buf[0] & 15, body = this.buf.slice(i, i + len); this.buf = this.buf.slice(i + len);
-          if (type === 2) { if (body[1] === 0) { this.open = true; if (!settled) { settled = true; clearTimeout(timer); this.ping = setInterval(() => this.raw([0xc0, 0]), (this.keepalive * 1000) / 2); resolve(); } } else fail(new Error("refused " + body[1])); }
+          if (type === 2) { if (body[1] === 0) { this.open = true; if (!settled) { settled = true; clearTimeout(timer); this.lastRx = Date.now(); this.ping = setInterval(() => { if (Date.now() - this.lastRx > this.keepalive * 1500) { try { this.ws.close(); } catch (e) { /* ignore */ } return; } this.raw([0xc0, 0]); }, (this.keepalive * 1000) / 2); resolve(); } } else fail(new Error("refused " + body[1])); }
           else if (type === 3) {
             const tl = (body[0] << 8) | body[1], topic = dec.decode(body.slice(2, 2 + tl)); let off = 2 + tl; if ((flagsB >> 1) & 3) off += 2;
             const payload = dec.decode(body.slice(off)); this.handlers.forEach((f) => { try { f(topic, payload); } catch (err) { console.error(err); } });
