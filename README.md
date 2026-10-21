@@ -62,6 +62,18 @@ Word guess uses the lists in `assets/js/data/words.js`: about 640 everyday answe
 
 To add a game: add an entry to `src/data/games.mjs`, then register it in one of the files in `assets/js/games/` with `game(id, bodyHtml, init)`. `init` can return `frame`, `resize`, `key` and `destroy` handlers and can call `report(score)` to save a best.
 
+## Party, music and map games
+
+- **Truth or Dare** (`games/together/tod.js`, prompts in `assets/js/data/tod.js`): 730 prompts with mild, medium and wild heat, plus Never have I ever and Spill the tea. Solo mode is pass-the-phone; rooms let everyone use their own device.
+- **Trivia night** (`games/together/trivia.js`, questions in `assets/js/data/gk.js`): 360 general knowledge questions on the same engine as the Pride pop quiz (`registerQuiz` in `pop.js`).
+- **Name that tune** (`games/together/tune.js`): plays a 30 second preview and scores the closest typed title highest. Song data lives in `assets/data/songs.json`; clip links come from the iTunes Search API (the previews are streamed from Apple, never stored here). To rebuild it, look up each song with the iTunes Search API (`entity=song`, `country=IN`), keep rows that have a `previewUrl` and a matching title, and run `node tools/build-songs.mjs hindi.json intl.json`.
+- **Atlas** (`games/together/atlas.js`): cities, districts, states, countries, oceans and deserts need only a name. A village is accepted only with its state (India) or country, checked against GeoNames lists built by `tools/build-villages.mjs` that are downloaded the first time someone claims a village.
+- **Where in the world?**: the detailed map uses OpenStreetMap tiles. The public tile server is fine for a small site but asks not to be used heavily, so if the games get busy set a different `MAPS.tileUrl` in `assets/js/config.js`.
+
+### Switch on Street View
+
+Street View needs a Google Maps JavaScript API key, because Google does not allow it any other way. In Google Cloud, create a project, enable "Maps JavaScript API", add a billing account (Google gives a monthly free allowance, and each Street View load is billed only when a player opens that tab), create an API key, and restrict it to the HTTP referrer `https://shiningforever.in/*`. Then paste it into `MAPS.googleKey` in `assets/js/config.js`, rebuild and push. A restricted key is safe to publish. With no key set, the game uses photographs only and the Street View option never appears.
+
 ## Playing together
 
 Ten games can be played with friends: Where in the world? (2 to 8, drop a pin on a photo's location), Atlas (2 to 8, name places in a chain), Adda night (3 to 10, party games), and on their own devices: the Pride pop quiz (2 to 8 players, solo too), Gentle memory (2 to 4 players, and the board grows with every player), Word guess (2 to 6, everyone races to the same word), Myth or fact and Know the flags (2 to 8, a live quiz), Word garden (2 to 6, a word-search race) and Four in a row (2 players).
