@@ -24,6 +24,8 @@ Address: <https://shiningforever.in>
 | Myth or fact? statements (about 120, half myths) | `assets/js/data/myth-bank.js` |
 | Adda night party game prompts and fake-fact questions | `assets/js/data/party.js`, `party-fake.js` |
 | Atlas place list (built from GeoNames: `node tools/build-atlas.mjs <folder with the GeoNames dumps>`) | `assets/data/atlas.json` |
+| Where in the world? locations (about 155, each with a credited photo) | `assets/js/data/geo-locs.js`, `src/data/geo-photos.json`, images in `assets/img/geo/` |
+| World map outlines and city labels for that game (built from Natural Earth and GeoNames: `node tools/build-world.mjs <countries-50m.json> <cities15000.txt> <countryInfo.txt>`) | `assets/data/world.json` |
 | Quiz photo credits (shown in the quiz and on the credits page) | `src/data/pop-photos.json`, images in `assets/img/pop/` |
 | Text of each page | `src/pages/*.mjs` |
 | Navigation, menu, header, footer | `src/layout.mjs` |
@@ -62,7 +64,7 @@ To add a game: add an entry to `src/data/games.mjs`, then register it in one of 
 
 ## Playing together
 
-Nine games can be played with friends: Atlas (2 to 8, name places in a chain), Adda night (3 to 10, party games), and on their own devices: the Pride pop quiz (2 to 8 players, solo too), Gentle memory (2 to 4 players, and the board grows with every player), Word guess (2 to 6, everyone races to the same word), Myth or fact and Know the flags (2 to 8, a live quiz), Word garden (2 to 6, a word-search race) and Four in a row (2 players).
+Ten games can be played with friends: Where in the world? (2 to 8, drop a pin on a photo's location), Atlas (2 to 8, name places in a chain), Adda night (3 to 10, party games), and on their own devices: the Pride pop quiz (2 to 8 players, solo too), Gentle memory (2 to 4 players, and the board grows with every player), Word guess (2 to 6, everyone races to the same word), Myth or fact and Know the flags (2 to 8, a live quiz), Word garden (2 to 6, a word-search race) and Four in a row (2 players).
 
 How it works: one player is the host and runs the game; everyone else sends their moves to the host, who sends back the state. Players join with a six-character room code or a link such as `/games/#r-ABC123`. There is no server to run. Messages travel through a free public MQTT broker over secure WebSockets, on topics named after the room code, using a small client in `assets/js/mp/mqtt.js`. Only nicknames and moves are sent, nothing is stored, and a room disappears when its host leaves.
 

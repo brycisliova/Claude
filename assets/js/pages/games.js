@@ -11,6 +11,7 @@ import "../games/together/quiz.js";
 import "../games/together/pop.js";
 import "../games/together/atlas.js";
 import "../games/together/party.js";
+import "../games/together/geo.js";
 import "../games/together/four.js";
 import "../games/together/duel.js";
 import "../games/together/hunt.js";
