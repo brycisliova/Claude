@@ -21,6 +21,7 @@ ${hero(ctx, { eyebrow: "Credits", title: "Photo <em>credits</em>", lede: "Every 
 <section class="sec">
   <div class="wrap">
     <div class="table-wrap"><table><thead><tr><th scope="col">Where it appears</th><th scope="col">Photograph</th><th scope="col">Photographer</th><th scope="col">Licence</th><th scope="col">Source</th></tr></thead><tbody>${rows}${popRows}</tbody></table></div>
+    <p class="muted small">Place names in the Atlas game come from <a href="https://www.geonames.org/" rel="noopener noreferrer">GeoNames</a>, under a <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a> licence. World map outlines used in the location game come from <a href="https://www.naturalearthdata.com/" rel="noopener noreferrer">Natural Earth</a>, which is in the public domain.</p>
     <p class="muted small">Images are resized and cropped for the page; otherwise unaltered. Each photograph also carries a short credit chip linking to its source.</p>
   </div>
 </section>`;
