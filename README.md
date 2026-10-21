@@ -76,7 +76,7 @@ Street View needs a Google Maps JavaScript API key, because Google does not allo
 
 ## Playing together
 
-Ten games can be played with friends: Where in the world? (2 to 8, drop a pin on a photo's location), Atlas (2 to 8, name places in a chain), Adda night (3 to 10, party games), and on their own devices: the Pride pop quiz (2 to 8 players, solo too), Gentle memory (2 to 4 players, and the board grows with every player), Word guess (2 to 6, everyone races to the same word), Myth or fact and Know the flags (2 to 8, a live quiz), Word garden (2 to 6, a word-search race) and Four in a row (2 players).
+Fourteen games can be played with friends: Truth or Dare (2 to 10), Name that tune (2 to 10), Trivia night (2 to 8), Where in the world? (2 to 8, drop a pin on a photo's location), Atlas (2 to 8, name places in a chain), Adda night (3 to 10, party games), and on their own devices: the Pride pop quiz (2 to 8 players, solo too), Gentle memory (2 to 4 players, and the board grows with every player), Word guess (2 to 6, everyone races to the same word), Myth or fact and Know the flags (2 to 8, a live quiz), Word garden (2 to 6, a word-search race) and Four in a row (2 players).
 
 How it works: one player is the host and runs the game; everyone else sends their moves to the host, who sends back the state. Players join with a six-character room code or a link such as `/games/#r-ABC123`. There is no server to run. Messages travel through a free public MQTT broker over secure WebSockets, on topics named after the room code, using a small client in `assets/js/mp/mqtt.js`. Only nicknames and moves are sent, nothing is stored, and a room disappears when its host leaves.
 

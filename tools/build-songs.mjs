@@ -6,8 +6,10 @@ const AUDIO = "https://audio-ssl.itunes.apple.com/itunes-assets/";
 const INDIAN = new Set(["hi", "pa", "ta", "te", "kn", "mr", "ml", "bn"]);
 const rows = process.argv.slice(2).flatMap((f) => JSON.parse(readFileSync(f, "utf8")));
 const seen = new Set(), out = [];
+// Matches that are remixes, covers or loose guesses are left out, so the clip is always the song people know.
+const BAD = /remix|\bflip\b|jhankar|lo-?fi|slowed|reverb|karaoke|instrumental|\bcover\b|tribute|mashup/i, SKIP = new Set(["DtMF", "Oh Oh Jane Jaana"]);
 for (const r of rows) {
-  if (seen.has(r.id) || !r.u.startsWith(AUDIO)) continue; seen.add(r.id);
+  if (seen.has(r.id) || !r.u.startsWith(AUDIO) || BAD.test(r.tn || "") || SKIP.has(r.t)) continue; seen.add(r.id);
   const m = /\/image\/thumb\/(.+)\/\d+x\d+bb\.jpg$/.exec(r.img || "");
   const o = { id: r.id, t: r.t, a: r.a, f: r.f || "", y: r.y || 0, l: r.l, g: INDIAN.has(r.l) ? "hi" : r.l === "en" ? "en" : "world", u: r.u.slice(AUDIO.length), i: m ? m[1] : "" };
   const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
