@@ -4,11 +4,12 @@ import { mp, h, esc, shuffle, results, timerBar, byId, dot } from "./common.js";
 import { game, report, $ as q$ } from "../shared.js";
 import { BANK, TOPICS } from "../../data/pop.js";
 import { MORE } from "../../data/pop-more.js";
+import { EXTRA } from "../../data/pop-extra.js";
 import { PICS } from "../../data/pop-pics.js";
 import { PHOTOS } from "../../data/pop-photos.js";
 import { tone, PENTA, ready } from "../../audio.js";
 
-const ALL = [...BANK, ...MORE, ...PICS];
+const ALL = [...BANK, ...MORE, ...EXTRA, ...PICS];
 const TIME = { pic: 20000, place: 20000, mc: 15000, tf: 10000, who: 15000, emoji: 15000, clue: 21000, odd: 15000, first: 10000, num: 20000 };
 const REVEAL_MS = 6000;
 const LABEL = { pic: "Who is this?", place: "Spot the place", mc: "Quick question", tf: "True or false?", who: "Who said it?", emoji: "Emoji decoder", clue: "Who am I?", odd: "Odd one out", first: "Which came first?", num: "Closest wins" };
