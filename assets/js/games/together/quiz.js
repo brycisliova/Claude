@@ -1,16 +1,18 @@
 import { mp, h, esc, shuffle, rnd, results, timerBar, byId, dot } from "./common.js";
 import { DATA, FLAGS, flagCss } from "../mind.js";
+import { MYTH_HARD } from "../../data/myth-bank.js";
+import { pickFresh } from "../fresh.js";
 import { tone, PENTA, ready } from "../../audio.js";
 
 const Q_MS = 15000, REVEAL_MS = 5200;
 function buildQuestions(topic, total) {
-  const mf = [...DATA.myths.map((m) => ({ k: "mf", q: m.q, a: "myth", e: m.e })), ...DATA.facts.map((f) => ({ k: "mf", q: f.q, a: "fact", e: f.e }))];
+  const mfAll = MYTH_HARD.map((m) => ({ k: "mf", q: m.q, a: m.a, e: m.e })), mfPick = (n) => pickFresh("wwa-myth-seen-room", mfAll, (m) => m.q, n), mf = mfAll;
   const fl = FLAGS.map((F, i) => ({ k: "fl", f: i, e: F.f, a: i }));
   const flagQ = () => { const q = fl[rnd(fl.length)]; const opts = shuffle([q.f, ...shuffle([...FLAGS.keys()].filter((i) => i !== q.f)).slice(0, 3)]); return { ...q, o: opts }; };
   const out = [];
-  if (topic === "myth") out.push(...shuffle(mf.slice()).slice(0, total));
+  if (topic === "myth") out.push(...mfPick(total));
   else if (topic === "flags") { const used = new Set(); while (out.length < total && used.size < FLAGS.length) { const q = flagQ(); if (!used.has(q.f)) { used.add(q.f); out.push(q); } } }
-  else { const a = shuffle(mf.slice()), used = new Set(); while (out.length < total) { if (out.length % 2 === 0 && a.length) out.push(a.pop()); else { const q = flagQ(); if (!used.has(q.f)) { used.add(q.f); out.push(q); } else if (a.length) out.push(a.pop()); else break; } } }
+  else { const a = mfPick(Math.ceil(total / 2) + 1), used = new Set(); while (out.length < total) { if (out.length % 2 === 0 && a.length) out.push(a.pop()); else { const q = flagQ(); if (!used.has(q.f)) { used.add(q.f); out.push(q); } else if (a.length) out.push(a.pop()); else break; } } }
   return out.slice(0, total);
 }
 const pub = (q) => (q.k === "mf" ? { k: "mf", q: q.q } : { k: "fl", f: q.f, o: q.o });

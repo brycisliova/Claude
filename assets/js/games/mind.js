@@ -1,4 +1,6 @@
 import { $, $$, h, esc, fit, pos, B, game, report, shuffle, rnd, reduce, sprite, glow } from "./shared.js";
+import { MYTH_HARD } from "../data/myth-bank.js";
+import { pickFresh } from "./fresh.js";
 import { tone, bowl, PENTA, ready } from "../audio.js";
 import { store } from "../core.js";
 
@@ -85,9 +87,10 @@ game("myth",
   `<div class="mf"><div class="row"><span class="game-msg" id="mfMsg"></span></div><div class="mf-card" id="mfCard" aria-live="polite"></div><div class="mf-btns"><button class="mf-b mf-m" id="mfMyth">Myth</button><button class="mf-b mf-f" id="mfFact">Fact</button></div><div class="row"><button class="btn btn-primary btn-sm" id="mfNext" hidden>Next</button><button class="${B}" id="mfNew">New round</button></div></div>`,
   () => {
     const card = $("#mfCard"), msg = $("#mfMsg");
-    const all = [...DATA.myths.map((m) => ({ t: m.q, a: "myth", e: m.e })), ...DATA.facts.map((f) => ({ t: f.q, a: "fact", e: f.e }))];
+    // tricky statements, half myths and half facts, never the same ones twice until the whole set has been seen
+    const MY = MYTH_HARD.filter((m) => m.a === "myth"), FA = MYTH_HARD.filter((m) => m.a === "fact");
     let q, i, right, done;
-    function round() { q = shuffle(all.slice()).slice(0, 10); i = 0; right = 0; show(); }
+    function round() { q = shuffle([...pickFresh("wwa-myth-seen-m", MY, (m) => m.q, 5), ...pickFresh("wwa-myth-seen-f", FA, (m) => m.q, 5)]).map((m) => ({ t: m.q, a: m.a, e: m.e })); i = 0; right = 0; show(); }
     function show() {
       done = false; const c = q[i]; $("#mfNext").hidden = true; $("#mfMyth").disabled = $("#mfFact").disabled = false;
       card.className = "mf-card"; card.innerHTML = `<p class="mf-q">${esc(c.t)}</p><p class="mf-e"></p>`;
