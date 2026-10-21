@@ -1408,3 +1408,15 @@ html,body{touch-action:manipulation}
 .td-awards li{padding:.5rem .8rem;border-radius:10px;background:var(--bg);font-size:.95rem}.td-awards span{color:var(--fg2);font-size:.82rem;display:block}
 @keyframes tdflip{from{opacity:0;transform:translateY(10px) rotateX(-18deg)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.td-card{animation:none}}
+
+/* ---- location game: detailed map and Street View ---- */
+.geo-photo [hidden],.geo-mapwrap [hidden]{display:none!important}
+.geo-sv{position:absolute;inset:0;background:#0e0e10}
+.geo-tabs{position:absolute;left:.6rem;bottom:2.3rem;display:flex;gap:.2rem;padding:.2rem;border-radius:999px;background:rgba(14,14,16,.72)}
+.geo-tabs button{border:0;border-radius:999px;padding:.3rem .8rem;background:transparent;color:#f2efe9;font-size:.76rem}
+.geo-tabs button[aria-pressed="true"]{background:#f2efe9;color:#0e0e10}
+.geo-svmsg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;padding:.5rem .9rem;border-radius:10px;background:rgba(14,14,16,.78);color:#f2efe9;font-size:.85rem;text-align:center;max-width:80%}
+.geo-ctl button.wide{width:auto;padding:0 .6rem;font-size:.72rem;font-weight:650}
+.geo-ctl button.wide[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.geo-attr{position:absolute;right:.4rem;bottom:.3rem;margin:0;padding:.05rem .45rem;border-radius:6px;background:rgba(255,255,255,.78);color:#333;font-size:.62rem}
+.geo-attr a{color:inherit}

@@ -1,6 +1,9 @@
 // A small, dependency-free world map on a canvas: Web Mercator, drag to pan, wheel / pinch / buttons to zoom,
-// tap to drop a pin. It draws country outlines from assets/data/world.json (Natural Earth, public domain),
-// so the game makes no map-tile requests and tells no one where you are looking.
+// tap to drop a pin. It always draws country outlines from assets/data/world.json (Natural Earth, public domain).
+// Optionally it lays real street-map tiles (OpenStreetMap, set in assets/js/config.js) over that for a detailed map;
+// turn them off and the game makes no tile requests at all and tells no one where you are looking.
+import { MAPS } from "../config.js";
+const TILE_URL = MAPS.tileUrl || "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const RAD = Math.PI / 180;
 export const haversine = (a, b) => { const dLat = (b.lat - a.lat) * RAD, dLon = (b.lon - a.lon) * RAD, s = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * RAD) * Math.cos(b.lat * RAD) * Math.sin(dLon / 2) ** 2; return 6371 * 2 * Math.asin(Math.min(1, Math.sqrt(s))); };
 // the colour of "how far": bright green when spot on, through amber, to a dark red at the far end of the world
@@ -28,7 +31,7 @@ function prep(j) {
 
 export class GeoMap {
   constructor(canvas, world) {
-    this.c = canvas; this.g = canvas.getContext("2d"); this.w = world; this.z = 1.6; this.cx = nx(78); this.cy = ny(22); this.pin = null; this.result = null; this.handlers = {}; this.pointers = new Map(); this.raf = 0; this.moved = false; this.locked = false;
+    this.c = canvas; this.g = canvas.getContext("2d"); this.w = world; this.z = 1.6; this.cx = nx(78); this.cy = ny(22); this.pin = null; this.result = null; this.handlers = {}; this.pointers = new Map(); this.raf = 0; this.moved = false; this.locked = false; this.tiles = false; this.tc = new Map(); this.cover = 0; this.maxZ = 9.5;
     this.readColors(); this.size();
     this.ro = new ResizeObserver(() => { this.size(); this.draw(); }); this.ro.observe(canvas.parentElement || canvas);
     const on = (t, f, o) => { canvas.addEventListener(t, f, o); (this.off ||= []).push(() => canvas.removeEventListener(t, f, o)); };
@@ -38,16 +41,16 @@ export class GeoMap {
     this.theme = () => { this.readColors(); this.draw(); }; addEventListener("themechange", this.theme);
     this.draw();
   }
-  readColors() { const s = getComputedStyle(document.documentElement), v = (n, d) => s.getPropertyValue(n).trim() || d; this.col = { sea: v("--surface2", "#e9e6df"), land: v("--bg", "#f6f4ee"), line: v("--line", "#c9c4b8"), text: v("--fg2", "#555"), ink: v("--fg", "#111") }; }
+  readColors() { const s = getComputedStyle(document.documentElement), v = (n, d) => s.getPropertyValue(n).trim() || d; const th = document.documentElement.dataset.theme; this.dark = th === "dark" || (th !== "light" && matchMedia("(prefers-color-scheme: dark)").matches); this.col = { sea: v("--surface2", "#e9e6df"), land: v("--bg", "#f6f4ee"), line: v("--line", "#c9c4b8"), text: v("--fg2", "#555"), ink: v("--fg", "#111") }; }
   size() { const r = this.c.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2); this.W = Math.max(60, r.width); this.H = Math.max(60, r.height); this.c.width = Math.round(this.W * d); this.c.height = Math.round(this.H * d); this.g.setTransform(d, 0, 0, d, 0, 0); this.base = null; this.minZ = Math.max(0.2, Math.log2(Math.max(this.W, this.H * 1.05) / 256) - 0.05); if (this.z < this.minZ) this.z = this.minZ; }
   on(ev, fn) { this.handlers[ev] = fn; return this; }
-  destroy() { cancelAnimationFrame(this.raf); clearTimeout(this.settle); this.ro.disconnect(); this.off?.forEach((f) => f()); removeEventListener("themechange", this.theme); }
+  destroy() { cancelAnimationFrame(this.raf); clearTimeout(this.settle); this.ro.disconnect(); this.off?.forEach((f) => f()); removeEventListener("themechange", this.theme); this.tc.clear(); }
   /* view maths */
   get S() { return 256 * 2 ** this.z; }
   toScreen(x, y, k = 0) { const S = this.S; return [(x + k - this.cx) * S + this.W / 2, (y - this.cy) * S + this.H / 2]; }
   fromScreen(px, py) { const S = this.S; let x = (px - this.W / 2) / S + this.cx; const y = (py - this.H / 2) / S + this.cy; x = ((x % 1) + 1) % 1; return { lat: invY(Math.min(1, Math.max(0, y))), lon: x * 360 - 180 }; }
   clamp() { const S = this.S, halfH = this.H / 2 / S; this.cy = Math.min(Math.max(this.cy, halfH), 1 - halfH); if (S < this.H) this.cy = 0.5; this.cx = ((this.cx % 1) + 1) % 1; }
-  zoomAt(px, py, dz) { this.touchAt = performance.now(); const before = this.fromScreen(px, py); this.z = Math.min(9.5, Math.max(this.minZ, this.z + dz)); const S = this.S, x = nx(before.lon), y = ny(before.lat); this.cx = x - (px - this.W / 2) / S; this.cy = y - (py - this.H / 2) / S; this.clamp(); this.queue(); }
+  zoomAt(px, py, dz) { this.touchAt = performance.now(); const before = this.fromScreen(px, py); this.z = Math.min(this.maxZ, Math.max(this.minZ, this.z + dz)); const S = this.S, x = nx(before.lon), y = ny(before.lat); this.cx = x - (px - this.W / 2) / S; this.cy = y - (py - this.H / 2) / S; this.clamp(); this.queue(); }
   zoomBy(dz) { this.zoomAt(this.W / 2, this.H / 2, dz); }
   fit(points, pad = 70) {
     if (!points.length) return; let minX = 9, maxX = -9, minY = 9, maxY = -9;
@@ -55,7 +58,7 @@ export class GeoMap {
     const xs = points.map((p) => nx(p.lon)); const spread = Math.max(...xs) - Math.min(...xs); const wrap = spread > 0.5; const xv = wrap ? xs.map((v) => (v < 0.5 ? v + 1 : v)) : xs;
     xv.forEach((v) => { minX = Math.min(minX, v); maxX = Math.max(maxX, v); }); points.forEach((p) => { const y = ny(p.lat); minY = Math.min(minY, y); maxY = Math.max(maxY, y); });
     const w = Math.max(maxX - minX, 0.004), hh = Math.max(maxY - minY, 0.004);
-    this.z = Math.min(9, Math.max(this.minZ, Math.log2(Math.min((this.W - pad * 2) / w, (this.H - pad * 2) / hh) / 256)));
+    this.z = Math.min(this.tiles ? 12 : 9, Math.max(this.minZ, Math.log2(Math.min((this.W - pad * 2) / w, (this.H - pad * 2) / hh) / 256)));
     this.cx = (minX + maxX) / 2; this.cy = (minY + maxY) / 2; this.clamp(); this.queue();
   }
   home() { this.z = Math.max(this.minZ, 1.6); this.cx = nx(60); this.cy = ny(25); this.clamp(); this.queue(); }
@@ -86,6 +89,25 @@ export class GeoMap {
   }
   setPin(p) { this.pin = p; this.queue(); }
   setLocked(b) { this.locked = b; }
+  setTiles(on) { this.tiles = !!on; this.maxZ = on ? 15 : 9.5; if (this.z > this.maxZ) this.z = this.maxZ; this.base = null; this.queue(); }
+  tile(z, x, y) {
+    const key = `${z}/${x}/${y}`; let img = this.tc.get(key);
+    if (img) { this.tc.delete(key); this.tc.set(key, img); return img; }
+    img = new Image(); img.decoding = "async"; img.onload = () => this.queue(); img.onerror = () => { img.bad = true; };
+    img.src = TILE_URL.replace("{s}", "abc"[(x + y) % 3]).replace("{z}", z).replace("{x}", x).replace("{y}", y).replace("{r}", "");
+    this.tc.set(key, img); if (this.tc.size > 360) this.tc.delete(this.tc.keys().next().value); return img;
+  }
+  drawTiles() {
+    if (!this.tiles) { this.cover = 0; return; }
+    const g = this.g, { W, H, S } = this, tz = Math.max(0, Math.min(18, Math.round(this.z))), n = 2 ** tz, size = 256 * 2 ** (this.z - tz);
+    const x0 = Math.floor((this.cx - W / 2 / S) * n), x1 = Math.floor((this.cx + W / 2 / S) * n), y0 = Math.max(0, Math.floor((this.cy - H / 2 / S) * n)), y1 = Math.min(n - 1, Math.floor((this.cy + H / 2 / S) * n));
+    let need = 0, have = 0;
+    for (let ty = y0; ty <= y1; ty++) for (let tx = x0; tx <= x1; tx++) {
+      need++; const img = this.tile(tz, ((tx % n) + n) % n, ty);
+      if (img.complete && img.naturalWidth && !img.bad) { have++; g.drawImage(img, (tx / n - this.cx) * S + W / 2, (ty / n - this.cy) * S + H / 2, size + 0.6, size + 0.6); }
+    }
+    this.cover = need ? have / need : 0;
+  }
   showResult(r) { this.result = r; this.locked = true; const pts = [r.truth, ...r.guesses.map((g) => g.pos)]; this.fit(pts); }
   clearResult() { this.result = null; this.pin = null; this.locked = false; this.home(); }
   queue() { if (this.raf) return; this.raf = requestAnimationFrame(() => { this.raf = 0; this.draw(); }); }
@@ -126,8 +148,9 @@ export class GeoMap {
     const sx = W / 2 + dx * this.S, sy = H / 2 + (b.cy - this.cy) * this.S;
     g.drawImage(this.bgc, 0, 0, this.bgc.width, this.bgc.height, sx - (W * k) / 2, sy - (H * k) / 2, W * k, H * k);
     if (busy && (this.base.cx !== this.cx || this.base.z !== this.z)) { clearTimeout(this.settle); this.settle = setTimeout(() => this.draw(), 180); }
+    this.drawTiles();
     const k0 = Math.floor(this.cx - W / 2 / this.S), k1 = Math.ceil(this.cx + W / 2 / this.S);
-    this.labels(k0, k1);
+    if (this.cover < 0.95) this.labels(k0, k1);
     if (this.result) this.drawResult(k0, k1); else if (this.pin) this.drawPin(this.pin, this.col.ink, k0, k1, 1);
   }
   labels(k0, k1) {

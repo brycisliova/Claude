@@ -7,7 +7,12 @@ import { pickFresh } from "../fresh.js";
 import { GeoMap, loadWorld, haversine, kmColor, scoreFor } from "../geomap.js";
 import { LOCS } from "../../data/geo-locs.js";
 import { GEO_PHOTOS } from "../../data/geo-photos.js";
+import { hasStreetView, showStreet } from "../streetview.js";
 import { tone, PENTA, ready } from "../../audio.js";
+
+const PREF = "wwa-geo-tiles";
+const tilesPref = () => { try { return localStorage.getItem(PREF) !== "0"; } catch (e) { return true; } };
+const setTilesPref = (on) => { try { localStorage.setItem(PREF, on ? "1" : "0"); } catch (e) { /* private mode */ } };
 
 const photo = (id) => new URL(`../../../img/geo/${id}.webp`, import.meta.url).href;
 const POOL = LOCS.filter((l) => GEO_PHOTOS[l.id]);
@@ -65,17 +70,18 @@ function makeHost(ctx, solo) {
 /* ---------- view ---------- */
 function mountView(root, api, solo) {
   root.innerHTML = `<div class="mp geo"><div class="mp-head"><p class="mp-turn" id="geInfo">Loading the map…</p><div class="mp-tl"><i id="geTl"></i></div></div>
-  <div class="geo-stage"><figure class="geo-photo" id="geoFig"><img id="geoImg" alt="A photograph of a place somewhere in the world" decoding="async"><span class="geo-cat" id="geoCat"></span><button class="geo-zoom" id="geoZoomImg" type="button" aria-label="Show the whole photo">Fit</button><figcaption id="geoCredit"></figcaption></figure>
-  <div class="geo-mapwrap"><canvas id="geoMap" class="geo-map" tabindex="0" role="application" aria-label="World map. Tap to drop a pin. Arrow keys move the map, plus and minus zoom, Enter drops a pin in the middle."></canvas><div class="geo-ctl"><button type="button" id="geoIn" aria-label="Zoom in">+</button><button type="button" id="geoOut" aria-label="Zoom out">−</button><button type="button" id="geoHome" aria-label="Reset the map">⌂</button></div><p class="geo-legend" aria-hidden="true"><span>close</span><i></i><span>far</span></p></div></div>
+  <div class="geo-stage"><figure class="geo-photo" id="geoFig"><img id="geoImg" alt="A photograph of a place somewhere in the world" decoding="async"><span class="geo-cat" id="geoCat"></span><button class="geo-zoom" id="geoZoomImg" type="button" aria-label="Show the whole photo">Fit</button><div class="geo-sv" id="geoSv" hidden></div><div class="geo-tabs" id="geoTabs" role="group" aria-label="Clue" hidden><button type="button" data-t="photo" aria-pressed="true">Photo</button><button type="button" data-t="sv" aria-pressed="false">Street View</button></div><p class="geo-svmsg" id="geoSvMsg" role="status" hidden></p><figcaption id="geoCredit"></figcaption></figure>
+  <div class="geo-mapwrap"><canvas id="geoMap" class="geo-map" tabindex="0" role="application" aria-label="World map. Tap to drop a pin. Arrow keys move the map, plus and minus zoom, Enter drops a pin in the middle."></canvas><div class="geo-ctl"><button type="button" id="geoIn" aria-label="Zoom in">+</button><button type="button" id="geoOut" aria-label="Zoom out">−</button><button type="button" id="geoHome" aria-label="Reset the map">⌂</button><button type="button" id="geoTiles" class="wide" aria-pressed="true" title="Detailed street map: on or off">Streets</button></div><p class="geo-attr" id="geoAttr">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors</p><p class="geo-legend" aria-hidden="true"><span>close</span><i></i><span>far</span></p></div></div>
   <div class="geo-actions"><button class="btn btn-primary" id="geoGo" type="button" disabled><span class="btn-t">Drop a pin to guess</span></button><button class="btn btn-ghost" id="geoHint" type="button"><span class="btn-t">Hint: the country (−30%)</span></button><span class="geo-status" id="geoStatus" role="status"></span></div>
   <div id="geoRv"></div><ul class="mp-score geo-score" id="geoScore"></ul><details class="at-how"><summary>How to play</summary><ul><li>Look at the photograph, then tap the map where you think it was taken. Drag to move the map, pinch or use + and − to zoom.</li><li>Press Guess to lock your pin in. In a room, everyone guesses at the same time.</li><li>You score up to 5,000 points: the closer, the more. Within 25 km is a perfect 5,000. Quick guesses earn a small bonus.</li><li>After each round the real place is marked with a star, and a line from your pin shows how far off you were. The line is bright green when you are close and gets darker and redder the further you are.</li><li>The hint tells you the country but costs 30% of that round's points. Keep score by adding up your rounds.</li></ul></details><div id="geoEnd"></div></div>`;
-  const $ = (s) => root.querySelector(s); let st = null, map = null, pin = null, locked = false, roundKey = "", hinted = false, dead = false;
+  const $ = (s) => root.querySelector(s); let st = null, map = null, pin = null, locked = false, roundKey = "", hinted = false, dead = false, sv = null, svSeq = 0, tab = "photo";
   const me = () => api.me?.id, name = (id) => byId(api, id)?.name || "Player";
   const onMsg = (m) => { if (m?.hint) { hinted = true; $("#geoHint").disabled = true; $("#geoStatus").textContent = `Hint: it is in ${m.hint}. This round is worth 30% less.`; } };
   if (api.room) api.room.on("msg", onMsg); else api.onMsg?.(onMsg);
   loadWorld().then((w) => {
     if (dead) return; map = new GeoMap($("#geoMap"), w);
     map.on("pick", (p) => { if (locked || st?.ph !== "g") return; pin = p; const b = $("#geoGo"); b.disabled = false; b.querySelector(".btn-t").textContent = "Guess here"; });
+    const tiles = (on) => { map.setTiles(on); setTilesPref(on); $("#geoTiles").setAttribute("aria-pressed", String(on)); $("#geoAttr").hidden = !on; }; tiles(tilesPref()); $("#geoTiles").addEventListener("click", () => tiles($("#geoTiles").getAttribute("aria-pressed") !== "true"));
     $("#geoIn").addEventListener("click", () => map.zoomBy(0.6)); $("#geoOut").addEventListener("click", () => map.zoomBy(-0.6)); $("#geoHome").addEventListener("click", () => map.home());
     if (st) paint(true);
   }, () => { $("#geInfo").textContent = "Could not load the map. Check your connection and reopen the game."; });
@@ -84,13 +90,25 @@ function mountView(root, api, solo) {
   $("#geoZoomImg").addEventListener("click", () => $("#geoFig").classList.toggle("fit"));
   const credit = (id) => { const c = GEO_PHOTOS[id]; return c ? `Photo: <a href="${esc(c.pageUrl)}" target="_blank" rel="noopener noreferrer">${esc(c.title)}</a> by ${esc(c.author)}, ${esc(c.license)}, via Wikimedia Commons` : ""; };
 
+  const svOn = () => hasStreetView() && api.opts?.clue === "both";
+  function showTab(t) {
+    tab = t; const on = t === "sv"; $("#geoSv").hidden = !on; $("#geoImg").hidden = on; $("#geoCat").hidden = on; $("#geoZoomImg").hidden = on;
+    root.querySelectorAll("#geoTabs button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.t === t)));
+    const msg = $("#geoSvMsg"); msg.hidden = true;
+    if (!on || sv || !st?.loc) return;
+    const L = LOCS.find((l) => l.id === st.loc.id), seq = ++svSeq; msg.hidden = false; msg.textContent = "Loading Street View…";
+    showStreet($("#geoSv"), L).then((h2) => { if (dead || seq !== svSeq) { h2?.destroy(); return; } if (h2) { sv = h2; msg.hidden = true; } else msg.textContent = "No Street View near this place. Use the photo."; }, () => { if (seq === svSeq) msg.textContent = "Street View could not load. Use the photo."; });
+  }
+  root.querySelectorAll("#geoTabs button").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.t)));
+  function resetClue() { svSeq++; sv?.destroy(); sv = null; $("#geoTabs").hidden = !svOn(); showTab("photo"); }
+
   function paint(force) {
     const s = st; if (!s) return;
     $("#geInfo").innerHTML = s.ph === "end" ? "Game over" : `Round <b>${s.i + 1}</b> of ${s.total}`;
     const key = s.i + ":" + (s.loc?.id || "");
     if (s.ph !== "end" && (key !== roundKey || force) && map) {
       if (key !== roundKey) { pin = null; locked = false; hinted = false; roundKey = key; map.clearResult(); map.setLocked(false); }
-      const img = $("#geoImg"); img.src = photo(s.loc.id); $("#geoCat").textContent = { landmark: "Landmark", nature: "Nature", city: "City", india: "India", queer: "Queer history", street: "Street" }[s.loc.cat] || ""; $("#geoFig").classList.remove("fit");
+      resetClue(); const img = $("#geoImg"); img.src = photo(s.loc.id); $("#geoCat").textContent = { landmark: "Landmark", nature: "Nature", city: "City", india: "India", queer: "Queer history", street: "Street" }[s.loc.cat] || ""; $("#geoFig").classList.remove("fit");
       const b = $("#geoGo"); b.disabled = true; b.querySelector(".btn-t").textContent = "Drop a pin to guess"; $("#geoHint").disabled = false; $("#geoStatus").textContent = ""; $("#geoRv").innerHTML = ""; $("#geoCredit").innerHTML = "";
     }
     const me0 = me();
@@ -123,13 +141,14 @@ function mountView(root, api, solo) {
     st = s; paint(false);
     if (s.ph === "end" && solo && fresh) report(s.scores[me()] || 0);
   }
-  return { render, players() { paint(false); }, destroy() { dead = true; map?.destroy(); if (api.room) api.room.off("msg", onMsg); } };
+  return { render, players() { paint(false); }, destroy() { dead = true; svSeq++; sv?.destroy(); map?.destroy(); if (api.room) api.room.off("msg", onMsg); } };
 }
 
 /* ---------- registering ---------- */
 const OPTIONS = [
   { id: "rounds", label: "Places", def: 5, choices: [[3, "3"], [5, "5"], [8, "8"], [10, "10"]] },
   { id: "region", label: "Where", def: "world", choices: [["world", "All over the world"], ["india", "India only"], ["abroad", "Outside India"], ["queer", "Queer history places"], ["nature", "Wild places"]] },
+  ...(hasStreetView() ? [{ id: "clue", label: "Clues", def: "both", choices: [["both", "Photo + Street View"], ["photo", "Photo only"]] }] : []),
   { id: "time", label: "Time per place", def: 1, choices: [[0.6, "Quick (45s)"], [1, "Normal (90s)"], [2, "Relaxed (3 min)"]] }
 ];
 mp({ id: "geo", title: "Where in the world?", min: 2, max: 8, options: OPTIONS, host: (ctx) => makeHost(ctx, false), view: (root, api) => mountView(root, api, false) });
@@ -142,9 +161,9 @@ game("geo",
     const me = { id: "me", name: "You", color: 0, host: true, away: false };
     const get = () => Object.fromEntries([...setup.querySelectorAll("select")].map((s) => [s.dataset.o, s.value]));
     const ctx = { players: [me], after: (ms, fn) => { const t = setTimeout(fn, ms); timers.push(t); return t; }, push: (s) => view?.render(s), reply: (pid, d) => msgFn?.(d) };
-    const api = { me, players: [me], isHost: true, solo: true, act: (a) => host?.act("me", a), onMsg: (f) => (msgFn = f), rematch: () => go(), leave: () => stop() };
+    const api = { me, players: [me], isHost: true, solo: true, opts: {}, act: (a) => host?.act("me", a), onMsg: (f) => (msgFn = f), rematch: () => go(), leave: () => stop() };
     function stop() { host?.destroy(); timers.forEach(clearTimeout); timers = []; view?.destroy(); view = null; host = null; stage.hidden = true; stage.innerHTML = ""; setup.hidden = false; }
-    function go() { host?.destroy(); timers.forEach(clearTimeout); timers = []; view?.destroy(); const o = get(); setup.hidden = true; stage.hidden = false; stage.innerHTML = ""; view = mountView(stage, api, true); host = makeHost(ctx, true); host.start(o); }
+    function go() { host?.destroy(); timers.forEach(clearTimeout); timers = []; view?.destroy(); const o = get(); api.opts = o; setup.hidden = true; stage.hidden = false; stage.innerHTML = ""; view = mountView(stage, api, true); host = makeHost(ctx, true); host.start(o); }
     q$("#geGo").addEventListener("click", go);
     return { destroy() { host?.destroy(); timers.forEach(clearTimeout); view?.destroy(); } };
   });
