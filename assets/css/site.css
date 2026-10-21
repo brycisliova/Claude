@@ -1383,3 +1383,28 @@ html,body{touch-action:manipulation}
 .geo-km{display:inline-flex;align-items:center;gap:.5rem;font-variant-numeric:tabular-nums}
 .geo-km i{display:inline-block;width:.9rem;height:.9rem;border-radius:50%}
 .geo-log{list-style:none;padding:0;margin:.4rem 0 1rem;display:grid;gap:.2rem;color:var(--fg2);font-size:.92rem}
+
+/* ---- Truth or Dare ---- */
+.td-names{display:grid;gap:.5rem;max-width:26rem;margin:0 0 .8rem}
+.td-nrow{display:grid;grid-template-columns:1fr auto;gap:.5rem}
+.td-seat{display:grid;gap:.15rem;margin:.2rem 0 .7rem}
+.td-seatlab{font-size:.72rem;font-weight:650;letter-spacing:.12em;text-transform:uppercase;color:var(--fg2)}
+.td-seatname{display:flex;align-items:center;gap:.5rem;font-size:clamp(1.5rem,4vw,2.3rem);letter-spacing:-.02em;font-weight:560}
+.td-seatname em{font-style:normal;font-size:.8rem;background:var(--yellow);color:#0e0e10;padding:.1rem .6rem;border-radius:999px;letter-spacing:0}
+.td-card{padding:clamp(1.3rem,4vw,2.4rem);border-radius:18px;background:var(--bg2);min-height:11rem;display:grid;gap:.9rem;align-content:center;color:#0e0e10;animation:tdflip .5s var(--ease) both}
+.td-card.td-truth{background:var(--blue)}.td-card.td-dare{background:var(--pink)}.td-card.td-never{background:var(--yellow)}.td-card.td-tea{background:var(--violet)}
+.td-card.td-pick{background:var(--bg2);color:var(--fg)}
+.td-card:empty{display:none}
+.td-kind{display:flex;justify-content:space-between;align-items:center;gap:.8rem;margin:0;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.td-heat{display:inline-flex;align-items:center;gap:.25rem;font-size:.72rem}.td-heat i{width:.7rem;height:.7rem;border-radius:50%;background:rgba(14,14,16,.2)}.td-heat i.on{background:#0e0e10}.td-heat b{margin-left:.3rem;font-weight:650}
+.td-text{margin:0;font-size:clamp(1.35rem,4.2vw,2.3rem);line-height:1.15;letter-spacing:-.02em;font-weight:560;text-wrap:balance}
+.td-big{margin:0;font-size:clamp(2rem,6vw,3.4rem);letter-spacing:-.03em;line-height:1}.td-sub{margin:0;color:var(--fg2)}
+.td-acts{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0 .4rem}
+.td-b{min-width:8.5rem;font-size:1.05rem}.td-b-truth{background:var(--blue)!important;color:#0e0e10!important}.td-b-dare{background:var(--pink)!important;color:#0e0e10!important}
+.td-b-truth,.td-b-dare{border:0}
+.td-who{min-width:5rem}
+.td-note{margin:.2rem 0 .8rem;min-height:1.4em;color:var(--fg2)}.td-note strong{color:var(--fg)}
+.td-awards{list-style:none;padding:0;margin:1.2rem auto 0;display:grid;gap:.4rem;max-width:26rem;text-align:left}
+.td-awards li{padding:.5rem .8rem;border-radius:10px;background:var(--bg);font-size:.95rem}.td-awards span{color:var(--fg2);font-size:.82rem;display:block}
+@keyframes tdflip{from{opacity:0;transform:translateY(10px) rotateX(-18deg)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.td-card{animation:none}}
