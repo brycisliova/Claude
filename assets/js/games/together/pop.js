@@ -21,6 +21,10 @@ const picUrl = (id) => new URL(`../../../img/pop/${id}.webp`, import.meta.url).h
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const RANKS = [[0.9, "Pride encyclopaedia"], [0.75, "Certified icon"], [0.55, "Ally with receipts"], [0.35, "Rising star"], [0, "Every legend starts somewhere"]];
 
+// registerQuiz builds a quiz game (solo and room) from a bank of questions. The Pride pop quiz is registered at the bottom;
+// trivia.js registers the general knowledge quiz from the same engine.
+export function registerQuiz(cfg) {
+const ALL = cfg.all, RIGHT = cfg.right, WRONG = cfg.wrong, SLOW = cfg.slow, RANKS = cfg.ranks, TOPICS = cfg.topics, SEEN_KEY = cfg.seenKey;
 /* ---------- building a round ---------- */
 function prep(src) {
   const q = { ...src };
@@ -30,15 +34,14 @@ function prep(src) {
   return q;
 }
 // Questions already seen on this device are skipped until the topic runs out, so every game feels fresh.
-const SEEN_KEY = "wwa-pop-seen";
 const fnv = (str) => { let x = 2166136261; for (let i = 0; i < str.length; i++) x = Math.imul(x ^ str.charCodeAt(i), 16777619); return (x >>> 0).toString(36); };
-export const qid = (b) => fnv(b.t + "|" + (b.img || b.code || (b.t === "clue" ? b.clues[0] : b.t === "first" ? b.o.slice().sort().join("|") : b.q)));
+const qid = (b) => fnv(b.t + "|" + (b.img || b.code || (b.t === "clue" ? b.clues[0] : b.t === "first" ? b.o.slice().sort().join("|") : b.q)));
 const readSeen = () => { try { const v = JSON.parse(localStorage.getItem(SEEN_KEY)); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
 const writeSeen = (a) => { try { localStorage.setItem(SEEN_KEY, JSON.stringify(a.slice(-2000))); } catch (e) { /* private mode */ } };
-export const forgetSeen = () => writeSeen([]);
+const forgetSeen = () => writeSeen([]);
 const inTopic = (topic) => ALL.filter((b) => (topic === "mix" ? true : topic === "wild" ? WILD.has(b.t) : b.cat === topic));
-export function freshCount(topic) { const seen = new Set(readSeen()), pool = inTopic(topic); return { fresh: pool.filter((b) => !seen.has(qid(b))).length, total: pool.length }; }
-export function buildQuestions(topic, total) {
+function freshCount(topic) { const seen = new Set(readSeen()), pool = inTopic(topic); return { fresh: pool.filter((b) => !seen.has(qid(b))).length, total: pool.length }; }
+function buildQuestions(topic, total) {
   let pool = inTopic(topic);
   if (pool.length < total) pool = ALL.slice();
   const seen0 = readSeen(), seenSet = new Set(seen0);
@@ -238,10 +241,10 @@ const OPTIONS = [
   { id: "rounds", label: "Questions", def: 15, choices: [[10, "10"], [15, "15"], [20, "20"], [30, "30"]] },
   { id: "pace", label: "Pace", def: 1, choices: [[1.5, "Chill"], [1, "Normal"], [0.7, "Frantic"]] }
 ];
-mp({ id: "pop", title: "Pride pop quiz", min: 2, max: 8, options: OPTIONS, host: (ctx) => makeHost(ctx, false), view: (root, api) => mountView(root, api, false) });
+mp({ id: cfg.id, title: cfg.title, min: 2, max: 8, options: OPTIONS, host: (ctx) => makeHost(ctx, false), view: (root, api) => mountView(root, api, false) });
 
-game("pop",
-  `<div class="pq-solo"><div class="pq-setup" id="pqSetup"><p class="pq-lede">${ALL.length} questions about queer music, film, TV, icons, ballroom, India and more, with photographs, emoji and riddles. Each game draws a fresh set, and a question will not come back until you have seen the rest. Every answer comes with a little story.</p><div class="tg-opts">${OPTIONS.map((o) => `<label>${o.label}<select class="mini" data-o="${o.id}">${o.choices.map(([v, l]) => `<option value="${v}"${String(v) === String(o.def) ? " selected" : ""}>${l}</option>`).join("")}</select></label>`).join("")}</div><div class="row"><button class="btn btn-primary" id="pqGo" type="button"><span class="btn-t">Start the quiz</span></button></div><p class="pq-seen" id="pqSeen"></p></div><div id="pqStage" hidden></div></div>`,
+game(cfg.id,
+  `<div class="pq-solo"><div class="pq-setup" id="pqSetup"><p class="pq-lede">${cfg.lede(ALL.length)}</p><div class="tg-opts">${OPTIONS.map((o) => `<label>${o.label}<select class="mini" data-o="${o.id}">${o.choices.map(([v, l]) => `<option value="${v}"${String(v) === String(o.def) ? " selected" : ""}>${l}</option>`).join("")}</select></label>`).join("")}</div><div class="row"><button class="btn btn-primary" id="pqGo" type="button"><span class="btn-t">Start the quiz</span></button></div><p class="pq-seen" id="pqSeen"></p></div><div id="pqStage" hidden></div></div>`,
   () => {
     const setup = q$("#pqSetup"), stage = q$("#pqStage");
     let host = null, view = null, last = null, timers = [];
@@ -259,3 +262,6 @@ game("pop",
     q$("#pqGo").addEventListener("click", go);
     return { destroy() { host?.destroy(); timers.forEach(clearTimeout); view?.destroy(); } };
   });
+}
+
+registerQuiz({ id: "pop", title: "Pride pop quiz", all: ALL, right: RIGHT, wrong: WRONG, slow: SLOW, ranks: RANKS, topics: TOPICS, seenKey: "wwa-pop-seen", lede: (n) => `${n} questions about queer music, film, TV, icons, ballroom, India and more, with photographs, emoji and riddles. Each game draws a fresh set, and a question will not come back until you have seen the rest. Every answer comes with a little story.` });
