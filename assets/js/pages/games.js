@@ -13,6 +13,8 @@ import "../games/together/atlas.js";
 import "../games/together/party.js";
 import "../games/together/geo.js";
 import "../games/together/tod.js";
+import "../games/together/tune.js";
+import "../games/together/trivia.js";
 import "../games/together/four.js";
 import "../games/together/duel.js";
 import "../games/together/hunt.js";
