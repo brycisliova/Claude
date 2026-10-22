@@ -7,9 +7,14 @@ import { game, $ as q$, report } from "../shared.js";
 import { tone, PENTA, ready } from "../../audio.js";
 
 const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z]/g, "");
-const KIND = { c: "Country", s: "State or province", d: "District", t: "City or town", w: "Ocean or sea", x: "Desert", v: "Village" };
-const VILLAGES = {}; // "in" / "world" -> { region: "|name|name|" }
-const villageFile = (which) => (VILLAGES[which] ||= fetch(new URL(`../../../data/atlas-villages-${which}.json`, import.meta.url)).then((r) => { if (!r.ok) throw new Error("villages"); return r.json(); }).catch((e) => { delete VILLAGES[which]; throw e; }));
+const KIND = { c: "Country", s: "State or province", d: "District", t: "City or town", w: "Ocean or sea", x: "Desert", k: "Continent", f: "River, lake, mountain or island", v: "Village" };
+const VILLAGES = new Map(); // file name -> Promise of "|name|name|"
+// One small file per Indian state or other country, fetched the first time a player claims a village there.
+const villageFile = (inIndia, region) => {
+  const file = (inIndia ? "in-" : "c-") + region.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z]/g, "");
+  if (!VILLAGES.has(file)) VILLAGES.set(file, fetch(new URL(`../../../data/villages/${file}.json`, import.meta.url)).then((r) => (r.status === 404 ? "" : r.ok ? r.json() : Promise.reject(new Error("villages")))).catch((e) => { VILLAGES.delete(file); throw e; }));
+  return VILLAGES.get(file);
+};
 
 /* ---------- data ---------- */
 let DATA = null, loading = null;
@@ -21,12 +26,12 @@ function index(j) {
   const ix = new Map(), byFirst = {}, ent = [];
   const push = (k, row) => {
     const name = row[0], reg = row[1] ?? -1, alias = k === "t" ? row[2] === 0 : (k === "s" && row[2] === 1) || (k === "c" && ["USA", "UK", "UAE", "United States of America", "United Kingdom of Great Britain", "Burma", "Ivory Coast", "East Timor", "Czechia", "Holland"].includes(name));
-    const e = { k, name, n: norm(name), reg, region: reg >= 0 ? j.r[reg] : "", pop: k === "t" ? row[2] : 5, alias };
+    const e = { k, name, n: norm(name), reg, region: reg >= 0 ? j.r[reg] : "", pop: k === "t" ? row[2] : k === "f" ? 2 : 5, alias };
     if (e.n.length < 2) return;
     ent.push(e); (ix.get(e.n) || ix.set(e.n, []).get(e.n)).push(e);
     if (!alias) (byFirst[e.n[0]] ||= []).push(e);
   };
-  j.c.forEach((n) => push("c", [n])); j.s.forEach((r) => push("s", r)); j.d.forEach((r) => push("d", r)); j.t.forEach((r) => push("t", r)); j.w.forEach((n) => push("w", [n])); j.x.forEach((n) => push("x", [n]));
+  j.c.forEach((n) => push("c", [n])); j.s.forEach((r) => push("s", r)); j.d.forEach((r) => push("d", r)); j.t.forEach((r) => push("t", r)); j.w.forEach((n) => push("w", [n])); j.x.forEach((n) => push("x", [n])); (j.k || []).forEach((n) => push("k", [n])); (j.f || []).forEach((n) => push("f", [n]));
   const indiaRegs = new Set(j.d.map((r) => r[1])), indianNames = new Set(j.d.map((r) => j.r[r[1]]));
   const regAlias = new Map(); j.r.forEach((n) => regAlias.set(norm(n), n)); j.a.forEach(([a, c]) => regAlias.set(norm(a), c)); j.ca.forEach(([a, c]) => regAlias.set(norm(a), c));
   const isIndia = (e) => (e.k === "v" && indianNames.has(e.region)) || e.k === "d" || (e.k === "s" && e.region === "India") || (e.k === "t" && indiaRegs.has(e.reg)) || (e.k === "c" && e.n === "india");
@@ -36,7 +41,8 @@ function index(j) {
 /* ---------- rules ---------- */
 const TWISTS = [
   { id: "india", label: "India only", test: (e, D) => D.isIndia(e) },
-  { id: "water", label: "An ocean, sea or desert", test: (e) => e.k === "w" || e.k === "x" },
+  { id: "water", label: "A continent, ocean, sea or desert", test: (e) => e.k === "w" || e.k === "x" || e.k === "k" },
+  { id: "nature", label: "A river, lake, mountain or island", test: (e) => e.k === "f" },
   { id: "country", label: "A country", test: (e) => e.k === "c" },
   { id: "state", label: "A state, province or district", test: (e) => e.k === "s" || e.k === "d" },
   { id: "short", label: "Six letters or fewer", test: (e) => e.n.length <= 6 },
@@ -62,14 +68,14 @@ async function judge(D, S, name, region) {
   }
   // otherwise it can only be a village, and a village needs its state (India) or country
   const reg = matchRegion(D, region);
-  if (!region.trim()) return { ok: false, msg: list ? `This turn's twist: ${t.label}.` : "Not a city, state, country, ocean or desert I know. If it is a village, add its state (India) or its country." };
+  if (!region.trim()) return { ok: false, msg: list ? `This turn's twist: ${t.label}.` : "I do not know that place. If it is a village, add its state (India) or its country in the second box." };
   if (!reg) return { ok: false, msg: "I don't know that state or country. Check the spelling." };
   if (reg === "India") return { ok: false, msg: "For a village in India, give its state (like Bihar), not just India." };
   const inIndia = D.indianStates.has(reg), isCountry = D.countries.has(reg);
   if (!inIndia && !isCountry) return { ok: false, msg: "For a village, give the state if it is in India, or the country if it is anywhere else." };
-  let data; try { data = await villageFile(inIndia ? "in" : "world"); } catch (e) { return { ok: false, msg: "Could not load the village list. Check your connection." }; }
-  const names = data[reg]; const entry = { k: "v", name: name.trim().replace(/\b\w/g, (c) => c.toUpperCase()), n: nn, reg: -1, region: reg, pop: 1, alias: false };
-  if (!names || !names.includes("|" + nn + "|")) return { ok: false, msg: inIndia ? `I can't find a village by that name in ${reg}.` : `I can't find a village by that name in ${reg}.` };
+  let names; try { names = await villageFile(inIndia, reg); } catch (e) { return { ok: false, msg: "Could not load the village list. Check your connection." }; }
+  const entry = { k: "v", name: name.trim().replace(/\b\w/g, (c) => c.toUpperCase()), n: nn, reg: -1, region: reg, pop: 1, alias: false };
+  if (!names.includes("|" + nn + "|")) return { ok: false, msg: inIndia ? `I can't find a village by that name in ${reg}.` : `I can't find a village by that name in ${reg}.` };
   if (t && !t.test(entry, D)) return { ok: false, msg: `This turn's twist: ${t.label}.` };
   return { ok: true, entry };
 }
@@ -96,7 +102,7 @@ function makeHost(ctx, solo) {
     return "";
   }
   function accept(id, e, fast) {
-    const pts = (e.k === "w" || e.k === "x" || e.k === "v" ? 15 : D.isIndia(e) ? 12 : 10) + Math.round(8 * fast);
+    const pts = (e.k === "w" || e.k === "x" || e.k === "k" || e.k === "f" || e.k === "v" ? 15 : D.isIndia(e) ? 12 : 10) + Math.round(8 * fast);
     const mult = S.twist ? 2 : 1; S.used.add(e.n); S.score[id] = (S.score[id] || 0) + pts * mult; S.words[id] = (S.words[id] || 0) + 1;
     S.last = { n: e.name, reg: e.region, k: e.k, by: id, pts: pts * mult }; S.hist.push(S.last); S.letter = lastLetter(e.n).toUpperCase();
     clearTimeout(S.tm); clearTimeout(S.tm2);
@@ -152,14 +158,14 @@ function mountView(root, api, solo) {
   <p class="at-twist" id="atTwist" hidden></p>
   <div class="at-main"><div class="at-letter" id="atLetter" aria-live="polite"><span>starts with</span><b>?</b></div><div class="at-last" id="atLast"><span class="muted">The first place is yours.</span></div></div>
   <form class="at-form" id="atForm" autocomplete="off" hidden>
-    <label class="sr-only" for="atName">Place name</label><input class="text-in at-in" id="atName" maxlength="40" placeholder="City, state, country, ocean, desert… or a village" autocapitalize="words" spellcheck="false">
+    <label class="sr-only" for="atName">Place name</label><input class="text-in at-in" id="atName" maxlength="40" placeholder="Any place: city, state, country, continent, ocean, river… or a village" autocapitalize="words" spellcheck="false">
     <label class="sr-only" for="atReg">Where is it</label><input class="text-in at-in" id="atReg" maxlength="40" list="atRegs" placeholder="Only for a village: its state (India) or country" autocapitalize="words" spellcheck="false"><datalist id="atRegs"></datalist>
     <button class="btn btn-primary" type="submit"><span class="btn-t">Play it</span></button>
   </form>
   <p class="at-msg" id="atMsg" role="status"></p>
   <ul class="mp-score at-score" id="atScore"></ul>
   <ol class="at-hist" id="atHist" aria-label="Places played"></ol>
-  <details class="at-how"><summary>How to play</summary><ul><li>Name a place that starts with the last letter of the previous one. Mumbai is followed by something starting with I.</li><li><b>Cities, districts, states, countries, oceans, seas and deserts:</b> just type the name. Nothing else is needed.</li><li><b>Villages</b> are allowed too, but then you must also fill in the second box: the <b>state</b> if the village is in India, or the <b>country</b> if it is anywhere else.</li><li>No place can be used twice. Three wrong tries, or running out of time, costs a life.</li><li>Every fourth turn has a twist, like India only or deserts and oceans only, worth double points.</li><li>Last player with lives wins. Scores break ties: deserts, oceans and villages pay more, and quick answers earn a bonus.</li></ul></details>
+  <details class="at-how"><summary>How to play</summary><ul><li>Name a place that starts with the last letter of the previous one. Mumbai is followed by something starting with I.</li><li><b>Cities, towns, districts, states, countries, continents, oceans, seas, deserts, rivers, lakes, mountains and islands:</b> just type the name. Nothing else is needed.</li><li><b>Villages</b> are allowed too, but then you must also fill in the second box: the <b>state</b> if the village is in India, or the <b>country</b> if it is anywhere else.</li><li>No place can be used twice. Three wrong tries, or running out of time, costs a life.</li><li>Every fourth turn has a twist, like India only or deserts and oceans only, worth double points.</li><li>Last player with lives wins. Scores break ties: deserts, oceans and villages pay more, and quick answers earn a bonus.</li></ul></details>
   <div id="atEnd"></div></div>`;
   const $ = (s) => root.querySelector(s); let st = null, D = null, lastTurnKey = "", offMsg = null;
   const me = () => api.me?.id;
@@ -214,7 +220,7 @@ const OPTIONS = [
 mp({ id: "atlas", title: "Atlas", min: 2, max: 8, options: OPTIONS, host: (ctx) => makeHost(ctx, false), view: (root, api) => mountView(root, api, false) });
 
 game("atlas",
-  `<div class="pq-solo"><div class="pq-setup" id="atSetup"><p class="pq-lede">Name a place that starts with the last letter of the last one. Cities, states, countries, oceans and deserts need only a name. A village counts too, if you add its state (India) or country. Take on the bot, or play a room with friends.</p><div class="tg-opts">${[{ id: "bot", label: "Bot level", def: "easy", choices: [["easy", "Easy"], ["hard", "Hard"]] }, ...OPTIONS].map((o) => `<label>${o.label}<select class="mini" data-o="${o.id}">${o.choices.map(([v, l]) => `<option value="${v}"${String(v) === String(o.def) ? " selected" : ""}>${l}</option>`).join("")}</select></label>`).join("")}</div><div class="row"><button class="btn btn-primary" id="atGo" type="button"><span class="btn-t">Start</span></button></div></div><div id="atStage" hidden></div></div>`,
+  `<div class="pq-solo"><div class="pq-setup" id="atSetup"><p class="pq-lede">Name a place that starts with the last letter of the last one. Cities, states, countries, continents, oceans, seas, deserts, rivers, lakes, mountains and islands need only a name. A village counts too, if you add its state (India) or country. Take on the bot, or play a room with friends.</p><div class="tg-opts">${[{ id: "bot", label: "Bot level", def: "easy", choices: [["easy", "Easy"], ["hard", "Hard"]] }, ...OPTIONS].map((o) => `<label>${o.label}<select class="mini" data-o="${o.id}">${o.choices.map(([v, l]) => `<option value="${v}"${String(v) === String(o.def) ? " selected" : ""}>${l}</option>`).join("")}</select></label>`).join("")}</div><div class="row"><button class="btn btn-primary" id="atGo" type="button"><span class="btn-t">Start</span></button></div></div><div id="atStage" hidden></div></div>`,
   () => {
     const setup = q$("#atSetup"), stage = q$("#atStage"); loadAtlas().catch(() => {});
     let host = null, view = null, timers = [], msgFn = null;

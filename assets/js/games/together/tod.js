@@ -9,13 +9,13 @@ import { TRUTHS, DARES, NEVER, TEA } from "../../data/tod.js";
 import { tone, PENTA, ready } from "../../audio.js";
 
 const BANK = { truth: TRUTHS, dare: DARES, never: NEVER, tea: TEA };
-const HEAT = ["mild", "medium", "wild"], HEAT_LABEL = { mild: "Mild", medium: "Medium", wild: "Wild" }, BONUS = { mild: 0, medium: 1, wild: 2 };
-const LEVEL = { chill: "mild", spicy: "medium", wild: "wild" };
-const heatFor = (level, i, total) => (level === "mixed" ? null : level === "build" ? HEAT[Math.min(2, Math.floor((3 * i) / Math.max(1, total)))] : LEVEL[level] || null);
+const HEAT = ["mild", "medium", "wild", "adult"], HEAT_LABEL = { mild: "Mild", medium: "Medium", wild: "Wild", adult: "Adult 18+" }, BONUS = { mild: 0, medium: 1, wild: 2, adult: 3 };
+const LEVEL = { chill: ["mild"], spicy: ["medium"], wild: ["wild"], adult: ["adult"], after: ["wild", "adult"], mixed: ["mild", "medium", "wild"] };
+const allowed = (level, i, total) => (level === "build" ? [HEAT[Math.min(2, Math.floor((3 * i) / Math.max(1, total)))]] : level === "build18" ? [HEAT[Math.min(3, Math.floor((4 * i) / Math.max(1, total)))]] : LEVEL[level] || LEVEL.mixed);
 function draw(kind, level, i, total) {
-  const want = heatFor(level, i, total), bank = BANK[kind];
-  let pool = want ? bank.filter((x) => x[1] === want) : bank; if (pool.length < 4) pool = bank;
-  const it = pickFresh("wwa-tod-" + kind + "-" + (want || "all"), pool, (x) => x[0], 1)[0];
+  const want = allowed(level, i, total), bank = BANK[kind], adultOk = want.includes("adult") || level === "build18";
+  let pool = bank.filter((x) => want.includes(x[1])); if (pool.length < 4) pool = bank.filter((x) => adultOk || x[1] !== "adult");
+  const it = pickFresh("wwa-tod-" + kind + "-" + want.join(""), pool, (x) => x[0], 1)[0];
   return { t: it[0], heat: it[1] };
 }
 const MS = { pick: 20000, truth: 60000, dare: 75000, rate: 9000, grp: 18000, show: 4200 };
@@ -130,7 +130,7 @@ const KIND = { truth: ["Truth", "td-truth"], dare: ["Dare", "td-dare"], never: [
 function mountView(root, api, solo) {
   root.innerHTML = `<div class="mp td"><div class="mp-head"><p class="mp-turn" id="tdInfo" aria-live="polite"></p><div class="mp-tl"><i id="tdTl"></i></div></div>
   <div class="td-seat" id="tdSeat"></div><div class="td-card" id="tdCard" aria-live="polite"></div><div class="td-acts" id="tdActs"></div><p class="td-note" id="tdNote" role="status"></p>
-  <ul class="mp-score" id="tdScore"></ul><details class="at-how"><summary>How to play</summary><ul><li>Each turn one player sits in the hot seat and picks <b>truth</b> or <b>dare</b>, or lets fate decide.</li><li>Do it (or answer honestly) and tap <b>Done</b>. ${solo ? "The rest of the group decides if it counts." : "The others vote whether it was legit."} Skipping or running out of time costs a point.</li><li>Wilder prompts score more. Every few turns the whole group plays <b>Never have I ever</b> or <b>Spill the tea</b>.</li><li>Nothing here needs you to touch anyone, drink anything or share anything private. Pass on anything that is not okay for you.</li></ul></details><div id="tdEnd"></div></div>`;
+  <ul class="mp-score" id="tdScore"></ul><details class="at-how"><summary>How to play</summary><ul><li>Each turn one player sits in the hot seat and picks <b>truth</b> or <b>dare</b>, or lets fate decide.</li><li>Do it (or answer honestly) and tap <b>Done</b>. ${solo ? "The rest of the group decides if it counts." : "The others vote whether it was legit."} Skipping or running out of time costs a point.</li><li>Wilder prompts score more. Every few turns the whole group plays <b>Never have I ever</b> or <b>Spill the tea</b>.</li><li>The 18+ levels are cheeky, flirty and gossipy, never explicit. Only pick them if everyone playing is 18 or older.</li><li>Nothing here needs you to touch anyone, drink anything or share anything private. Pass on anything that is not okay for you.</li></ul></details><div id="tdEnd"></div></div>`;
   const $ = (s) => root.querySelector(s); let st = null, lastKey = "", mine = null;
   const me = () => api.me?.id, name = (id) => byId(api, id)?.name || "Player";
   const act = (a) => api.act(a);
@@ -196,7 +196,7 @@ function mountView(root, api, solo) {
 
 /* ---------- registering ---------- */
 const OPTIONS = [
-  { id: "level", label: "Spice level", def: "build", choices: [["build", "Build-up (mild to wild)"], ["chill", "Chill"], ["spicy", "Spicy"], ["wild", "Wild"], ["mixed", "Everything"]] },
+  { id: "level", label: "Spice level", def: "build", choices: [["build", "Build-up (mild to wild)"], ["chill", "Chill"], ["spicy", "Spicy"], ["wild", "Wild"], ["after", "After dark 18+ (wild and adult)"], ["adult", "Adult 18+ only"], ["build18", "Build-up to adult 18+"], ["mixed", "Everything but adult"]] },
   { id: "turns", label: "Turns each", def: 3, choices: [[2, "2"], [3, "3"], [5, "5"]] },
   { id: "groups", label: "Group rounds", def: "on", choices: [["on", "Never have I ever + Spill the tea"], ["off", "Off"]] }
 ];

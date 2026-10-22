@@ -1451,3 +1451,9 @@ html,body{touch-action:manipulation}
 @media (max-width:520px){.tn-rows li{grid-template-columns:auto 1fr auto}.tn-g{grid-column:1 / -1;grid-row:2}}
 @media (prefers-reduced-motion:reduce){.tn-stage.on .tn-eq i{animation:none;transform:scaleY(.7)}.tn-rev{animation:none}}
 .gc-new{padding:.1rem .55rem;border-radius:999px;background:#0e0e10;color:#f2efe9;font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.sv-img{display:block;width:100%;height:100%;object-fit:cover;background:#0e0e10}
+.sv-ctl{position:absolute;left:0;right:0;top:.7rem;display:flex;justify-content:center;align-items:center;gap:.6rem;pointer-events:none}
+.sv-ctl>*{pointer-events:auto}
+.sv-ctl button{border:0;border-radius:999px;padding:.5rem 1rem;background:rgba(14,14,16,.75);color:#f2efe9;font-size:.82rem;font-weight:650}
+.sv-ctl button:disabled{opacity:.4}
+.sv-n{padding:.3rem .7rem;border-radius:999px;background:rgba(14,14,16,.6);color:#f2efe9;font-size:.74rem}

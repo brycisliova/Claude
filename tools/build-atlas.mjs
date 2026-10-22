@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // Builds assets/data/atlas.json for the Atlas game from GeoNames dumps (CC BY 4.0, geonames.org).
-// Usage: node tools/build-atlas.mjs <folder with cities15000.txt, admin1CodesASCII.txt, admin2Codes.txt, countryInfo.txt>
+// Usage: node tools/build-atlas.mjs <folder with cities5000.txt, admin1CodesASCII.txt, admin2Codes.txt, countryInfo.txt> [folder with Natural Earth geojson]
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const dir = process.argv[2];
+const dir = process.argv[2], neDir = process.argv[3];
 if (!dir) { console.error("Give the folder that holds the GeoNames files."); process.exit(1); }
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const lines = (f) => readFileSync(join(dir, f), "utf8").split("\n").filter((l) => l && !l.startsWith("#")).map((l) => l.split("\t"));
@@ -22,7 +22,7 @@ const stateName = (code) => { const n = admin1["IN." + code]; return INDIA_FIX[n
 const regions = [], rix = new Map();
 const R = (n) => { if (!rix.has(n)) { rix.set(n, regions.length); regions.push(n); } return rix.get(n); };
 
-const out = { r: regions, c: [], s: [], d: [], t: [], w: [], x: [], a: [] };
+const out = { r: regions, c: [], s: [], d: [], t: [], w: [], x: [], k: [], f: [], a: [] };
 const seen = new Set(); const add = (list, key, row) => { if (seen.has(key)) return; seen.add(key); out[list].push(row); };
 
 // countries
@@ -46,13 +46,12 @@ for (const r of lines("admin2Codes.txt")) {
   const n = r[1].replace(/^District /, "").replace(/ District$/, "").trim(); if (!n || /\d/.test(n)) continue;
   add("d", `d|${n}|${state}`, [n, R(state)]);
 }
-// cities and towns: all of India above 15,000, capitals anywhere, and the rest of the world above 100,000
+// cities and towns: every place with 5,000 people or more, anywhere, plus every capital
 let cityCount = 0;
-for (const c of lines("cities15000.txt")) {
+for (const c of lines("cities5000.txt")) {
   const [, name, ascii, , , , , fcode, iso, , a1, , , , pop] = c, population = +pop || 0;
   const country = countries[iso]; if (!country) continue;
   const india = iso === "IN";
-  if (!india && population < 100000 && fcode !== "PPLC") continue;
   const region = india ? stateName(a1) : country; if (!region) continue;
   const nm = ascii || name; if (/\d/.test(nm)) continue;
   const bucket = Math.min(9, Math.max(1, Math.floor(Math.log10(Math.max(population, 1000)) - 2))); // 1..9 by size
@@ -71,6 +70,20 @@ const WATER = ["Pacific Ocean", "Atlantic Ocean", "Indian Ocean", "Arctic Ocean"
 const DESERT = ["Sahara", "Gobi", "Thar", "Kalahari", "Namib", "Atacama", "Mojave", "Sonoran", "Arabian Desert", "Syrian Desert", "Great Victoria Desert", "Great Sandy Desert", "Gibson Desert", "Simpson Desert", "Tanami", "Taklamakan", "Karakum", "Kyzylkum", "Negev", "Sinai", "Patagonian Desert", "Chihuahuan Desert", "Great Basin Desert", "Rub al Khali", "Empty Quarter", "Nubian Desert", "Libyan Desert", "Danakil Desert", "Ordos Desert", "Dasht-e Kavir", "Dasht-e Lut", "Cholistan Desert", "Registan", "Colorado Desert", "Painted Desert", "Antarctic Desert", "Karoo", "Atacama Desert", "Sahara Desert", "Thar Desert", "Gobi Desert", "Kalahari Desert", "Namib Desert", "Mojave Desert", "Sonoran Desert", "Sechura Desert", "Judean Desert", "Western Desert", "Eastern Desert", "Black Rock Desert", "Lut Desert", "Kavir Desert", "Betpak-Dala", "Tabernas Desert", "Wahiba Sands", "Rann of Kutch", "Ladakh Cold Desert", "Spiti Cold Desert"];
 WATER.forEach((n) => add("w", "w|" + n, n)); DESERT.forEach((n) => add("x", "x|" + n, n));
 
+// continents, and natural features from Natural Earth (public domain): seas, gulfs, straits, lakes, rivers, mountains, islands
+["Africa", "Antarctica", "Asia", "Australia", "Europe", "North America", "South America", "Oceania", "Australasia", "Eurasia", "Arctic", "Antarctic"].forEach((n) => add("k", "k|" + n, n));
+["Ganga", "Ganges", "Yamuna", "Godavari", "Krishna", "Kaveri", "Cauvery", "Narmada", "Tapti", "Mahanadi", "Brahmaputra", "Indus", "Sutlej", "Beas", "Ravi", "Chenab", "Jhelum", "Hooghly", "Sabarmati", "Chambal", "Gomti", "Ghaghara", "Kosi", "Tungabhadra", "Periyar", "Himalayas", "Western Ghats", "Eastern Ghats", "Deccan Plateau", "Aravalli", "Vindhya", "Satpura", "Nilgiri", "Karakoram", "Mount Everest", "Everest", "Kanchenjunga", "K2", "Nanda Devi", "Dal Lake", "Chilika Lake", "Wular Lake", "Vembanad Lake", "Sundarbans", "Rann of Kutch", "Lakshadweep Sea", "Palk Strait", "Gulf of Khambhat", "Gulf of Kutch", "Gulf of Mannar", "Bay of Bengal", "Arabian Sea", "Andaman Sea", "Laccadive Sea", "Brahmaputra Valley", "Gangetic Plain", "Malabar Coast", "Coromandel Coast", "Konkan"].forEach((n) => add("f", "f|" + n, n));
+if (neDir) {
+  const ABBR = [[/\bI\.$/, "Island"], [/\bIs\.$/, "Islands"], [/\bMts\.?$/, "Mountains"], [/\bMt\.? /, "Mount "], [/\bR\.$/, "River"], [/\bL\.$/, "Lake"], [/\bPen\.$/, "Peninsula"], [/\bB\.$/, "Bay"], [/\bG\.$/, "Gulf"], [/\bC\. /, "Cape "], [/\bPt\.? /, "Point "], [/\bSt\. /, "Saint "]];
+  const clean = (n) => { if (!n) return ""; n = String(n).trim(); ABBR.forEach(([re, to]) => { n = n.replace(re, to); }); if (n === n.toUpperCase() && n.length > 3) n = n.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()); return n.replace(/\s+/g, " "); };
+  const read = (f) => { try { return JSON.parse(readFileSync(join(neDir, f + ".geojson"), "utf8")).features.map((x) => x.properties); } catch (e) { return []; } };
+  const WAT = new Set(["ocean", "sea", "bay", "gulf", "strait", "channel", "sound", "fjord", "lagoon", "inlet", "reef"]);
+  read("ne_10m_geography_marine_polys").forEach((p) => { const c = (p.featurecla || p.FEATURECLA || "").toLowerCase(), n = clean(p.name ?? p.NAME); if (WAT.has(c) && n) add("w", "w|" + n, n); });
+  const FEAT = new Set(["Island", "Island group", "Range/mtn", "Pen/cape", "Plateau", "Plain", "Delta", "Basin", "Valley", "Peninsula", "Isthmus", "Coast", "Gorge", "Tundra", "Wetlands", "Lowland", "Foothills", "Depression", "Geoarea"]);
+  read("ne_10m_geography_regions_polys").forEach((p) => { const c = p.featurecla || p.FEATURECLA, n = clean(p.name ?? p.NAME); if (!n) return; if (c === "Desert") add("x", "x|" + n, n); else if (c === "Continent") add("k", "k|" + n, n); else if (FEAT.has(c)) add("f", "f|" + n, n); });
+  ["ne_10m_rivers_lake_centerlines", "ne_10m_lakes", "ne_10m_geography_regions_points", "ne_10m_geography_regions_elevation_points"].forEach((f) => read(f).forEach((p) => { const n = clean(p.name ?? p.NAME); if (n && n.length > 2) add("f", "f|" + n, n); }));
+}
+
 writeFileSync(join(root, "assets/data/atlas.json"), JSON.stringify(out));
 const size = Buffer.byteLength(JSON.stringify(out));
-console.log({ countries: out.c.length, states: out.s.length, districts: out.d.length, cities: out.t.length, water: out.w.length, deserts: out.x.length, regions: regions.length, KB: Math.round(size / 1024) });
+console.log({ countries: out.c.length, states: out.s.length, districts: out.d.length, cities: out.t.length, water: out.w.length, deserts: out.x.length, continents: out.k.length, features: out.f.length, regions: regions.length, KB: Math.round(size / 1024) });

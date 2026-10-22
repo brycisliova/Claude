@@ -17,14 +17,7 @@ export const MULTIPLAYER = {
   ]
 };
 
-// Optional Google Street View for "Where in the world?". Leave googleKey empty and the game uses photographs only.
-// To switch Street View on, create a Maps JavaScript API key in Google Cloud (it needs a billing account, and Google
-// gives a monthly free allowance), restrict it to your site address (https://shiningforever.in/*) and paste it here.
-// The key is safe to publish once it is restricted. See the README, "Switch on Street View".
+// Map tiles for the detailed map in "Where in the world?". Esri's World Street Map labels every place in English.
 export const MAPS = {
-  googleKey: "",
-  // Street-map tiles for the detailed map. The default is the public OpenStreetMap server, which is fine for a small
-  // site but asks not to be used heavily (https://operations.osmfoundation.org/policies/tiles/). If the games get busy,
-  // switch to a tile host that gives you a key, for example MapTiler or Stadia, and put its URL here.
-  tileUrl: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+  tileUrl: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
 };

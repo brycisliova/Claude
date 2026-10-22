@@ -1,9 +1,9 @@
 // A small, dependency-free world map on a canvas: Web Mercator, drag to pan, wheel / pinch / buttons to zoom,
 // tap to drop a pin. It always draws country outlines from assets/data/world.json (Natural Earth, public domain).
-// Optionally it lays real street-map tiles (OpenStreetMap, set in assets/js/config.js) over that for a detailed map;
+// Optionally it lays real street-map tiles over that (Esri World Street Map, which labels every place in English);
 // turn them off and the game makes no tile requests at all and tells no one where you are looking.
 import { MAPS } from "../config.js";
-const TILE_URL = MAPS.tileUrl || "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const TILE_URL = MAPS.tileUrl || "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
 const RAD = Math.PI / 180;
 export const haversine = (a, b) => { const dLat = (b.lat - a.lat) * RAD, dLon = (b.lon - a.lon) * RAD, s = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * RAD) * Math.cos(b.lat * RAD) * Math.sin(dLon / 2) ** 2; return 6371 * 2 * Math.asin(Math.min(1, Math.sqrt(s))); };
 // the colour of "how far": bright green when spot on, through amber, to a dark red at the far end of the world
@@ -31,14 +31,15 @@ function prep(j) {
 
 export class GeoMap {
   constructor(canvas, world) {
-    this.c = canvas; this.g = canvas.getContext("2d"); this.w = world; this.z = 1.6; this.cx = nx(78); this.cy = ny(22); this.pin = null; this.result = null; this.handlers = {}; this.pointers = new Map(); this.raf = 0; this.moved = false; this.locked = false; this.tiles = false; this.tc = new Map(); this.cover = 0; this.maxZ = 9.5;
+    this.c = canvas; this.g = canvas.getContext("2d"); this.w = world; this.z = 1.6; this.cx = nx(78); this.cy = ny(22); this.pin = null; this.result = null; this.handlers = {}; this.pointers = new Map(); this.raf = 0; this.moved = false; this.locked = false; this.tiles = false; this.tc = new Map(); this.cover = 0; this.maxZ = 9.5; this.zt = null; this.vel = null; this.fling = 0;
     this.readColors(); this.size();
     this.ro = new ResizeObserver(() => { this.size(); this.draw(); }); this.ro.observe(canvas.parentElement || canvas);
     const on = (t, f, o) => { canvas.addEventListener(t, f, o); (this.off ||= []).push(() => canvas.removeEventListener(t, f, o)); };
     on("pointerdown", (e) => this.down(e)); on("pointermove", (e) => this.move(e)); on("pointerup", (e) => this.up(e)); on("pointercancel", (e) => this.up(e, true));
-    on("wheel", (e) => { e.preventDefault(); this.zoomAt(e.offsetX, e.offsetY, e.deltaY < 0 ? 0.35 : -0.35); }, { passive: false });
+    on("wheel", (e) => { e.preventDefault(); const d = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY; this.glide(e.offsetX, e.offsetY, -Math.max(-120, Math.min(120, d)) / 160); }, { passive: false });
     on("keydown", (e) => this.key(e));
     this.theme = () => { this.readColors(); this.draw(); }; addEventListener("themechange", this.theme);
+    if (globalThis.__wwaDebug) globalThis.__wwaMap = this;
     this.draw();
   }
   readColors() { const s = getComputedStyle(document.documentElement), v = (n, d) => s.getPropertyValue(n).trim() || d; const th = document.documentElement.dataset.theme; this.dark = th === "dark" || (th !== "light" && matchMedia("(prefers-color-scheme: dark)").matches); this.col = { sea: v("--surface2", "#e9e6df"), land: v("--bg", "#f6f4ee"), line: v("--line", "#c9c4b8"), text: v("--fg2", "#555"), ink: v("--fg", "#111") }; }
@@ -51,7 +52,19 @@ export class GeoMap {
   fromScreen(px, py) { const S = this.S; let x = (px - this.W / 2) / S + this.cx; const y = (py - this.H / 2) / S + this.cy; x = ((x % 1) + 1) % 1; return { lat: invY(Math.min(1, Math.max(0, y))), lon: x * 360 - 180 }; }
   clamp() { const S = this.S, halfH = this.H / 2 / S; this.cy = Math.min(Math.max(this.cy, halfH), 1 - halfH); if (S < this.H) this.cy = 0.5; this.cx = ((this.cx % 1) + 1) % 1; }
   zoomAt(px, py, dz) { this.touchAt = performance.now(); const before = this.fromScreen(px, py); this.z = Math.min(this.maxZ, Math.max(this.minZ, this.z + dz)); const S = this.S, x = nx(before.lon), y = ny(before.lat); this.cx = x - (px - this.W / 2) / S; this.cy = y - (py - this.H / 2) / S; this.clamp(); this.queue(); }
-  zoomBy(dz) { this.zoomAt(this.W / 2, this.H / 2, dz); }
+  zoomBy(dz) { this.glide(this.W / 2, this.H / 2, dz); }
+  // Smooth zoom: the wheel and buttons set a target and the view eases towards it, keeping the point under the cursor fixed.
+  glide(px, py, dz) {
+    const base = this.zt ?? this.z; this.zt = Math.min(this.maxZ, Math.max(this.minZ, base + dz));
+    if (!this.gz || performance.now() - this.gz.t > 250) this.gz = { px, py, geo: this.fromScreen(px, py), t: 0 }; this.gz.t = performance.now(); this.gz.px = px; this.gz.py = py;
+    this.fling = 0; this.queue();
+  }
+  stepGlide() {
+    if (this.zt == null) return false; const d = this.zt - this.z;
+    if (Math.abs(d) < 0.004) { this.z = this.zt; this.zt = null; } else this.z += d * 0.22;
+    const g = this.gz; if (g) { const S = this.S; this.cx = nx(g.geo.lon) - (g.px - this.W / 2) / S; this.cy = ny(g.geo.lat) - (g.py - this.H / 2) / S; this.clamp(); }
+    return this.zt != null;
+  }
   fit(points, pad = 70) {
     if (!points.length) return; let minX = 9, maxX = -9, minY = 9, maxY = -9;
     // pick the shortest way round the globe
@@ -63,7 +76,7 @@ export class GeoMap {
   }
   home() { this.z = Math.max(this.minZ, 1.6); this.cx = nx(60); this.cy = ny(25); this.clamp(); this.queue(); }
   /* input */
-  down(e) { this.c.setPointerCapture?.(e.pointerId); this.pointers.set(e.pointerId, { x: e.offsetX, y: e.offsetY, sx: e.offsetX, sy: e.offsetY }); this.moved = false; this.pinch = null; }
+  down(e) { this.fling = 0; this.zt = null; this.c.setPointerCapture?.(e.pointerId); this.pointers.set(e.pointerId, { x: e.offsetX, y: e.offsetY, sx: e.offsetX, sy: e.offsetY }); this.moved = false; this.pinch = null; }
   move(e) {
     const p = this.pointers.get(e.pointerId); if (!p) return;
     const nxp = e.offsetX, nyp = e.offsetY;
@@ -72,11 +85,12 @@ export class GeoMap {
       if (d0 > 0 && d1 > 0) this.zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, Math.log2(d1 / d0)); this.moved = true; return;
     }
     if (Math.hypot(nxp - p.sx, nyp - p.sy) > 6) this.moved = true;
-    if (this.moved) { this.touchAt = performance.now(); const S = this.S; this.cx -= (nxp - p.x) / S; this.cy -= (nyp - p.y) / S; this.clamp(); this.queue(); }
+    if (this.moved) { const t = performance.now(); this.touchAt = t; const S = this.S, dt = Math.max(1, t - (p.t || t)); this.cx -= (nxp - p.x) / S; this.cy -= (nyp - p.y) / S; this.clamp(); this.queue(); p.vx = 0.8 * (p.vx || 0) + 0.2 * ((nxp - p.x) / dt); p.vy = 0.8 * (p.vy || 0) + 0.2 * ((nyp - p.y) / dt); p.t = t; }
     p.x = nxp; p.y = nyp;
   }
   up(e, cancel) {
     const p = this.pointers.get(e.pointerId); this.pointers.delete(e.pointerId);
+    if (p && this.moved && !cancel && this.pointers.size === 0 && performance.now() - (p.t || 0) < 80 && Math.hypot(p.vx || 0, p.vy || 0) > 0.25) { this.vel = { x: p.vx, y: p.vy }; this.fling = 1; this.queue(); }
     if (p && !cancel && !this.moved && this.pointers.size === 0 && !this.locked) { const at = this.fromScreen(e.offsetX, e.offsetY); this.pin = at; this.handlers.pick?.(at); this.queue(); }
     if (!this.pointers.size) this.moved = false;
   }
@@ -89,28 +103,44 @@ export class GeoMap {
   }
   setPin(p) { this.pin = p; this.queue(); }
   setLocked(b) { this.locked = b; }
-  setTiles(on) { this.tiles = !!on; this.maxZ = on ? 15 : 9.5; if (this.z > this.maxZ) this.z = this.maxZ; this.base = null; this.queue(); }
-  tile(z, x, y) {
+  setTiles(on) { this.tiles = !!on; this.maxZ = on ? 16 : 9.5; if (this.z > this.maxZ) this.z = this.maxZ; this.base = null; this.queue(); }
+  tile(z, x, y, make = true) {
     const key = `${z}/${x}/${y}`; let img = this.tc.get(key);
-    if (img) { this.tc.delete(key); this.tc.set(key, img); return img; }
-    img = new Image(); img.decoding = "async"; img.onload = () => this.queue(); img.onerror = () => { img.bad = true; };
+    if (img) { if (make) { this.tc.delete(key); this.tc.set(key, img); } return img; }
+    if (!make) return null;
+    img = new Image(); img.decoding = "async"; img.onload = () => { img.ok = true; this.queue(); }; img.onerror = () => { img.bad = true; };
     img.src = TILE_URL.replace("{s}", "abc"[(x + y) % 3]).replace("{z}", z).replace("{x}", x).replace("{y}", y).replace("{r}", "");
-    this.tc.set(key, img); if (this.tc.size > 360) this.tc.delete(this.tc.keys().next().value); return img;
+    this.tc.set(key, img); if (this.tc.size > 700) { const k = this.tc.keys().next().value; this.tc.delete(k); } return img;
+  }
+  // Draws one tile; if it has not arrived yet, draws the matching piece of a lower-zoom tile that is already loaded,
+  // so panning and zooming never show holes.
+  paintTile(g, tz, x, y, dx, dy, size) {
+    const img = this.tile(tz, x, y);
+    if (img.ok) { g.drawImage(img, dx, dy, size + 0.6, size + 0.6); return 2; }
+    for (let d = 1; d <= 4 && tz - d >= 0; d++) {
+      const f = 2 ** d, px = x >> d, py = y >> d, par = this.tile(tz - d, px, py, false);
+      if (par?.ok) { const sw = 256 / f; g.drawImage(par, (x - px * f) * sw, (y - py * f) * sw, sw, sw, dx, dy, size + 0.6, size + 0.6); return 1; }
+    }
+    return 0;
   }
   drawTiles() {
     if (!this.tiles) { this.cover = 0; return; }
-    const g = this.g, { W, H, S } = this, tz = Math.max(0, Math.min(18, Math.round(this.z))), n = 2 ** tz, size = 256 * 2 ** (this.z - tz);
+    const g = this.g, { W, H, S } = this, tz = Math.max(0, Math.min(this.maxZ | 0, Math.round(this.z + 0.2))), n = 2 ** tz, size = 256 * 2 ** (this.z - tz);
     const x0 = Math.floor((this.cx - W / 2 / S) * n), x1 = Math.floor((this.cx + W / 2 / S) * n), y0 = Math.max(0, Math.floor((this.cy - H / 2 / S) * n)), y1 = Math.min(n - 1, Math.floor((this.cy + H / 2 / S) * n));
-    let need = 0, have = 0;
-    for (let ty = y0; ty <= y1; ty++) for (let tx = x0; tx <= x1; tx++) {
-      need++; const img = this.tile(tz, ((tx % n) + n) % n, ty);
-      if (img.complete && img.naturalWidth && !img.bad) { have++; g.drawImage(img, (tx / n - this.cx) * S + W / 2, (ty / n - this.cy) * S + H / 2, size + 0.6, size + 0.6); }
-    }
-    this.cover = need ? have / need : 0;
+    let need = 0, have = 0, any = 0;
+    for (let ty = y0; ty <= y1; ty++) for (let tx = x0; tx <= x1; tx++) { need++; const r = this.paintTile(g, tz, ((tx % n) + n) % n, ty, (tx / n - this.cx) * S + W / 2, (ty / n - this.cy) * S + H / 2, size); if (r === 2) have++; if (r) any++; }
+    // quietly fetch the lower zoom around the view so the next zoom out is ready
+    if (tz > 2 && this.lastPre !== tz) { this.lastPre = tz; const pz = tz - 1, pn = 2 ** pz; for (let ty = Math.max(0, y0 >> 1); ty <= Math.min(pn - 1, y1 >> 1); ty++) for (let tx = x0 >> 1; tx <= x1 >> 1; tx++) this.tile(pz, ((tx % pn) + pn) % pn, ty); }
+    this.cover = need ? have / need : 0; this.paint = need ? any / need : 0;
   }
   showResult(r) { this.result = r; this.locked = true; const pts = [r.truth, ...r.guesses.map((g) => g.pos)]; this.fit(pts); }
   clearResult() { this.result = null; this.pin = null; this.locked = false; this.home(); }
-  queue() { if (this.raf) return; this.raf = requestAnimationFrame(() => { this.raf = 0; this.draw(); }); }
+  queue() { if (this.raf) return; this.raf = requestAnimationFrame((t) => { this.raf = 0; this.frame(t); }); }
+  frame(t) {
+    let more = this.stepGlide();
+    if (this.fling) { const dt = Math.min(40, t - (this.lastT || t - 16)), S = this.S; this.cx -= (this.vel.x * dt) / S; this.cy -= (this.vel.y * dt) / S; this.clamp(); this.vel.x *= 0.94; this.vel.y *= 0.94; if (Math.hypot(this.vel.x, this.vel.y) < 0.02) this.fling = 0; else more = true; }
+    this.lastT = more ? t : 0; this.draw(); if (more) this.queue();
+  }
   /* drawing */
   // The land, borders and graticule are drawn into an offscreen picture. While you drag or zoom, that picture is moved and
   // scaled (cheap) and only redrawn now and then, which keeps panning smooth on phones.
@@ -139,15 +169,16 @@ export class GeoMap {
     this.base = { cx: this.cx, cy: this.cy, z: this.z }; this.baseAt = performance.now();
   }
   draw() {
-    const g = this.g, { W, H } = this, now = performance.now(), busy = now - (this.touchAt || 0) < 170;
-    if (!this.base || !busy || now - this.baseAt > 120) this.renderBase();
-    const b = this.base, k = 2 ** (this.z - b.z);
+    const g = this.g, { W, H } = this, now = performance.now(), busy = now - (this.touchAt || 0) < 170 || this.zt != null || this.fling;
+    const covered = this.tiles && this.paint >= 1;
+    if (!covered && (!this.base || !busy || now - this.baseAt > 120)) this.renderBase();
+    const b = this.base || { cx: this.cx, cy: this.cy, z: this.z }, k = 2 ** (this.z - b.z);
     g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = this.col.sea; g.fillRect(0, 0, this.c.width, this.c.height);
     const d = this.c.width / W; g.setTransform(d, 0, 0, d, 0, 0);
     let dx = b.cx - this.cx; dx -= Math.round(dx);
     const sx = W / 2 + dx * this.S, sy = H / 2 + (b.cy - this.cy) * this.S;
-    g.drawImage(this.bgc, 0, 0, this.bgc.width, this.bgc.height, sx - (W * k) / 2, sy - (H * k) / 2, W * k, H * k);
-    if (busy && (this.base.cx !== this.cx || this.base.z !== this.z)) { clearTimeout(this.settle); this.settle = setTimeout(() => this.draw(), 180); }
+    if (this.base) g.drawImage(this.bgc, 0, 0, this.bgc.width, this.bgc.height, sx - (W * k) / 2, sy - (H * k) / 2, W * k, H * k);
+    if (busy && !covered && this.base && (this.base.cx !== this.cx || this.base.z !== this.z)) { clearTimeout(this.settle); this.settle = setTimeout(() => this.draw(), 180); }
     this.drawTiles();
     const k0 = Math.floor(this.cx - W / 2 / this.S), k1 = Math.ceil(this.cx + W / 2 / this.S);
     if (this.cover < 0.95) this.labels(k0, k1);
