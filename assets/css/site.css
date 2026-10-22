@@ -1466,3 +1466,4 @@ html,body{touch-action:manipulation}
 .pill--games{display:none;background:var(--yellow);color:#0e0e10}
 @media (max-width:980px){.pill--games{display:inline-flex}}
 @media (max-width:420px){.pill--games{padding:.7rem .9rem}.bar-tools{gap:.4rem}}
+.td-seatname.td-reel{opacity:.65;filter:blur(.4px)}

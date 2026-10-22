@@ -122,7 +122,7 @@ function makeHost(ctx, solo) {
     let c = (D.byFirst[L] || []).filter((e) => !S.used.has(e.n) && (!t || t.test(e, D)));
     if (!c.length || Math.random() < (hard ? 0.03 : 0.12)) return lose("bot", "had no answer");
     // an easy bot likes famous places; a hard one picks names that end in tricky letters
-    const left = (ch) => (D.byFirst[ch] || []).filter((x) => !S.used.has(x.n)).length;
+    const memo = {}, left = (ch) => (memo[ch] ??= (D.byFirst[ch] || []).filter((x) => !S.used.has(x.n)).length);
     c = c.map((e) => ({ e, w: hard ? 1 / (1 + left(lastLetter(e.n))) + Math.random() * 0.2 : e.pop + Math.random() * 3 })).sort((a, b) => b.w - a.w);
     accept("bot", c[Math.floor(Math.random() * Math.min(5, c.length))].e, 0.3);
   }

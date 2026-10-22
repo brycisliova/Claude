@@ -135,8 +135,16 @@ function mountView(root, api, solo) {
   const me = () => api.me?.id, name = (id) => byId(api, id)?.name || "Player";
   const act = (a) => api.act(a);
   const btn = (cls, label, fn, dis) => { const b = h("button", { class: "btn " + cls, type: "button" }, `<span class="btn-t">${esc(label)}</span>`); b.disabled = !!dis; b.addEventListener("click", fn); return b; };
+  let spinT = 0;
+  const stopSpin = () => { clearInterval(spinT); spinT = 0; };
+  // a quick name reel before the hot seat is revealed
+  function spin(s) {
+    const el = $("#tdSeat .td-seatname"); if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches || s.order.length < 2) return;
+    const names = s.order.map((id) => name(id)), final = el.innerHTML; let i = 0; stopSpin();
+    spinT = setInterval(() => { if (i >= 9) { stopSpin(); el.innerHTML = final; el.classList.remove("td-reel"); return; } el.classList.add("td-reel"); el.textContent = names[i++ % names.length]; }, 75);
+  }
   function paint() {
-    const s = st; if (!s) return;
+    const s = st; if (!s) return; stopSpin();
     const acts = $("#tdActs"), card = $("#tdCard"), seat = $("#tdSeat"), note = $("#tdNote"); acts.innerHTML = ""; note.textContent = "";
     const key = s.ph + ":" + s.n; if (key !== lastKey) { mine = null; lastKey = key; }
     const iAm = solo ? true : s.who === me(), who = s.who;
@@ -189,9 +197,9 @@ function mountView(root, api, solo) {
     if (!st || st.ph !== s.ph || st.n !== s.n) { timerBar($("#tdTl"), s.tl); if (ready() && s.ph !== "end") tone(PENTA[(s.n + 2) % 7], 0.25, 0.05); }
     if (s.ph === "res" || s.ph === "grpr") { if (st?.ph !== s.ph && ready()) tone(s.res?.verdict === "ok" || s.ph === "grpr" ? PENTA[6] : PENTA[1], 0.4, 0.06); timerBar($("#tdTl"), 0); }
     if (s.ph === "end") { timerBar($("#tdTl"), 0); if (solo && st?.ph !== "end") report(Math.max(0, ...Object.values(s.scores))); }
-    st = s; paint();
+    const fresh = !st || st.ph !== s.ph || st.n !== s.n; st = s; paint(); if (s.ph === "pick" && fresh) spin(s);
   }
-  return { render, players() { paint(); }, destroy() {} };
+  return { render, players() { paint(); }, destroy() { stopSpin(); } };
 }
 
 /* ---------- registering ---------- */

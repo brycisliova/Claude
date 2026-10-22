@@ -71,7 +71,7 @@ function makeHost(ctx, solo) {
     let c = (D.common[S.letter] || []).filter((w) => w.length >= S.min && !S.used.has(w) && (!t || t.test(w)));
     if (!c.length) c = options(S.letter, t);
     if (!c.length || Math.random() < (hard ? 0.02 : 0.1)) return lose("bot", "had no answer");
-    const left = (ch) => (D.byFirst[ch] || []).filter((x) => !S.used.has(x)).length;
+    const memo = {}, left = (ch) => (memo[ch] ??= (D.byFirst[ch] || []).filter((x) => !S.used.has(x)).length);
     const scored = c.map((w) => ({ w, s: hard ? (HARD.has(last(w)) ? 3 : 0) + 1 / (1 + left(last(w)) / 800) + Math.random() : Math.random() })).sort((a, b) => b.s - a.s);
     accept("bot", scored[Math.floor(Math.random() * Math.min(6, scored.length))].w, 0.3);
   }
