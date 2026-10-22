@@ -8,6 +8,7 @@ import { GeoMap, loadWorld, haversine, kmColor, scoreFor } from "../geomap.js";
 import { LOCS } from "../../data/geo-locs.js";
 import { GEO_PHOTOS } from "../../data/geo-photos.js";
 import { showStreet } from "../streetview.js";
+import { SV } from "../../data/geo-sv.js";
 import { tone, PENTA, ready } from "../../audio.js";
 
 const PREF = "wwa-geo-tiles";
@@ -16,7 +17,7 @@ const setTilesPref = (on) => { try { localStorage.setItem(PREF, on ? "1" : "0");
 
 const photo = (id) => new URL(`../../../img/geo/${id}.webp`, import.meta.url).href;
 const POOL = LOCS.filter((l) => GEO_PHOTOS[l.id]);
-const REGION = { world: () => true, india: (l) => l.country === "India", abroad: (l) => l.country !== "India", queer: (l) => l.cat === "queer", nature: (l) => l.cat === "nature" };
+const REGION = { world: () => true, india: (l) => l.country === "India", abroad: (l) => l.country !== "India", queer: (l) => l.cat === "queer", nature: (l) => l.cat === "nature", street: (l) => SV.has(l.id) };
 const TIME = { 1: 90000, 0.6: 45000, 2: 180000 };
 const RANKS = [[0.85, "Human GPS"], [0.65, "Seasoned traveller"], [0.45, "Armchair explorer"], [0.25, "Weekend tourist"], [0, "Lost, but curious"]];
 
@@ -90,7 +91,7 @@ function mountView(root, api, solo) {
   $("#geoZoomImg").addEventListener("click", () => $("#geoFig").classList.toggle("fit"));
   const credit = (id) => { const c = GEO_PHOTOS[id]; return c ? `Photo: <a href="${esc(c.pageUrl)}" target="_blank" rel="noopener noreferrer">${esc(c.title)}</a> by ${esc(c.author)}, ${esc(c.license)}, via Wikimedia Commons` : ""; };
 
-  const svOn = () => true;
+  const svOn = () => !!st?.loc && SV.has(st.loc.id);
   function showTab(t) {
     tab = t; const on = t === "sv"; $("#geoSv").hidden = !on; $("#geoImg").hidden = on; $("#geoCat").hidden = on; $("#geoZoomImg").hidden = on;
     root.querySelectorAll("#geoTabs button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.t === t)));
@@ -147,7 +148,7 @@ function mountView(root, api, solo) {
 /* ---------- registering ---------- */
 const OPTIONS = [
   { id: "rounds", label: "Places", def: 5, choices: [[3, "3"], [5, "5"], [8, "8"], [10, "10"]] },
-  { id: "region", label: "Where", def: "world", choices: [["world", "All over the world"], ["india", "India only"], ["abroad", "Outside India"], ["queer", "Queer history places"], ["nature", "Wild places"]] },
+  { id: "region", label: "Where", def: "world", choices: [["world", "All over the world"], ["india", "India only"], ["abroad", "Outside India"], ["queer", "Queer history places"], ["nature", "Wild places"], ["street", "Places with street photos"]] },
   { id: "time", label: "Time per place", def: 1, choices: [[0.6, "Quick (45s)"], [1, "Normal (90s)"], [2, "Relaxed (3 min)"]] }
 ];
 mp({ id: "geo", title: "Where in the world?", min: 2, max: 8, options: OPTIONS, host: (ctx) => makeHost(ctx, false), view: (root, api) => mountView(root, api, false) });
