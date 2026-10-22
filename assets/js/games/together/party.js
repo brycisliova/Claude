@@ -6,11 +6,15 @@ import { game, $ as q$ } from "../shared.js";
 import { pickFresh } from "../fresh.js";
 import { LIKELY, WYR, TRUTHS, DARES, SITUATIONS, CONFESSIONS, HOT, WORDS } from "../../data/party.js";
 import { FAKE } from "../../data/party-fake.js";
+import { ALIKELY, AWYR, AHOT, ASIT } from "../../data/party-adult.js";
+import { TRUTHS as TT, DARES as TD, NEVER as TN, TEA as TTEA } from "../../data/tod.js";
 import { tone, PENTA, ready } from "../../audio.js";
 
 const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
 const clean = (s, n) => String(s || "").replace(/[\u0000-\u001f<>]/g, " ").replace(/\s+/g, " ").trim().slice(0, n);
 const fresh = (key, bank, idOf) => pickFresh("wwa-adda-" + key, bank, idOf, 1)[0];
+const adultOf = (a) => a.filter((x) => x[1] === "adult").map((x) => x[0]);
+const ADULT_TRUTHS = adultOf(TT), ADULT_DARES = adultOf(TD);
 
 const MODES = {
   fake: { label: "Fake it", min: 3, tip: "Write a believable fake answer. Then spot the real one." },
@@ -49,10 +53,10 @@ function makeHost(ctx) {
     S.i++; S.gain = {}; S.mode = pickMode(); S.opts = []; S.who = ""; S.text = ""; S.k = 0; S.kn = 0; S.R = {}; S.need = null; S.wlen = 0; S.prompt = "";
     const m = S.mode, R = S.R;
     if (m === "fake") { const q = fresh("fake", FAKE, (x) => x.q); R.q = q; S.prompt = q.q; setPhase("w", MS.fake[0]); }
-    else if (m === "likely") { const p = fresh("likely", LIKELY, (x) => x); S.prompt = "Most likely to " + p + "?"; S.opts = ids().map((id) => ({ id, label: "" })); setPhase("v", MS.likely[0]); }
-    else if (m === "wyr") { const p = fresh("wyr", WYR, (x) => x[0] + x[1]); R.p = p; S.prompt = "Would you rather…"; S.opts = [{ id: 0, label: p[0] }, { id: 1, label: p[1] }]; setPhase("v", MS.wyr[0]); }
-    else if (m === "hot") { const p = fresh("hot", HOT, (x) => x); S.prompt = p; S.opts = [{ id: 0, label: "Agree" }, { id: 1, label: "Disagree" }]; setPhase("v", MS.hot[0]); }
-    else if (m === "sit") { const p = fresh("sit", SITUATIONS, (x) => x); S.prompt = p; setPhase("w", MS.sit[0]); }
+    else if (m === "likely") { const p = fresh("likely" + S.spice, S.spice ? ALIKELY : LIKELY, (x) => x); S.prompt = "Most likely to " + p + "?"; S.opts = ids().map((id) => ({ id, label: "" })); setPhase("v", MS.likely[0]); }
+    else if (m === "wyr") { const p = fresh("wyr" + S.spice, S.spice ? AWYR : WYR, (x) => x[0] + x[1]); R.p = p; S.prompt = "Would you rather…"; S.opts = [{ id: 0, label: p[0] }, { id: 1, label: p[1] }]; setPhase("v", MS.wyr[0]); }
+    else if (m === "hot") { const p = fresh("hot" + S.spice, S.spice ? AHOT : HOT, (x) => x); S.prompt = p; S.opts = [{ id: 0, label: "Agree" }, { id: 1, label: "Disagree" }]; setPhase("v", MS.hot[0]); }
+    else if (m === "sit") { const p = fresh("sit" + S.spice, S.spice ? ASIT : SITUATIONS, (x) => x); S.prompt = p; setPhase("w", MS.sit[0]); }
     else if (m === "conf") { const p = fresh("conf", CONFESSIONS, (x) => x); S.prompt = p; setPhase("w", MS.conf[0]); }
     else if (m === "td") { S.tdi = (S.tdi + 1) % S.order.length; let c = S.order[S.tdi], tries = 0; while (!ids().includes(c) && tries++ < 12) { S.tdi = (S.tdi + 1) % S.order.length; c = S.order[S.tdi]; } R.who = c; S.who = c; S.prompt = ""; S.need = (id) => id === c; setPhase("p", MS.td[0]); }
     else if (m === "word") { const w = fresh("word", WORDS, (x) => x.w), ps = ids(); const g = ps[(S.wi++) % ps.length]; R.w = w; R.giver = g; S.who = g; S.prompt = `${S.name(g)} describes. Everyone else guesses.`; S.wlen = w.w.length; S.need = (id) => id !== g; R.wrong = 0; R.order = []; setPhase("g", MS.word[0]); ctx.reply(g, { secret: { w: w.w, no: w.no, c: w.c } }); }
@@ -126,7 +130,7 @@ function makeHost(ctx) {
   /* truth or dare */
   function tdDo() {
     const R = S.R, kind = S.sub[R.who] || (Math.random() < 0.5 ? "truth" : "dare");
-    R.kind = kind; const p = kind === "truth" ? fresh("truth", TRUTHS, (x) => x) : fresh("dare", DARES, (x) => x); S.prompt = `${kind === "truth" ? "Truth" : "Dare"}: ${p}`;
+    R.kind = kind; const p = kind === "truth" ? fresh("truth" + S.spice, S.spice ? ADULT_TRUTHS : TRUTHS, (x) => x) : fresh("dare" + S.spice, S.spice ? ADULT_DARES : DARES, (x) => x); S.prompt = `${kind === "truth" ? "Truth" : "Dare"}: ${p}`;
     S.need = (id) => id === R.who; setPhase("d", MS.td[1]); ctx.push(view({ kind }));
   }
   function tdRate() {
@@ -143,7 +147,7 @@ function makeHost(ctx) {
   /* guess the word */
   function revealWord() {
     const R = S.R, got = R.order.length; let truth = "";
-    if (!got) truth = fresh("truth", TRUTHS, (x) => x);
+    if (!got) truth = fresh("truth" + S.spice, S.spice ? ADULT_TRUTHS : TRUTHS, (x) => x);
     setPhase("r", MS.word[1]); ctx.push(view({ rv: { rows: [], gain: S.gain, msg: got ? "" : "Nobody got it, so the describer answers a truth.", word: R.w.w, truth, giver: R.giver } }));
   }
 
@@ -185,7 +189,7 @@ function makeHost(ctx) {
 
   return {
     start(o) {
-      const ps = ctx.players; S = { order: ps.map((p) => p.id), scores: {}, stat: {}, gain: {}, i: 0, total: +o.rounds || 12, only: o.mode || "mixed", pace: +o.pace || 1, bag: [], mode: "", ph: "", sub: {}, tm: null, dl: 0, ms: 0, tdi: -1, wi: 0, opts: [], prompt: "", who: "", R: {}, name: (id) => ctx.players.find((p) => p.id === id)?.name || "Player", need: null };
+      const ps = ctx.players; S = { order: ps.map((p) => p.id), scores: {}, stat: {}, gain: {}, i: 0, total: +o.rounds || 12, only: o.mode || "mixed", spice: o.spice === "adult" ? "A" : "", pace: +o.pace || 1, bag: [], mode: "", ph: "", sub: {}, tm: null, dl: 0, ms: 0, tdi: -1, wi: 0, opts: [], prompt: "", who: "", R: {}, name: (id) => ctx.players.find((p) => p.id === id)?.name || "Player", need: null };
       S.order.forEach((id) => { S.scores[id] = 0; }); nextRound();
     },
     act,
@@ -278,9 +282,10 @@ function mountView(root, api) {
 const OPTIONS = [
   { id: "mode", label: "Games", def: "mixed", choices: [["mixed", "A mix of everything"], ...Object.entries(MODES).map(([k, v]) => [k, v.label])] },
   { id: "rounds", label: "Rounds", def: 12, choices: [[4, "4 (quick)"], [8, "8"], [12, "12"], [16, "16"], [24, "24"]] },
-  { id: "pace", label: "Pace", def: 1, choices: [[1.5, "Relaxed"], [1, "Normal"], [0.7, "Quick"]] }
+  { id: "pace", label: "Pace", def: 1, choices: [[1.5, "Relaxed"], [1, "Normal"], [0.7, "Quick"]] },
+  { id: "spice", label: "Spice", def: "std", choices: [["std", "Cheeky (PG-13)"], ["adult", "Adult 18+ (everyone must be 18 or older)"]] }
 ];
 mp({ id: "adda", title: "Adda night", min: 3, max: 10, only: true, options: OPTIONS, host: (ctx) => makeHost(ctx), view: (root, api) => mountView(root, api) });
 game("adda",
-  `<div class="pq-solo"><div class="pq-setup"><p class="pq-lede">Adda night is a party game for 3 to 10 friends, each on their own phone. Fool everyone with a fake fact, vote on who is most likely to, share confessions, take on truths and dares, and describe words without saying them. Prompts are cheeky and desi, and always PG-13: no one is ever made to do anything unsafe.</p><div class="row"><button class="btn btn-primary" id="adGo" type="button"><span class="btn-t">Make a room</span></button></div></div></div>`,
+  `<div class="pq-solo"><div class="pq-setup"><p class="pq-lede">Adda night is a party game for 3 to 10 friends, each on their own phone. Fool everyone with a fake fact, vote on who is most likely to, share confessions, take on truths and dares, and describe words without saying them. Prompts are cheeky and desi, PG-13 by default, with an 18+ spice option for adults only. No one is ever made to do anything unsafe.</p><div class="row"><button class="btn btn-primary" id="adGo" type="button"><span class="btn-t">Make a room</span></button></div></div></div>`,
   () => { q$("#adGo").addEventListener("click", () => document.querySelector('.gm-modes button[data-m="together"]')?.click()); return {}; });
