@@ -5,6 +5,7 @@
 import { mp, h, esc, shuffle, results, timerBar, byId, dot } from "./common.js";
 import { game, $ as q$, report } from "../shared.js";
 import { pickFresh } from "../fresh.js";
+import { clipPlayer } from "../clipplayer.js";
 import { tone, PENTA, ready } from "../../audio.js";
 
 const AUDIO = "https://audio-ssl.itunes.apple.com/itunes-assets/", ART = "https://is1-ssl.mzstatic.com/image/thumb/";
@@ -99,7 +100,7 @@ function makeHost(ctx) {
 /* ---------- the view ---------- */
 function mountView(root, api, solo) {
   root.innerHTML = `<div class="mp tn"><div class="mp-head"><p class="mp-turn" id="tnInfo" aria-live="polite">Loading the songs…</p><div class="mp-tl"><i id="tnTl"></i></div></div>
-  <div class="tn-stage" id="tnStage"><button class="tn-play" id="tnPlay" type="button" aria-label="Play the clip"><span class="tn-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="tn-ptxt" id="tnPtxt">Tap to play</span></button>
+  <div class="tn-stage" id="tnStage"><button class="tn-play" id="tnPlay" type="button" aria-label="Play the clip"><span class="tn-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="tn-ptxt" id="tnPtxt">Loading the clip…</span><span class="tn-prog" aria-hidden="true"><i id="tnProg"></i></span></button>
   <div class="tn-meta"><span class="tn-chip" id="tnLang"></span><span class="tn-hint" id="tnHint"></span></div></div>
   <form class="tn-form" id="tnForm" autocomplete="off"><label class="sr-only" for="tnIn">Song name</label><input class="text-in at-in" id="tnIn" maxlength="70" placeholder="Type the song name" autocapitalize="words" spellcheck="false" enterkeyhint="send"><button class="btn btn-primary" type="submit"><span class="btn-t">Lock it in</span></button></form>
   <p class="at-msg" id="tnMsg" role="status"></p><button class="btn btn-ghost btn-sm" id="tnSkip" type="button" hidden><span class="btn-t">Clip not playing? Skip this song</span></button>
@@ -107,19 +108,26 @@ function mountView(root, api, solo) {
   <ul class="mp-score" id="tnScore"></ul>
   <details class="at-how"><summary>How to play</summary><ul><li>A 30 second clip plays. Type the name of the song and lock it in. Everyone hears the same clip on their own device.</li><li>The <b>closest answer scores the most</b>. A perfect answer is worth 100, plus up to 50 for being quick. Close spellings, "Tum Hi Ho" or "Tumhi Ho", or just the catchy part all count.</li><li>Halfway through, a hint appears. Answers after the hint earn a bit less.</li><li>The right artist or film earns a small consolation score.</li><li>No sound? Check the volume, silent mode and tap the big play button. If the clip will not load, the host can skip the song.</li></ul></details>
   <div id="tnEnd"></div></div>`;
-  const $ = (s) => root.querySelector(s); let st = null, lastKey = "", mine = false, pre = null;
+  const $ = (s) => root.querySelector(s); let st = null, lastKey = "", mine = false;
   const me = () => api.me?.id, name = (id) => byId(api, id)?.name || "Player";
-  const audio = new Audio(); audio.preload = "auto"; let curUrl = "", playing = false;
-  const setPlay = (on) => { playing = on; $("#tnStage").classList.toggle("on", on); $("#tnPtxt").textContent = on ? "Playing… tap to pause" : curUrl ? "Tap to play" : ""; };
-  audio.addEventListener("ended", () => setPlay(false)); audio.addEventListener("pause", () => setPlay(false)); audio.addEventListener("playing", () => setPlay(true));
-  audio.addEventListener("error", () => { setPlay(false); $("#tnPtxt").textContent = "Could not load the clip. Tap to retry"; retry(); });
+  const TXT = { idle: "", loading: "Loading the clip…", ready: "Tap to play", playing: "Playing. Tap to pause", paused: "Paused. Tap to resume", ended: "Tap to hear it again", needtap: "Tap to hear the clip", error: "Could not load. Tap to retry" };
+  let raf = 0;
+  const tick = () => { raf = 0; const pl = player; if (!pl) return; const f = Math.min(1, pl.position() / (pl.duration || 30)); $("#tnProg").style.transform = `scaleX(${f})`; if (pl.state === "playing") raf = requestAnimationFrame(tick); };
+  const player = clipPlayer((state) => {
+    const stage = $("#tnStage"); if (!stage) return;
+    stage.classList.toggle("on", state === "playing"); stage.classList.toggle("loading", state === "loading"); stage.classList.toggle("tap", state === "needtap");
+    $("#tnPtxt").textContent = TXT[state] || ""; $("#tnPlay").setAttribute("aria-label", TXT[state] || "Play the clip");
+    if (state === "playing" && !raf) raf = requestAnimationFrame(tick); else if (state !== "playing") tick();
+    if (state === "error") retry();
+  });
   let tried = 0;
   async function retry() { // preview links can change; ask iTunes for a fresh one by id
     if (tried++ || !st?.clip) return;
-    try { const r = await fetch(`https://itunes.apple.com/lookup?id=${st.clip.id}&country=IN`).then((x) => x.json()); const u = r.results?.[0]?.previewUrl; if (u) { curUrl = u; audio.src = u; audio.play().catch(() => {}); } } catch (e) { /* offline */ }
+    try { const r = await fetch(`https://itunes.apple.com/lookup?id=${st.clip.id}&country=IN`).then((x) => x.json()); const u = r.results?.[0]?.previewUrl; if (u) player.load(u, true); } catch (e) { /* offline */ }
   }
-  const toggle = () => { if (!curUrl) return; if (audio.paused) { if (audio.ended) audio.currentTime = 0; audio.play().catch(() => setPlay(false)); } else audio.pause(); };
-  $("#tnPlay").addEventListener("click", toggle); $("#tnSkip").addEventListener("click", () => api.act({ a: "skip" }));
+  player.unlock(); // a tap started this view in solo play; in rooms the first tap on the play button does it
+  $("#tnPlay").addEventListener("click", () => player.toggle()); $("#tnSkip").addEventListener("click", () => api.act({ a: "skip" }));
+  const wake = () => player.unlock(); root.addEventListener("pointerdown", wake); root.addEventListener("keydown", wake);
   $("#tnForm").addEventListener("submit", (e) => { e.preventDefault(); const g = $("#tnIn").value.trim(); if (!g || !st || st.ph !== "q" || mine) return; mine = true; api.act({ a: "guess", g }); paint(); });
   function paint() {
     const s = st; if (!s) return;
@@ -144,16 +152,16 @@ function mountView(root, api, solo) {
     if (!s || !s.ph) return;
     if (s.ph === "q" && (!st || st.i !== s.i || st.ph !== "q")) {
       mine = s.done?.includes(me()) || false; tried = 0; $("#tnIn").value = ""; timerBar($("#tnTl"), s.tl);
-      curUrl = s.clip.u; audio.src = curUrl; audio.play().catch(() => setPlay(false)); $("#tnPtxt").textContent = "Tap to play";
+      player.load(s.clip.u, true); $("#tnProg").style.transform = "scaleX(0)";
       setTimeout(() => { if (!mine) $("#tnIn").focus({ preventScroll: true }); }, 80);
-      if (s.next) { pre = new Audio(); pre.preload = "auto"; pre.src = s.next; }
+      player.prepare(s.next);
     }
     if (s.ph !== "q") timerBar($("#tnTl"), 0);
-    if (s.ph === "r") { audio.pause(); if (st?.ph !== "r" && ready()) { const g = s.rows[me()]?.pts || 0; tone(g >= 100 ? PENTA[6] : g > 0 ? PENTA[4] : PENTA[1], 0.45, 0.07); } }
-    if (s.ph === "end") { audio.pause(); if (solo && st?.ph !== "end") report(s.scores[me()] || 0); }
+    if (s.ph === "r") { player.pause(); if (st?.ph !== "r" && ready()) { const g = s.rows[me()]?.pts || 0; tone(g >= 100 ? PENTA[6] : g > 0 ? PENTA[4] : PENTA[1], 0.45, 0.07); } }
+    if (s.ph === "end") { player.stop(); if (solo && st?.ph !== "end") report(s.scores[me()] || 0); }
     st = s; paint();
   }
-  return { render, players() { paint(); }, destroy() { audio.pause(); audio.removeAttribute("src"); audio.load(); pre = null; } };
+  return { render, players() { paint(); }, destroy() { cancelAnimationFrame(raf); root.removeEventListener("pointerdown", wake); root.removeEventListener("keydown", wake); player.destroy(); } };
 }
 
 /* ---------- registering ---------- */

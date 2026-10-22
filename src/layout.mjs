@@ -62,7 +62,7 @@ function bar(ctx) {
   <a class="bar-brand" href="${href("")}" aria-label="${esc(config.name)}, home">${MARK}<span>${esc(config.name)}</span></a>
   <nav class="bar-links" aria-label="Main">${link("learn", "Learn")}${link("science", "Science")}${link("stories", "Stories")}${link("india", "India")}${link("games", "Games")}</nav>
   <div class="bar-tools">
-    <a class="pill pill--alert" href="${href("help")}">Help now</a>
+    <a class="pill pill--games" href="${href("games")}">Games</a><a class="pill pill--alert" href="${href("help")}">Help now</a>
     <button class="icon-btn" id="themeBtn" aria-label="Switch colour theme"><span class="t-sun">${icon("sun", 18)}</span><span class="t-moon">${icon("moon", 18)}</span></button>
     <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu"><span class="menu-btn-t" data-open="Menu" data-close="Close">Menu</span><span class="menu-btn-i" aria-hidden="true"><i></i><i></i></span></button>
   </div>

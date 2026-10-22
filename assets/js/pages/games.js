@@ -15,6 +15,8 @@ import "../games/together/geo.js";
 import "../games/together/tod.js";
 import "../games/together/tune.js";
 import "../games/together/trivia.js";
+import "../games/together/wchain.js";
+import "../games/together/antakshari.js";
 import "../games/together/four.js";
 import "../games/together/duel.js";
 import "../games/together/hunt.js";

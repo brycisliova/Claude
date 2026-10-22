@@ -9,7 +9,9 @@ export const GAMES = [
   { id: "gk", isNew: true, title: "Trivia night", how: "360 general knowledge questions with India first, then the world, science, sport and fun, with closest-number rounds and a story behind every answer. Fresh set every game. Solo or race friends.", cat: "mind", mins: 8, lvl: 2, c: "yellow", best: { unit: "pts" }, mp: [2, 8] },
   { id: "geo", title: "Where in the world?", how: "Look at a photo, drop a pin on the map and see how far off you were, with a line that turns from green to dark red the further away you are. Solo or race friends.", cat: "mind", mins: 10, lvl: 2, c: "blue", best: { unit: "pts" }, mp: [2, 8] },
   { id: "atlas", title: "Atlas", how: "Name a place that starts with the last letter of the one before. Cities, states, countries, continents, oceans, seas, deserts, rivers, lakes, mountains and islands need only a name. Villages count too if you add their state (India) or country. Beat the bot or race friends.", cat: "mind", mins: 10, lvl: 3, c: "green", best: { unit: "pts" }, mp: [2, 8] },
+  { id: "wchain", isNew: true, title: "Word antakshari", how: "A word chain with the whole English dictionary. Say a word that starts with the last letter of the one before. Twists every fourth turn. Beat the bot or race friends.", cat: "mind", mins: 8, lvl: 2, c: "pink", best: { unit: "pts" }, mp: [2, 8] },
   { id: "adda", title: "Adda night", how: "A party game for 3 to 10 friends: fake facts, most likely to, confessions, truth or dare, would you rather and guess the word. Cheeky, desi and always PG-13.", cat: "play", mins: 20, lvl: 1, c: "orange", best: { unit: "pts" }, mp: [3, 10] },
+  { id: "antakshari", isNew: true, title: "Song antakshari", how: "The classic with friends: sing a line that starts with the last letter of the previous line. Hindi songs use Hindi letters, English songs use A to Z. Friends vote on every line.", cat: "play", mins: 20, lvl: 2, c: "orange", best: { unit: "pts" }, mp: [2, 8] },
   { id: "pop", title: "Pride pop quiz", how: "More than 400 questions, with photos, emoji and riddles. New ones every game, no repeats until you have seen them all. Race friends in a room, or earn a title solo.", cat: "mind", mins: 8, lvl: 2, c: "pink", best: { unit: "pts" }, mp: [2, 8] },
   { id: "breathe", title: "Breathe with the orb", how: "Choose a pattern and follow the orb in and out. Count your calm breaths.", cat: "relax", mins: 3, lvl: 1, c: "sky", best: { unit: "breaths" } },
   { id: "lantern", title: "Release a lantern", how: "Type something heavy on your mind and watch it float away into the night.", cat: "relax", mins: 2, lvl: 1, c: "violet" },
@@ -55,6 +57,6 @@ export const FACTS = [
 ];
 
 // The games to play with friends come first, in the order listed at the top; the rest are grouped by theme.
-const order = CATS.map(([k]) => k), FRONT = ["tune", "tod", "gk", "geo", "atlas", "adda", "pop"];
+const order = CATS.map(([k]) => k), FRONT = ["tune", "tod", "gk", "geo", "atlas", "wchain", "antakshari", "adda", "pop"];
 const rank = (g) => (FRONT.includes(g.id) ? FRONT.indexOf(g.id) : 100 + order.indexOf(g.cat));
 GAMES.sort((a, b) => rank(a) - rank(b));
