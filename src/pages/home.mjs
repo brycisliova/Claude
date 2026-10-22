@@ -116,14 +116,14 @@ export default {
 
 <section class="sec ink">
   <div class="wrap">
-    <p class="label reveal" style="margin-bottom:2rem"><span class="no"></span>India today</p>
+    <p class="label reveal" style="margin-bottom:2rem"><span class="no"></span>India and the world</p>
     <h2 class="sec-title" data-split style="margin-bottom:clamp(2.5rem,5vw,5rem);max-width:12ch">No official <em>count</em></h2>
     <div class="big-num">
-      <div class="reveal"><strong data-count="9">0</strong><span>transgender murder victims in the national crime bureau's 2022 report, out of 29,356 murders</span></div>
-      <div class="reveal" style="--i:1"><strong>0</strong><span>recorded assaults or lynchings of trans people in that same report</span></div>
-      <div class="reveal" style="--i:2"><strong data-count="813">0</strong><span>encounter killings registered in six years, while rape trials end in conviction only <span data-count="24" style="display:inline;margin:0;color:inherit">0</span>% of the time</span></div>
+      <div class="reveal"><strong data-count="9">0</strong><span>transgender murder victims in the national crime bureau's 2022 report, out of 29,356 murders. It counts victims, not reasons.</span></div>
+      <div class="reveal" style="--i:1"><strong><span data-count="47" style="display:inline;margin:0;color:inherit">0</span>%</strong><span>of 164 Indian news reports on LGBTQ suicides blamed a family not accepting the person</span></div>
+      <div class="reveal" style="--i:2"><strong data-count="65">0</strong><span>countries still criminalise consensual same-sex relations. India stopped in 2018.</span></div>
     </div>
-    <div class="cta-row reveal">${arrowBtn(href("india"), "Read the evidence", "btn--light")}</div>
+    <div class="cta-row reveal">${arrowBtn(href("india"), "See the data and sources", "btn--light")}</div>
   </div>
 </section>
 

@@ -14,8 +14,16 @@ function whenSeen(el, fn) {
   io.observe(el);
 }
 
+/* ---- counters that keep their decimals (for example 46.2) ---- */
+$$(".cnt").forEach((el) => {
+  const v = +el.dataset.v, d = +el.dataset.d || 0, show = (x) => (d ? x.toFixed(d) : fmt(Math.round(x)));
+  if (reduce) { el.textContent = show(v); return; }
+  el.textContent = show(0);
+  whenSeen(el, () => { const t0 = performance.now(); (function step(now) { const p = Math.min(1, (now - t0) / 1600), e = 1 - Math.pow(1 - p, 3); el.textContent = show(v * e); if (p < 1) requestAnimationFrame(step); })(t0); });
+});
+
 /* ---- one hundred people: "N in 100" pictograms ---- */
-$$(".dots100").forEach((el) => {
+$$(".d100").forEach((el) => {
   const n = Math.round(+el.dataset.n || 0), box = el.querySelector(".d100-grid"); if (!box) return;
   for (let i = 0; i < 100; i++) { const d = document.createElement("i"); d.style.setProperty("--k", i); if (i < n) d.className = "on"; box.appendChild(d); }
   whenSeen(el, () => el.classList.add("go"));
@@ -35,7 +43,7 @@ function lineChart(el, o) {
   const d = pts.map((p, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p.v).toFixed(1)).join("");
   svg("path", { d: d + `L${x(pts.length - 1)} ${y(0)}L${x(0)} ${y(0)}Z`, class: "lc-area" }, s);
   const line = svg("path", { d, class: "lc-line", pathLength: 100 }, s);
-  const dots = pts.map((p, i) => { const c = svg("circle", { cx: x(i), cy: y(p.v), r: 4.5, class: "lc-dot", tabindex: 0, "aria-label": `${p.l}: ${fmt(p.v)}` }, s); c.style.setProperty("--k", i); return c; });
+  const dots = pts.map((p, i) => { const c = svg("circle", { cx: x(i), cy: y(p.v), r: 4.5, class: "lc-dot", role: "img", tabindex: 0, "aria-label": `${p.l}: ${fmt(p.v)}` }, s); c.style.setProperty("--k", i); return c; });
   const tip = document.createElement("div"); tip.className = "lc-tip"; tip.hidden = true; el.appendChild(tip);
   const show = (i) => { const p = pts[i]; tip.hidden = false; tip.innerHTML = `<b>${fmt(p.v)}</b> ${p.l}${p.note ? `<br><span>${p.note}</span>` : ""}`; tip.style.left = (x(i) / W) * 100 + "%"; tip.style.top = (y(p.v) / H) * 100 + "%"; dots.forEach((d, k) => d.classList.toggle("on", k === i)); };
   dots.forEach((c, i) => { c.addEventListener("pointerenter", () => show(i)); c.addEventListener("focus", () => show(i)); c.addEventListener("click", () => show(i)); });

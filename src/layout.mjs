@@ -27,7 +27,7 @@ export const PAGES = {
   stories: ["stories", "Stories", "", "green", "Reiner's story, trailblazers, the community wall", "06", "Stories"],
   voices: ["voices", "Voices", "", "blue", "Talks, interviews and videos", "07", "Stories"],
   watch: ["watch", "Watch", "", "violet", "28 films and series worth your evening", "08", "Stories"],
-  india: ["india", "India today", "", "blue", "Violence, data and the silence around it", "09", "Stories"],
+  india: ["india", "India and the world", "", "blue", "Violence, data and the silence around it", "09", "Stories"],
   help: ["help", "Help and guides", "", "blue", "Helplines, coming out, parents, allies, rights", "10", "Care"],
   therapies: ["therapies", "Therapies", "", "pink", "What helps, plus tools to use now", "11", "Care"],
   sound: ["sound", "Sound studio", "", "sky", "Nature mixer, bowls, ambient music, songs", "12", "Care"],

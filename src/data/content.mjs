@@ -1,5 +1,7 @@
 // All editorial data for the site. Colour keys map to CSS variables (--r, --o, --y, --g, --b, --v, --pink, --sky).
 
+import { allSources } from "./violence.mjs";
+
 export const MARQUEE = [
   "You were never something to be fixed",
   "Love is not a lifestyle",
@@ -340,24 +342,14 @@ export const STORY = {
   ]
 };
 
+
 export const SOURCES = [
   ["Violence, data and silence", [
     ["ThePrint: NCRB stopped collecting hate crime data", "https://theprint.in/india/governance/ncrb-stopped-collecting-data-on-lynching-hate-crime-as-it-was-unreliable-govt-tells-ls/785201/"],
     ["CJP: removal of honour killing and communal violence categories from NCRB data", "https://cjp.org.in/the-myth-of-neutral-data-the-disappearance-of-communal-violence-in-ncrb-data/"],
     ["Indian Journal of Psychiatry: LGBTQIA+ suicide data scarcity", "https://pmc.ncbi.nlm.nih.gov/articles/PMC13395226/"],
     ["The Leaflet: NCRB transgender crime data", "https://theleaflet.in/criminal-justice/if-only-transgender-lives-were-as-rosy-as-depicted-in-ncrb-data"],
-    ["Trans Murder Monitoring: Nirmal, 2025", "https://transmurdermonitoring.tgeu.org/en/entity/wa3ykequ5q"],
-    ["Trans Murder Monitoring: Hyderabad, 2025", "https://transmurdermonitoring.tgeu.org/en/entity/urn3yzxaxv"],
-    ["Trans Murder Monitoring: Nizamabad, 2024", "https://transmurdermonitoring.tgeu.org/en/entity/jjiv01qmws"],
-    ["Dialogues in Health: Indian news reporting on LGBTQ+ suicides", "https://pmc.ncbi.nlm.nih.gov/articles/PMC12311544"],
-    ["The News Minute: Namakkal case", "https://www.thenewsminute.com/article/two-women-die-tn-stigma-around-relationship-pushed-them-suicide-124855"]
-  ]],
-  ["Encounters and trials", [
-    ["The News Minute: Sirpurkar Commission findings", "https://www.thenewsminute.com/telangana/hyderabad-encounter-was-fake-cops-should-be-tried-murder-supreme-court-panel-164186"],
-    ["BOOM: Hyderabad encounter ruled fake", "https://boomlive.in/news/hyderabad-gang-rape-sc-panel-encounter-fake-police-accused-murder-17949"],
-    ["Moneylife / Bar & Bench: Badlapur magistrate inquiry", "https://moneylife.in/article/bombay-hc-calls-for-fir-after-5-policemen-found-responsible-for-encounter-of-badlapur-accused-akshay-shinde/76147.html"],
-    ["Scroll: 813 encounter killing cases in six years", "https://scroll.in/article/1029119/data-check-in-last-six-years-india-has-registered-a-case-of-encounter-killing-every-three-days"],
-    ["NCRB analysis: rape trial outcomes, 2024", "https://anantamias.com/current-affairs/long-wait-for-justice-as-pendencies-in-rape-cases-mount/"]
+    ["Dialogues in Health: Indian news reporting on LGBTQ+ suicides (2025 review)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC12311544"]
   ]],
   ["Law and policy", [
     ["The Leaflet: NMC on conversion therapy", "https://theleaflet.in/national-medical-commission-declares-conversion-therapy-as-professional-misconduct-but-it-is-not-enough/"],
@@ -371,5 +363,6 @@ export const SOURCES = [
   ["Help directories", [
     ["Find A Helpline: India", "https://findahelpline.com/countries/in/topics/gender-sexual-identity"],
     ["Homegrown: queer and trans support helplines in India", "https://homegrown.co.in/homegrown-voices/7-queer-trans-support-helplines-in-india-you-can-reach-out-to-right-now"]
-  ]]
+  ]],
+  ...allSources()
 ];
