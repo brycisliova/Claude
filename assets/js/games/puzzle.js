@@ -50,7 +50,7 @@ game("slide",
     function mv(i) {
       const e = t.indexOf(0); if (!nb(e).includes(i)) return;
       [t[e], t[i]] = [t[i], t[e]]; moves++; draw();
-      if (t.join() === "1,2,3,4,5,6,7,8,0") { $("#slideMsg").textContent = `Solved in ${moves} moves. Beautiful.`; report(moves, { low: true }); if (ready()) bowl(294); }
+      if (t.join() === "1,2,3,4,5,6,7,8,0") { $("#slideMsg").textContent = `Solved in ${moves} moves.`; report(moves, { low: true }); if (ready()) bowl(294); }
     }
     $("#slideNew").addEventListener("click", shuffle); shuffle();
   });
@@ -71,7 +71,7 @@ game("memory",
           b.classList.add("open"); b.setAttribute("aria-label", SCENES[k].n); open.push(b);
           if (open.length === 2) {
             lock = true; turns++; const [a, c] = open;
-            if (a.dataset.k === c.dataset.k) setTimeout(() => { a.classList.add("done"); c.classList.add("done"); open = []; lock = false; found++; tone(PENTA[found % PENTA.length], 0.5, 0.08); if (found === n) { $("#mMsg").textContent = `All pairs found in ${turns} turns. Lovely.`; if (n === 6) report(turns, { low: true }); } }, 450);
+            if (a.dataset.k === c.dataset.k) setTimeout(() => { a.classList.add("done"); c.classList.add("done"); open = []; lock = false; found++; tone(PENTA[found % PENTA.length], 0.5, 0.08); if (found === n) { $("#mMsg").textContent = `All pairs found in ${turns} turns. Well done.`; if (n === 6) report(turns, { low: true }); } }, 450);
             else setTimeout(() => { [a, c].forEach((x) => { x.classList.remove("open"); x.setAttribute("aria-label", "Hidden card"); }); open = []; lock = false; }, 900);
           }
         });
@@ -103,7 +103,7 @@ game("merge",
         if (v) { const L = Math.log2(v); c.appendChild(h("div", { class: "mg-tile" + (fresh.includes(i) ? " pop" : ""), style: `background:hsl(${(200 + L * 24) % 360},${Math.min(70, 38 + L * 4)}%,${Math.max(48, 86 - L * 3.2)}%);font-size:${v > 999 ? "clamp(1.1rem,3.2vw,2rem)" : v > 99 ? "clamp(1.4rem,4vw,2.6rem)" : "clamp(1.7rem,5vw,3.2rem)"}` }, v)); }
         el.appendChild(c);
       });
-      msg.textContent = done ? `Board full. You scored ${score}. Start again whenever you like.` : won ? `2048. Wonderful. Score ${score}, keep going if you like.` : `Score ${score}`;
+      msg.textContent = done ? `Board full. You scored ${score}. Start a new game any time.` : won ? `2048! Score ${score}. Keep going if you like.` : `Score ${score}`;
     }
     function start() { G = Array(N * N).fill(0); score = 0; won = false; done = false; add(); add(); draw(); }
     function move(d) {
@@ -166,7 +166,7 @@ game("lights",
 
 /* ---------------------------------------------------------------- Mini sudoku */
 game("sudoku",
-  `<div class="sd"><div class="row sd-head"><select class="mini" id="sdSize" aria-label="Grid size"><option value="4">4 × 4</option><option value="6" selected>6 × 6</option></select><select class="mini" id="sdLevel" aria-label="Difficulty"><option value="0">Gentle</option><option value="1" selected>Medium</option><option value="2">Tricky</option></select><span class="game-msg" id="sdMsg"></span></div><div class="sd-board" id="sdBoard" role="group" aria-label="Sudoku board"></div><div class="sd-pad" id="sdPad"></div><div class="row"><button class="${B}" id="sdHint">Hint</button><button class="${B}" id="sdNew">New puzzle</button></div><p class="muted small sd-tip">Every row, column and box holds each number once. Pick a square, then a number. Wrong repeats turn red. Keys 1 to 6 and the arrows work too.</p></div>`,
+  `<div class="sd"><div class="row sd-head"><select class="mini" id="sdSize" aria-label="Grid size"><option value="4">4 × 4</option><option value="6" selected>6 × 6</option></select><select class="mini" id="sdLevel" aria-label="Difficulty"><option value="0">Easy</option><option value="1" selected>Medium</option><option value="2">Tricky</option></select><span class="game-msg" id="sdMsg"></span></div><div class="sd-board" id="sdBoard" role="group" aria-label="Sudoku board"></div><div class="sd-pad" id="sdPad"></div><div class="row"><button class="${B}" id="sdHint">Hint</button><button class="${B}" id="sdNew">New puzzle</button></div><p class="muted small sd-tip">Every row, column and box holds each number once. Pick a square, then a number. Wrong repeats turn red. Keys 1 to 6 and the arrows work too.</p></div>`,
   () => {
     const board = $("#sdBoard"), pad = $("#sdPad"), msg = $("#sdMsg");
     let N, br, bc, sol, giv, cur, sel = -1, t0, done, hints, timer;
@@ -202,7 +202,7 @@ game("sudoku",
       build();
     }
     const clock = () => { const s = Math.floor((Date.now() - t0) / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
-    function paintMsg() { msg.textContent = done ? `Solved in ${clock()}${hints ? ` with ${hints} hint${hints > 1 ? "s" : ""}` : ""}. Lovely.` : `${cur.filter(Boolean).length} of ${N * N} filled · ${clock()}`; }
+    function paintMsg() { msg.textContent = done ? `Solved in ${clock()}${hints ? ` with ${hints} hint${hints > 1 ? "s" : ""}` : ""}. Nice.` : `${cur.filter(Boolean).length} of ${N * N} filled · ${clock()}`; }
     function build() {
       board.style.gridTemplateColumns = `repeat(${N},1fr)`; board.className = "sd-board n" + N; board.innerHTML = "";
       for (let i = 0; i < N * N; i++) { const b = h("button", { class: "sd-c", "data-i": i }); b.addEventListener("click", () => { sel = i; paint(); }); board.appendChild(b); }
@@ -283,7 +283,7 @@ game("maze",
       if (win) return false;
       if (!(open[me] & (1 << d))) return false;
       me += DY[d] * cols + DX[d]; trail.add(me); steps++;
-      if (me === goal) { win = performance.now(); report(level); $("#mzMsg").textContent = `Level ${level} cleared in ${steps} steps. Onward.`; if (ready()) bowl(262 + level * 14); setTimeout(() => { level++; make(); }, reduce ? 600 : 1300); }
+      if (me === goal) { win = performance.now(); report(level); $("#mzMsg").textContent = `Level ${level} cleared in ${steps} steps.`; if (ready()) bowl(262 + level * 14); setTimeout(() => { level++; make(); }, reduce ? 600 : 1300); }
       return true;
     }
     const cellAt = (e) => { const [x, y] = pos(c, e); return [Math.floor((x - ox) / cell), Math.floor((y - oy) / cell)]; };

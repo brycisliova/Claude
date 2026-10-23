@@ -45,7 +45,7 @@ game("wordle",
       if (won) { s.won++; s.streak++; s.max = Math.max(s.max, s.streak); s.dist[rows.length - 1]++; report(rows.length, { low: true }); } else s.streak = 0;
       if (mode === "daily") s.daily = { day: dayNo(), rows: rows.map((r) => r.w), done: true, won };
       store(KEY, s);
-      msg.textContent = won ? ["Genius.", "Magnificent.", "Impressive.", "Splendid.", "Great.", "Phew, just in time."][rows.length - 1] : `The word was ${secret.toUpperCase()}.`;
+      msg.textContent = won ? ["Genius.", "Wow.", "Impressive.", "Nicely done.", "Good one.", "Phew, just in time."][rows.length - 1] : `The word was ${secret.toUpperCase()}.`;
       $("#wdShare").hidden = false; $("#wdNew").hidden = mode === "daily"; showStats();
       if (ready()) { won ? [0, 2, 4].forEach((k, j) => setTimeout(() => tone(PENTA[k + 2] * 2, 0.5, 0.07), j * 140)) : tone(PENTA[0], 0.8, 0.05); }
     }

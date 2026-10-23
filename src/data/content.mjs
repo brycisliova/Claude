@@ -16,8 +16,8 @@ export const LETTERS = [
   ["L", "Lesbian", "A woman attracted to women.", "r"],
   ["G", "Gay", "A man attracted to men. Also used broadly by anyone attracted to the same gender.", "o"],
   ["B", "Bisexual", "Attracted to more than one gender, not necessarily equally or at the same time.", "y"],
-  ["T", "Transgender", "Someone whose gender identity differs from the sex they were assigned at birth. About who you are, not whom you love.", "g"],
-  ["Q", "Queer or questioning", "Queer is a reclaimed umbrella word. Questioning means still exploring, which is completely okay.", "b"],
+  ["T", "Transgender", "Someone whose gender identity differs from the sex they were assigned at birth. It's about who you are, not about who you love.", "g"],
+  ["Q", "Queer or questioning", "Queer is a reclaimed umbrella word. Questioning means you're still working it out, which is fine.", "b"],
   ["I", "Intersex", "Born with sex characteristics that don't fit typical male or female definitions. A natural biological variation.", "v"],
   ["A", "Asexual and aromantic", "Little or no sexual attraction (asexual) or romantic attraction (aromantic). Some read A as ally too.", "pink"],
   ["+", "And more", "Pansexual, non-binary, genderfluid, demisexual and others. The plus means the list stays open.", "sky"]
@@ -31,7 +31,7 @@ export const GLOSSARY = [
   ["Biphobia", "Prejudice against bisexual people, including claims that they're confused or greedy."],
   ["Cisgender", "Someone whose gender identity matches the sex they were assigned at birth."],
   ["Closeted", "Not open about one's orientation or gender identity, often for safety."],
-  ["Coming out", "Sharing one's identity with others. A lifelong process, not a single moment."],
+  ["Coming out", "Sharing one's identity with others. Something that happens again and again over a lifetime, not once."],
   ["Conversion therapy", "Discredited attempts to change orientation or gender identity. Professional misconduct for doctors in India since 2022."],
   ["Deadname", "A trans person's birth name that they no longer use. Using it on purpose is hurtful."],
   ["Demisexual", "Feeling sexual attraction only after forming a deep emotional bond."],
@@ -53,7 +53,7 @@ export const GLOSSARY = [
   ["Pronouns", "Words like he, she or they used to refer to someone."],
   ["Queer", "A reclaimed umbrella term for anyone who isn't straight or cisgender."],
   ["Section 377", "The colonial-era law that criminalised same-sex relations in India until 2018."],
-  ["Transition", "Steps some trans people take to live as their gender: social, legal or medical. Every path is valid."],
+  ["Transition", "Steps some trans people take to live as their gender: social, legal or medical. There's no one right way."],
   ["Transphobia", "Prejudice or discrimination against transgender people."],
   ["Two-Spirit", "A term used by some Indigenous North American people for gender-diverse identities."]
 ];
@@ -66,14 +66,14 @@ export const PTAGS = [
 export const TAG_COLOR = { illness: "g", choice: "b", change: "r", health: "v", family: "o", nature: "y" };
 
 export const PAPERS = [
-  { y: 1948, t: "Sexual Behavior in the Human Male", a: "Kinsey, Pomeroy & Martin", j: "Book, W.B. Saunders", u: "https://en.wikipedia.org/wiki/Kinsey_Reports", f: "Interviews with thousands of Americans showed same-sex attraction was far more common than assumed, and that sexuality varies along a spectrum.", c: "Samples were not random, so exact percentages are unreliable. Its lasting contribution was showing diversity, not precise rates.", tags: ["choice"] },
+  { y: 1948, t: "Sexual Behavior in the Human Male", a: "Kinsey, Pomeroy & Martin", j: "Book, W.B. Saunders", u: "https://en.wikipedia.org/wiki/Kinsey_Reports", f: "Interviews with thousands of Americans showed same-sex attraction was far more common than assumed, and that sexuality varies along a spectrum.", c: "Samples were not random, so exact percentages are unreliable. What lasted was the picture of diversity, not the exact percentages.", tags: ["choice"] },
   { y: 1957, t: "The adjustment of the male overt homosexual", a: "Evelyn Hooker", j: "Journal of Projective Techniques", u: "https://doi.org/10.1080/08853126.1957.10380742", f: "Expert clinicians shown blind personality tests from 30 gay and 30 straight men couldn't tell them apart. Gay men were as psychologically healthy.", c: "Small sample of non-patient men from one city, but it was the first rigorous challenge to the illness model.", tags: ["illness"] },
   { y: 1991, t: "A genetic study of male sexual orientation", a: "Bailey & Pillard", j: "Archives of General Psychiatry", u: "https://doi.org/10.1001/archpsyc.1991.01810360053008", f: "Identical twins of gay men were much more likely to be gay than fraternal twins or adopted brothers, pointing to a genetic influence.", c: "Volunteers were recruited through ads, which likely inflated concordance. Later population studies found smaller but still real genetic effects.", tags: ["choice"] },
-  { y: 1991, t: "A difference in hypothalamic structure between heterosexual and homosexual men", a: "Simon LeVay", j: "Science", u: "https://doi.org/10.1126/science.1887219", f: "A small brain region (INAH3) was on average smaller in gay men than in straight men.", c: "Only 41 post-mortem brains, many affected by AIDS. Important as a first clue; not proof on its own.", tags: ["choice"] },
+  { y: 1991, t: "A difference in hypothalamic structure between heterosexual and homosexual men", a: "Simon LeVay", j: "Science", u: "https://doi.org/10.1126/science.1887219", f: "A small brain region (INAH3) was on average smaller in gay men than in straight men.", c: "Only 41 post-mortem brains, many affected by AIDS. A first clue, not proof on its own.", tags: ["choice"] },
   { y: 1993, t: "A linkage between DNA markers on the X chromosome and male sexual orientation", a: "Hamer et al.", j: "Science", u: "https://doi.org/10.1126/science.8332896", f: "Reported a link between a region called Xq28 and male homosexuality in families with several gay brothers.", c: "Replication was mixed. A larger 2015 study (Sanders et al.) supported it, but the 2019 GWAS did not find it. Treat as unsettled.", tags: ["choice"] },
-  { y: 1996, t: "Homosexuality in men and number of older brothers", a: "Blanchard & Bogaert", j: "American Journal of Psychiatry", u: "https://doi.org/10.1176/ajp.153.1.27", f: "Each older brother increased the odds of a man being gay. This fraternal birth order effect is one of the most replicated findings in the field.", c: "Explains only a portion of gay men. It is a population pattern, not a rule for individuals.", tags: ["choice"] },
+  { y: 1996, t: "Homosexuality in men and number of older brothers", a: "Blanchard & Bogaert", j: "American Journal of Psychiatry", u: "https://doi.org/10.1176/ajp.153.1.27", f: "Each older brother increased the odds of a man being gay. This fraternal birth order effect is one of the most replicated findings in the field.", c: "Explains only a portion of gay men. It describes a pattern across populations, not a rule for any one person.", tags: ["choice"] },
   { y: 2003, t: "Prejudice, social stress, and mental health in LGB populations", a: "Ilan Meyer", j: "Psychological Bulletin", u: "https://doi.org/10.1037/0033-2909.129.5.674", f: "Introduced the minority stress model: higher rates of mental health problems among LGB people are explained by stigma and discrimination, not orientation itself.", c: "A review and theoretical model; many later studies have since tested and supported it.", tags: ["illness", "health"] },
-  { y: 2006, t: "Biological versus nonbiological older brothers and men's sexual orientation", a: "Anthony Bogaert", j: "PNAS", u: "https://doi.org/10.1073/pnas.0511152103", f: "Only older brothers born to the same mother mattered, even if raised apart. Stepbrothers or adopted brothers raised together had no effect. Points to the womb, not upbringing.", c: "Observational data; the biological mechanism was proposed later.", tags: ["choice"] },
+  { y: 2006, t: "Biological versus nonbiological older brothers and men's sexual orientation", a: "Anthony Bogaert", j: "PNAS", u: "https://doi.org/10.1073/pnas.0511152103", f: "Only older brothers born to the same mother mattered, even if raised apart. Stepbrothers or adopted brothers raised together had no effect. Points to the womb rather than upbringing.", c: "Observational data; the biological mechanism was proposed later.", tags: ["choice"] },
   { y: 2008, t: "PET and MRI show differences in cerebral asymmetry and functional connectivity between homo- and heterosexual subjects", a: "Savic & Lindström", j: "PNAS", u: "https://doi.org/10.1073/pnas.0801566105", f: "Brain symmetry patterns of gay men resembled straight women's, and lesbians' resembled straight men's, in areas unlikely to be shaped by learning.", c: "90 participants. Brain differences can't by themselves say what caused them.", tags: ["choice"] },
   { y: 2009, t: "Family rejection as a predictor of negative health outcomes in LGB young adults", a: "Ryan et al.", j: "Pediatrics", u: "https://doi.org/10.1542/peds.2007-3524", f: "Young people facing high family rejection were about 8.4 times more likely to report suicide attempts than those facing little or none.", c: "Cross-sectional US data, so it shows strong association rather than proven cause.", tags: ["health", "family"] },
   { y: 2009, t: "Appropriate therapeutic responses to sexual orientation", a: "American Psychological Association Task Force", j: "APA report", u: "https://www.apa.org/pi/lgbt/resources/therapeutic-response.pdf", f: "A systematic review found no reliable evidence that efforts to change sexual orientation work, and evidence of harm.", c: "Most change-effort studies it reviewed were themselves low quality, which is part of its conclusion.", tags: ["change"] },
@@ -91,7 +91,7 @@ export const PAPERS = [
   { y: 2020, t: "Parent-initiated sexual orientation change efforts with LGBT adolescents", a: "Ryan et al.", j: "Journal of Homosexuality", u: "https://doi.org/10.1080/00918369.2018.1538407", f: "Young adults whose parents tried to change their orientation had higher depression and suicide attempt rates and lower education and income.", c: "Retrospective self-reports from one US sample.", tags: ["change", "family"] },
   { y: 2020, t: "Association between recalled exposure to gender identity conversion efforts and psychological distress and suicide attempts", a: "Turban et al.", j: "JAMA Psychiatry", u: "https://doi.org/10.1001/jamapsychiatry.2019.2285", f: "Trans adults exposed to conversion efforts had higher odds of lifetime suicide attempts, especially if exposed before age 10.", c: "Cross-sectional survey data.", tags: ["change", "health"] },
   { y: 2020, t: "Sexual orientation change efforts, adverse childhood experiences, and suicide ideation and attempt", a: "Blosnich et al.", j: "American Journal of Public Health", u: "https://doi.org/10.2105/AJPH.2020.305637", f: "Sexual minority adults who went through change efforts had nearly twice the odds of suicidal thoughts and higher odds of attempts, even after accounting for childhood adversity.", c: "Observational; US national sample.", tags: ["change", "health"] },
-  { y: 2025, t: "LGBTQ+ suicides in Indian news media, 2001–2022", a: "Dialogues in Health", j: "Dialogues in Health", u: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12311544", f: "Analysis of 164 Indian news reports: family non-acceptance and forced separation were the most common narratives; joint couple suicides were frequent.", c: "Based on news coverage, so it reflects what gets reported, not all cases.", tags: ["health", "family"] }
+  { y: 2025, t: "Portrayals of suicide and suicide attempts among LGBTQ+ individuals in Indian digital news", a: "Jetubhai KB", j: "Dialogues in Health", u: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12311544", f: "Analysis of 164 Indian news reports: family non-acceptance and forced separation were the most common narratives; joint couple suicides were frequent.", c: "Based on news coverage, so it reflects what gets reported, not all cases.", tags: ["health", "family"] }
 ];
 
 export const TIMELINE = [
@@ -124,12 +124,12 @@ export const PEOPLE = [
   ["Ashok Row Kavi", "Journalist, founder of Humsafar Trust", "Spoke openly about being gay in Indian media in the 1980s, when almost no one did. Founded Bombay Dost, India's first gay magazine, and the Humsafar Trust, which still runs helplines and clinics.", "https://en.wikipedia.org/wiki/Ashok_Row_Kavi", "o"],
   ["Laxmi Narayan Tripathi", "Trans rights activist", "A key voice in the NALSA case that recognised transgender people in 2014. Her memoir is Me Hijra, Me Laxmi. She heads the Kinnar Akhada and has represented Asia-Pacific in UN HIV/AIDS forums.", "https://en.wikipedia.org/wiki/Laxmi_Narayan_Tripathi", "r"],
   ["Manvendra Singh Gohil", "Prince of Rajpipla", "Came out in 2006, the first Indian royal to do so, and faced public rejection from his family. Founded the Lakshya Trust for HIV awareness and queer support.", "https://en.wikipedia.org/wiki/Manvendra_Singh_Gohil", "y"],
-  ["Navtej Singh Johar", "Bharatanatyam dancer", "Lead petitioner in the 2018 case that struck down Section 377. His name is now on the judgment that set millions free.", "https://en.wikipedia.org/wiki/Navtej_Singh_Johar_v._Union_of_India", "g"],
+  ["Navtej Singh Johar", "Bharatanatyam dancer", "Lead petitioner in the 2018 case that struck down Section 377. His name is on the judgment that decriminalised same-sex relations.", "https://en.wikipedia.org/wiki/Navtej_Singh_Johar_v._Union_of_India", "g"],
   ["Keshav Suri", "Hotelier, 377 petitioner", "Another petitioner in the 2018 case. Married his partner Cyril Feuillebois. His mother and sisters supported him from the start, and his foundation funds scholarships and mental health support for queer people.", "https://www.mansworldindia.com/people/mw-anniversary-special-meet-kitty-sus-keshav-suri-the-prince-of-safe-spaces-for-the-queer-community/", "b"],
   ["Ritu Dalmia", "Chef, 377 petitioner", "Came out to her parents at 23 and later joined the Supreme Court petition alongside other prominent Indians.", "https://en.wikipedia.org/wiki/Ritu_Dalmia", "v"],
   ["Dutee Chand", "Olympic sprinter", "In 2019 became India's first openly gay elite athlete, speaking about her relationship despite opposition at home.", "https://en.wikipedia.org/wiki/Dutee_Chand", "pink"],
   ["Grace Banu", "Dalit trans activist, engineer", "The first transgender person admitted to an engineering college in Tamil Nadu. Campaigns for reservations and dignity for trans people.", "https://en.wikipedia.org/wiki/Grace_Banu", "sky"],
-  ["Anjali Gopalan", "Founder, Naz Foundation", "Filed the 2001 petition against Section 377 that began India's legal journey to equality.", "https://en.wikipedia.org/wiki/Anjali_Gopalan", "o"],
+  ["Anjali Gopalan", "Founder, Naz Foundation", "Filed the 2001 petition against Section 377 that started India's long court fight.", "https://en.wikipedia.org/wiki/Anjali_Gopalan", "o"],
   ["Saurabh Kirpal", "Senior advocate", "In 2021 the Supreme Court collegium recommended him as a Delhi High Court judge, the first openly gay person recommended for the role in India.", "https://en.wikipedia.org/wiki/Saurabh_Kirpal", "g"],
   ["Joyita Mondal", "Judge, activist", "Became one of India's first transgender judges when appointed to a Lok Adalat in West Bengal in 2017, after years of rejection and homelessness.", "https://en.wikipedia.org/wiki/Joyita_Mondal", "r"],
   ["Padmini Prakash", "News anchor", "Became India's first transgender television news anchor in 2014 in Tamil Nadu.", "https://en.wikipedia.org/wiki/Padmini_Prakash", "v"]
@@ -175,42 +175,42 @@ export const SHELF = [
 
 // [title, year, region, format, blurb, tone]
 export const FILMS = [
-  ["Fire", "1996", "india", "film", "Deepa Mehta's story of two sisters-in-law who find love in each other. Groundbreaking and once fiercely protested.", "heavy"],
-  ["My Brother… Nikhil", "2005", "india", "film", "A swimmer diagnosed with HIV, his sister and his partner fight stigma together. Tender and important.", "heavy"],
-  ["Aligarh", "2015", "india", "film", "Manoj Bajpayee as Professor Siras, a real academic suspended after being filmed with a man. Quiet and devastating.", "heavy"],
+  ["Fire", "1996", "india", "film", "Deepa Mehta's story of two sisters-in-law who find love in each other. Once fiercely protested.", "heavy"],
+  ["My Brother… Nikhil", "2005", "india", "film", "A swimmer diagnosed with HIV, his sister and his partner fight stigma together. Tender, and still timely.", "heavy"],
+  ["Aligarh", "2015", "india", "film", "Manoj Bajpayee as Professor Siras, a real academic suspended after being filmed with a man. Quiet, and hard to watch.", "heavy"],
   ["Kapoor & Sons", "2016", "india", "film", "A messy, funny, loving family drama where one son's truth slowly comes to light.", "hopeful"],
   ["Ek Ladki Ko Dekha Toh Aisa Laga", "2019", "india", "film", "A Punjabi family comedy-drama about a daughter in love with a woman. Mainstream and warm.", "hopeful"],
-  ["Super Deluxe", "2019", "india", "film", "Tamil anthology; Vijay Sethupathi plays a trans woman returning to her family. Bold and moving.", "mixed"],
+  ["Super Deluxe", "2019", "india", "film", "Tamil anthology; Vijay Sethupathi plays a trans woman returning to her family. Bold, and moving.", "mixed"],
   ["Moothon", "2019", "india", "film", "Malayalam drama about a boy searching for his brother in Mumbai, and a hidden love.", "heavy"],
   ["Shubh Mangal Zyada Saavdhan", "2020", "india", "film", "Ayushmann Khurrana in a loud, joyful comedy about a gay couple versus a disapproving family.", "funny"],
   ["Sheer Qorma", "2021", "india", "short", "Short film with Shabana Azmi, Divya Dutta and Swara Bhasker about a mother learning to accept her daughter's partner.", "hopeful"],
   ["Chandigarh Kare Aashiqui", "2021", "india", "film", "A gym owner falls for a woman and learns she's trans. A mainstream romance that starts conversations.", "hopeful"],
-  ["Badhaai Do", "2022", "india", "film", "A gay cop and a lesbian PE teacher enter a lavender marriage. Funny, honest, hopeful.", "funny"],
-  ["Kaathal – The Core", "2023", "india", "film", "Malayalam drama: Mammootty as a man running for local office whose wife files for divorce, revealing his hidden life. Gentle and profound.", "mixed"],
-  ["Made in Heaven", "2019–23", "india", "series", "Wedding planners in Delhi, including a gay man navigating love, law and family.", "mixed"],
+  ["Badhaai Do", "2022", "india", "film", "A gay cop and a lesbian PE teacher enter a lavender marriage. Funny and honest.", "funny"],
+  ["Kaathal – The Core", "2023", "india", "film", "Malayalam drama: Mammootty as a man running for local office whose wife files for divorce, revealing his hidden life. Quiet, and affecting.", "mixed"],
+  ["Made in Heaven", "2019–23", "india", "series", "Wedding planners in Delhi, one of them a gay man dealing with family and the law.", "mixed"],
   ["Paris Is Burning", "1990", "global", "doc", "Documentary on New York's ball culture and the Black and Latino queer people who built it.", "mixed"],
   ["Happy Together", "1997", "global", "film", "Wong Kar-wai's aching love story of two men adrift in Buenos Aires.", "heavy"],
   ["Milk", "2008", "global", "film", "Sean Penn as Harvey Milk, one of the first openly gay elected officials in the US.", "mixed"],
   ["Pride", "2014", "global", "film", "Gay and lesbian activists support striking Welsh miners in 1984. Joyful and uplifting.", "hopeful"],
-  ["Carol", "2015", "global", "film", "Two women fall in love in 1950s New York. Beautiful and restrained.", "mixed"],
+  ["Carol", "2015", "global", "film", "Two women fall in love in 1950s New York. Restrained and beautiful to look at.", "mixed"],
   ["Moonlight", "2016", "global", "film", "A boy grows into a man in Miami, searching for tenderness. Oscar for Best Picture.", "mixed"],
   ["Call Me by Your Name", "2017", "global", "film", "A summer romance in northern Italy, with one of cinema's kindest parental speeches.", "mixed"],
   ["Love, Simon", "2018", "global", "film", "A closeted teenager is blackmailed and finds his courage. Light and heartfelt.", "hopeful"],
-  ["Pose", "2018–21", "global", "series", "Trans women of colour in 1980s New York ballroom culture. Fierce, warm, heartbreaking.", "mixed"],
+  ["Pose", "2018–21", "global", "series", "Trans women of colour in 1980s New York ballroom culture. Fierce and warm, and it will break your heart.", "mixed"],
   ["Portrait of a Lady on Fire", "2019", "global", "film", "A painter and her subject fall in love in 18th-century France.", "mixed"],
   ["Disclosure", "2020", "global", "doc", "Trans actors and creators examine how Hollywood has portrayed trans people.", "mixed"],
   ["The Half of It", "2020", "global", "film", "A shy student ghostwrites love letters for a jock to the girl she likes herself.", "hopeful"],
   ["Young Royals", "2021–24", "global", "series", "A Swedish prince falls for a classmate at boarding school.", "mixed"],
-  ["Heartstopper", "2022–24", "global", "series", "Two British schoolboys fall gently in love. Pure comfort viewing.", "hopeful"],
+  ["Heartstopper", "2022–24", "global", "series", "Two British schoolboys fall in love, slowly and kindly. Easy, comforting viewing.", "hopeful"],
   ["Fire Island", "2022", "global", "film", "A queer Pride and Prejudice set over a holiday week. Funny and sharp.", "funny"]
 ];
 
 export const THERAPIES = [
-  ["LGBTQ-affirmative therapy", "Strong consensus", "Therapy that treats your identity as valid rather than a problem, and helps with the stress of stigma, family conflict and hiding. Every major professional body recommends this approach.", "American Psychological Association practice guidelines for sexual minority clients.", "v"],
+  ["LGBTQ-affirmative therapy", "Strong consensus", "Therapy that treats your identity as valid rather than a problem, and helps with the stress of stigma, family conflict and hiding. Major professional bodies, including the American Psychological Association, recommend this approach.", "American Psychological Association practice guidelines for sexual minority clients.", "v"],
   ["Affirmative CBT", "Trial evidence", "Cognitive behavioural therapy adapted for minority stress: challenging internalised shame, building assertiveness, reducing avoidance. The ESTEEM programme reduced depression and alcohol use in gay and bisexual men.", "Pachankis et al., 2015, Journal of Consulting and Clinical Psychology.", "b"],
   ["Cognitive behavioural therapy", "Strong evidence", "One of the best-studied treatments for depression and anxiety. Teaches you to spot and reshape unhelpful thought patterns.", "Many meta-analyses and clinical guidelines.", "g"],
   ["Mindfulness and meditation", "Moderate evidence", "Paying attention to the present without judgement. A JAMA review found meditation programmes produced moderate improvements in anxiety and depression.", "Goyal et al., 2014, JAMA Internal Medicine.", "sky"],
-  ["Peer support and community", "Strong evidence", "Connection with other queer people buffers minority stress. Support groups, college collectives and chosen family genuinely protect mental health.", "Meyer, 2003; Hatzenbuehler, 2011.", "pink"],
+  ["Peer support and community", "Strong evidence", "Connection with other queer people buffers minority stress. Support groups, college collectives and chosen family protect mental health.", "Meyer, 2003; Hatzenbuehler, 2011.", "pink"],
   ["Expressive writing", "Moderate evidence", "Writing about painful experiences for 15 to 20 minutes over several days can improve mood and even physical health. Try it below.", "Pennebaker, 1997, Psychological Science.", "o"],
   ["Music therapy", "Moderate evidence", "Listening, singing or making music with a therapist. Probably reduces depression and anxiety in the short term. Try the sound studio.", "Aalbers et al., 2017, Cochrane Review.", "y"],
   ["Physical activity", "Strong evidence", "Walking, dancing, yoga or sport. Regular movement reliably reduces depressive symptoms, sometimes as much as medication for mild depression.", "Multiple meta-analyses.", "g"],
@@ -241,24 +241,24 @@ export const SONGS = [
 ];
 
 export const MYTHS = [
-  ["Myth", "\"It's a choice.\"", "Ask a straight person when they chose to be straight. Twin and genetic studies show biology plays a major role, and upbringing almost none. People choose whether to hide their feelings, never whether they have them."],
+  ["Myth", "\"It's a choice.\"", "Ask a straight person when they chose to be straight. Twin and genetic studies show biology plays a major role, and upbringing almost none. People can choose whether to hide their feelings. They can't choose whether they have them."],
   ["Myth", "\"It's a mental illness.\"", "WHO, the American Psychiatric Association and the Indian Psychiatric Society all reject this. Higher depression rates among queer people are linked to stigma and rejection, not orientation itself."],
   ["Myth", "\"It can be cured.\"", "There is nothing to cure. Change attempts don't work and are linked to higher suicide attempts. In India, doctors who practise conversion therapy face professional misconduct action."],
   ["Myth", "\"It's a Western import.\"", "The law against it was the import, brought by the British in 1861. India's epics, temples and hijra communities show diversity going back centuries."],
   ["Myth", "\"It's unnatural.\"", "Same-sex behaviour is recorded in hundreds of species and in every human society studied."],
   ["Myth", "\"Kids become gay from exposure.\"", "Shared family environment explained almost nothing in twin studies. Visibility helps queer kids feel safe; it doesn't create them."],
-  ["Myth", "\"Bisexuals are just confused.\"", "Bisexuality is a stable orientation in its own right, not indecision."],
+  ["Myth", "\"Bisexuals are just confused.\"", "Bisexuality is a stable orientation of its own. It isn't indecision."],
   ["Myth", "\"Being trans is a trend.\"", "Indian courts have recognised trans people since 2014, and hijra communities have existed for centuries. No one takes on that much discrimination as a fashion."],
   ["Myth", "\"Gay parents harm children.\"", "Studies of children raised by same-sex parents generally find they do as well as other children. What matters is a loving, stable home."],
   ["Myth", "\"It's just a phase.\"", "For some people identity evolves; for most, orientation is stable. Either way, the feelings are real and deserve respect."],
   ["Myth", "\"Queer people are a danger to children.\"", "Research finds no link between sexual orientation and child abuse. This myth has been used for decades to justify discrimination."],
-  ["Question", "\"Why does it matter to me?\"", "Because someone you love is probably queer and hasn't felt safe telling you. How you talk about this now decides whether they ever will."]
+  ["Question", "\"Why does it matter to me?\"", "Because someone you love is probably queer and hasn't felt safe telling you. How you talk about this now affects whether they ever will."]
 ];
 
 export const LINES = [
   ["Tele-MANAS", "14416", "tel:14416", "Government of India. Free, 24/7, confidential, 20+ languages.", "r"],
   ["iCALL (TISS)", "9152987821", "tel:+919152987821", "Professional, LGBTQ+ affirming counselling. icallhelpline.org", "o"],
-  ["Humsafar Trust · Umang", "9892940966", "tel:+919892940966", "Counselling, legal and community support, call or WhatsApp. Mon–Fri, 10am–8:30pm.", "y"],
+  ["Humsafar Trust · Umang", "9892940966", "tel:+919892940966", "Counselling, legal and community support, call or WhatsApp. Mon to Fri, 10am–8:30pm.", "y"],
   ["Naz Foundation helpline", "8800329176", "tel:+918800329176", "Free, confidential support for LGBTQ+ people.", "g"],
   ["Sahodari Foundation", "7639741916", "tel:+917639741916", "Trans-led organisation in Tamil Nadu.", "b"],
   ["Nazariya (Delhi)", "nazariya.qfrg@gmail.com", "mailto:nazariya.qfrg@gmail.com", "Queer feminist group for people assigned female at birth.", "v"],
@@ -267,18 +267,18 @@ export const LINES = [
 ];
 
 export const QUOTES = [
-  ["You don't have to become someone else to be worthy of love.", "A gentle reminder"],
+  ["You don't have to become someone else to be worthy of love.", "A reminder"],
   ["Like the sea, you can be calm on top and deep underneath. Both are you.", "A thought for today"],
   ["I am large, I contain multitudes.", "Walt Whitman, Song of Myself (1855)"],
-  ["The people who truly love you will want to know the real you.", "A thought for today"],
-  ["Healing is not a straight line. Neither are you, and that's beautiful.", "A gentle reminder"],
+  ["The people who love you will want to know the real you.", "A thought for today"],
+  ["Healing is not a straight line. Neither are you, and that's okay.", "A reminder"],
   ["Breathe in what you need. Breathe out what you don't.", "A breathing thought"],
   ["One day you'll tell your story, and it will help someone survive theirs.", "A thought for later"],
-  ["Being yourself in a world that asks you to hide is a quiet kind of courage.", "A gentle reminder"],
-  ["You are not too much. You are exactly enough.", "A thought for today"],
+  ["Being yourself in a world that asks you to hide is a quiet kind of courage.", "A reminder"],
+  ["You're not too much for the people who love you.", "A thought for today"],
   ["Storms pass. The sky was never the storm.", "A breathing thought"],
-  ["Loneliness is not proof that you're unlovable. It's proof that you haven't found your people yet.", "A thought for tonight"],
-  ["Every closet has a door. You decide when, and if, to open it.", "A gentle reminder"]
+  ["Feeling lonely doesn't mean you're unlovable. It may only mean you haven't found your people yet.", "A thought for tonight"],
+  ["Every closet has a door. You decide when, and if, to open it.", "A reminder"]
 ];
 
 // Short version, shown on the About page.
@@ -328,7 +328,7 @@ export const STORY = {
     ]],
     ["The lonely stretches", [
       "There were times I was completely alone. In those times, looking at photographs of the people I love gave me strength, even though none of them were in the room.",
-      "And there were people who never said anything cruel to me, who simply didn't understand, and still don't. Some of them call it a choice. Some say it isn't natural. As if anyone would choose the harder road, the fear and the hiding and the explaining, just for fun."
+      "And there were people who never said anything cruel to me, who just didn't understand, and still don't. Some of them call it a choice. Some say it isn't natural. As if anyone would choose the harder road, the fear and the hiding and the explaining, just for fun."
     ]],
     ["Why this website exists", [
       "For them, if they're willing, I made sections of this website carefully researched and documented. If you are about to say it is a choice, a trend or a disease, I'm not asking you to take my word for it. Read the <a href=\"../science/\">science page</a>. Open the <a href=\"../library/\">research library</a> and follow the links to the original studies. See what the evidence says, and let it widen your thinking.",

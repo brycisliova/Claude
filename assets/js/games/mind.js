@@ -8,7 +8,7 @@ export const DATA = (() => { try { return JSON.parse(document.getElementById("ga
 
 /* ---------------------------------------------------------------- Echo tones */
 game("echo",
-  `<div class="ec"><div class="row"><span class="game-msg" id="ecMsg">Press start, listen, then repeat the tones.</span></div><div class="ec-pads" id="ecPads"></div><div class="row"><button class="btn btn-primary btn-sm" id="ecGo">Start</button></div><p class="muted small ec-tip">Tones play in a pattern that grows by one each round. If you slip, you simply hear it again, so there is no losing. Keys 1 to 4 work too.</p></div>`,
+  `<div class="ec"><div class="row"><span class="game-msg" id="ecMsg">Press start, listen, then repeat the tones.</span></div><div class="ec-pads" id="ecPads"></div><div class="row"><button class="btn btn-primary btn-sm" id="ecGo">Start</button></div><p class="muted small ec-tip">The pattern grows by one tone each round. If you slip, you just hear it again, so you can't lose. Keys 1 to 4 work too.</p></div>`,
   () => {
     const pads = $("#ecPads"), msg = $("#ecMsg"), cols = ["pink", "yellow", "sky", "green"], freq = [PENTA[0], PENTA[2], PENTA[4], PENTA[6]];
     let seq = [], at = 0, busy = false, run = false, timers = [], best = 0;
@@ -26,7 +26,7 @@ game("echo",
       flash(i, 260);
       if (seq[at] === i) {
         at++;
-        if (at === seq.length) { if (seq.length > best) { best = seq.length; report(best); } busy = true; msg.textContent = `Lovely. ${seq.length} in a row.`; later(next, 900); }
+        if (at === seq.length) { if (seq.length > best) { best = seq.length; report(best); } busy = true; msg.textContent = `Nice. ${seq.length} in a row.`; later(next, 900); }
       } else { busy = true; msg.textContent = "Not quite. Listen again."; later(playSeq, 1100); }
     }
     $("#ecGo").addEventListener("click", function () {
@@ -76,7 +76,7 @@ game("flags",
       $("#flNext").textContent = last ? "See my score" : "Next flag"; $("#flNext").hidden = false; $("#flNext").focus({ preventScroll: true });
     }
     $("#flNext").addEventListener("click", () => {
-      if (i === order.length - 1) { report(right); flag.style.cssText = "background:var(--surface2)"; flag.innerHTML = `<span class="fl-score">${right} / ${order.length}</span>`; opts.innerHTML = ""; fact.textContent = right >= order.length - 1 ? "Brilliant. You know your flags." : right >= 4 ? "Nicely done. Every flag has a story worth knowing." : "Good start. Try another round and see how many stay with you."; $("#flNext").hidden = true; msg.textContent = "Round complete"; return; }
+      if (i === order.length - 1) { report(right); flag.style.cssText = "background:var(--surface2)"; flag.innerHTML = `<span class="fl-score">${right} / ${order.length}</span>`; opts.innerHTML = ""; fact.textContent = right >= order.length - 1 ? "Brilliant. You know your flags." : right >= 4 ? "Nicely done. Every flag has a story." : "Good start. Try another round."; $("#flNext").hidden = true; msg.textContent = "Round complete"; return; }
       i++; ask();
     });
     $("#flNew").addEventListener("click", round); round();
@@ -106,7 +106,7 @@ game("myth",
     }
     $("#mfMyth").addEventListener("click", () => ans("myth")); $("#mfFact").addEventListener("click", () => ans("fact"));
     $("#mfNext").addEventListener("click", () => {
-      if (i === q.length - 1) { report(right); card.className = "mf-card"; card.innerHTML = `<p class="mf-q">${right} out of ${q.length}</p><p class="mf-e">${right >= 9 ? "You know this ground well." : right >= 6 ? "A solid result. The evidence is on the science and library pages if you want to go deeper." : "A good place to start. The science page walks through each answer with the evidence."}</p>`; $("#mfNext").hidden = true; $("#mfMyth").disabled = $("#mfFact").disabled = true; msg.textContent = "Round complete"; return; }
+      if (i === q.length - 1) { report(right); card.className = "mf-card"; card.innerHTML = `<p class="mf-q">${right} out of ${q.length}</p><p class="mf-e">${right >= 9 ? "You know this ground well." : right >= 6 ? "Solid. The science and library pages have the evidence if you want more." : "A fine start. The science page goes through each answer."}</p>`; $("#mfNext").hidden = true; $("#mfMyth").disabled = $("#mfFact").disabled = true; msg.textContent = "Round complete"; return; }
       i++; show();
     });
     $("#mfNew").addEventListener("click", round); round();
@@ -142,7 +142,7 @@ game("words",
       build();
     }
     const clock = () => { const s = Math.floor((Date.now() - t0) / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
-    function paintMsg() { msg.textContent = done ? `All ${words.length} words found in ${clock()}. Wonderful.` : `${found.size} of ${words.length} found · ${clock()}`; }
+    function paintMsg() { msg.textContent = done ? `All ${words.length} words found in ${clock()}. Nice.` : `${found.size} of ${words.length} found · ${clock()}`; }
     function build() {
       board.style.gridTemplateColumns = `repeat(${N},1fr)`; board.innerHTML = "";
       grid.forEach((ch, i) => board.appendChild(h("div", { class: "ws-c", "data-i": i }, ch)));
@@ -199,7 +199,7 @@ game("jar",
     $("#gjIn").addEventListener("keydown", (e) => { if (e.key === "Enter") add(); e.stopPropagation(); });
     $("#gjShake").addEventListener("click", () => { M.forEach((m) => { m.vy -= 6 + Math.random() * 6; m.vx += (Math.random() - 0.5) * 8; }); });
     $("#gjPick").addEventListener("click", () => { if (!notes.length) { note.textContent = "The jar is empty. Add something you are grateful for."; return; } const i = rnd(notes.length); selected = i; note.textContent = notes[i]; });
-    $("#gjClear").addEventListener("click", function () { if (!clearArm) { clearArm = true; this.textContent = "Tap again to empty it"; setTimeout(() => { clearArm = false; this.textContent = "Empty the jar"; }, 3000); return; } notes = []; store(KEY, notes); M = []; selected = -1; note.textContent = "The jar is empty and ready for new things."; clearArm = false; this.textContent = "Empty the jar"; });
+    $("#gjClear").addEventListener("click", function () { if (!clearArm) { clearArm = true; this.textContent = "Tap again to empty it"; setTimeout(() => { clearArm = false; this.textContent = "Empty the jar"; }, 3000); return; } notes = []; store(KEY, notes); M = []; selected = -1; note.textContent = "The jar is empty."; clearArm = false; this.textContent = "Empty the jar"; });
     c.addEventListener("pointerdown", (e) => { const [x, y] = pos(c, e); let best = null; M.forEach((m) => { if (Math.hypot(m.x - x, m.y - y) < m.r + 6) best = m; }); if (best) { selected = best.i; note.textContent = best.n; if (ready()) tone(PENTA[best.i % PENTA.length] * 2, 0.5, 0.05); } });
     return {
       destroy() { removeEventListener("themechange", readInk); },
