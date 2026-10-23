@@ -8,6 +8,7 @@ import stories from "./stories.mjs";
 import voices from "./voices.mjs";
 import watch from "./watch.mjs";
 import india from "./india.mjs";
+import news from "./news.mjs";
 import help from "./help.mjs";
 import therapies from "./therapies.mjs";
 import sound from "./sound.mjs";
@@ -19,4 +20,4 @@ import sources from "./sources.mjs";
 import credits from "./credits.mjs";
 import { hasPhotos } from "../ui.mjs";
 
-export default [home, learn, science, library, timeline, myths, stories, voices, watch, india, help, therapies, sound, games, about, connect, privacy, sources, ...(hasPhotos() ? [credits] : [])];
+export default [home, learn, science, library, timeline, myths, stories, voices, watch, india, news, help, therapies, sound, games, about, connect, privacy, sources, ...(hasPhotos() ? [credits] : [])];

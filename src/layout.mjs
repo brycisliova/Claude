@@ -28,6 +28,7 @@ export const PAGES = {
   voices: ["voices", "Voices", "", "blue", "Talks, interviews and videos", "07", "Stories"],
   watch: ["watch", "Watch", "", "violet", "28 films and series worth your evening", "08", "Stories"],
   india: ["india", "India and the world", "", "blue", "Violence, data and the silence around it", "09", "Stories"],
+  news: ["news", "News", "", "sky", "Today's headlines, India and the world, plus good news", "09", "Stories"],
   help: ["help", "Help and guides", "", "blue", "Helplines, coming out, parents, allies, rights", "10", "Care"],
   therapies: ["therapies", "Therapies", "", "pink", "What helps, plus tools to use now", "11", "Care"],
   sound: ["sound", "Sound studio", "", "sky", "Nature mixer, bowls, ambient music, songs", "12", "Care"],
@@ -41,10 +42,13 @@ export const PAGES = {
 
 export const NAV_GROUPS = [
   ["Understand", ["learn", "science", "library", "timeline", "myths"]],
-  ["Stories", ["stories", "voices", "watch", "india"]],
+  ["Stories", ["stories", "voices", "watch", "india", "news"]],
   ["Care", ["help", "therapies", "sound", "games"]],
   ["About", ["about", "connect", "privacy", "sources", "credits"]]
 ];
+
+// number the pages in the order the menu shows them
+NAV_GROUPS.flatMap(([, items]) => items).forEach((k, i) => { PAGES[k][5] = String(i + 1).padStart(2, "0"); });
 
 export function makeCtx(config, slug, opts = {}) {
   const base = slug ? "../" : "./";
@@ -60,7 +64,7 @@ function bar(ctx) {
   return `
 <header class="bar" id="bar">
   <a class="bar-brand" href="${href("")}" aria-label="${esc(config.name)}, home">${MARK}<span>${esc(config.name)}</span></a>
-  <nav class="bar-links" aria-label="Main">${link("learn", "Learn")}${link("science", "Science")}${link("stories", "Stories")}${link("india", "India")}${link("games", "Games")}</nav>
+  <nav class="bar-links" aria-label="Main">${link("learn", "Learn")}${link("science", "Science")}${link("stories", "Stories")}${link("india", "India")}${link("news", "News")}</nav>
   <div class="bar-tools">
     <a class="pill pill--games" href="${href("games")}">Games</a><a class="pill pill--alert" href="${href("help")}">Help now</a>
     <button class="icon-btn" id="themeBtn" aria-label="Switch colour theme"><span class="t-sun">${icon("sun", 18)}</span><span class="t-moon">${icon("moon", 18)}</span></button>
