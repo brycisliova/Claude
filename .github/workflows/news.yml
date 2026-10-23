@@ -1,10 +1,11 @@
 name: Daily news
 
-# Every morning (about 6:00 in India) pull today's headlines into assets/data/news.json, rebuild the site and commit
-# the result. GitHub Pages then publishes it. Run it by hand from the Actions tab with "Run workflow".
+# Every night at about 2:20 AM India time (20:50 UTC, since GitHub schedules use UTC) pull the latest headlines into
+# assets/data/news.json, rebuild the site and commit the result. GitHub Pages then publishes it. GitHub can start a scheduled
+# job a few minutes late, which is why the time is not on the hour. Run it by hand from the Actions tab with "Run workflow".
 on:
   schedule:
-    - cron: "25 0 * * *"
+    - cron: "50 20 * * *"
   workflow_dispatch:
 
 permissions:

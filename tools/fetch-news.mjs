@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Pulls today's LGBTQIA+ news (India and the world) and good news from public RSS feeds into assets/data/news.json.
 // Only the headline, the publisher's name, the date, a short snippet where the feed gives one, and the link are kept. Nothing
-// is rewritten: every item links to the publisher. Run by .github/workflows/news.yml every morning, then the site is rebuilt.
+// is rewritten: every item links to the publisher. Run by .github/workflows/news.yml every night, then the site is rebuilt.
 // usage: node tools/fetch-news.mjs [--dry]
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";

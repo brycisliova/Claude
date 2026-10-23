@@ -2,13 +2,27 @@ name = "who-we-are-helper"
 main = "worker.mjs"
 compatibility_date = "2026-01-01"
 
+# Cloudflare Workers AI: a free model that needs no API key. It is the last free fallback.
+[ai]
+binding = "AI"
+
 [vars]
 ALLOWED_ORIGINS = "https://shiningforever.in,https://www.shiningforever.in"
-CHAT_MODEL = "claude-sonnet-5-5"
+SITE_URL = "https://shiningforever.in"
+# Order the providers are tried in. A provider with no key is skipped. Groq and Workers AI say they do not train on what they
+# receive. Gemini's free tier and OpenRouter's free models may keep or learn from prompts, so they are not on by default.
+# To add Gemini after a visitor-facing privacy decision, use: PROVIDERS = "groq,workersai,gemini"
+PROVIDERS = "groq,workersai"
+# Model names change now and then. If a provider starts failing, check its model list and update the name here.
+GEMINI_MODEL = "gemini-2.5-flash"
+GROQ_MODEL = "llama-3.3-70b-versatile"
+WORKERS_AI_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 LIMIT_PER_10_MIN = "20"
+# Only used when gemini is in PROVIDERS: let it search Google for fresh facts.
+GEMINI_SEARCH = "off"
 
-# Optional: a KV namespace for a per-visitor message limit.
-#   npx wrangler kv namespace create LIMITS     then paste the id here and remove the leading # from the next three lines
+# Optional: a KV namespace for a per-visitor message limit (also free).
+#   In the Cloudflare dashboard: Workers & Pages, KV, Create namespace "LIMITS". Paste its id below and remove the leading #.
 # [[kv_namespaces]]
 # binding = "LIMITS"
 # id = "PASTE_THE_ID_HERE"

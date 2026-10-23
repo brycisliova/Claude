@@ -2,7 +2,14 @@
 // When the site has a backend (data-chat on <html>, see backend/README.md) it also holds an open conversation and can
 // search the web for recent facts. Nothing is saved: the chat lives in memory and is gone when the page closes.
 
-const root = document.documentElement, BASE = root.dataset.base || "./", ENDPOINT = root.dataset.chat || "";
+const root = document.documentElement, BASE = root.dataset.base || "./";
+// The backend address lives in assets/data/chat.json, so it can be changed without rebuilding the site.
+let ENDPOINT = root.dataset.chat || "";
+const ready = (async () => {
+  if (!ENDPOINT) { try { const j = await fetch(new URL("../data/chat.json", import.meta.url)).then((r) => r.json()); ENDPOINT = String(j.endpoint || "").trim(); } catch (e) { /* no backend: the helper stays simple */ } }
+  if (ENDPOINT && !/^https:\/\//.test(ENDPOINT)) ENDPOINT = "";
+  if (ENDPOINT && !/\/chat\/?$/.test(ENDPOINT)) ENDPOINT = ENDPOINT.replace(/\/+$/, "") + "/chat";
+})();
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const page = (u) => BASE + u;
 
@@ -64,7 +71,7 @@ function md(t) {
 }
 function open() {
   panel.hidden = false; btn.setAttribute("aria-expanded", "true"); btn.classList.add("on");
-  if (!opened) { opened = true; say("bot", `<p>Hi, I'm the helper for this site. I'm automated, not a person. ${ENDPOINT ? "Ask me about the site, about life, or about the world." : "I can point you to the right page, answer common questions and find helplines."}</p><p>If today is heavy, say so. That is fine here.</p>`); tips.innerHTML = TIPS.map((t) => `<button type="button" class="chat-tip">${esc(t)}</button>`).join(""); }
+  if (!opened) { opened = true; ready.then(() => { say("bot", `<p>Hi, I'm the helper for this site. I'm automated, not a person. ${ENDPOINT ? "Ask me about the site, about life, or about the world." : "I can point you to the right page, answer common questions and find helplines."}</p><p>If today is heavy, say so. That is fine here.</p>`); tips.innerHTML = TIPS.map((t) => `<button type="button" class="chat-tip">${esc(t)}</button>`).join(""); }); }
   setTimeout(() => input.focus({ preventScroll: true }), 50);
 }
 function close() { panel.hidden = true; btn.setAttribute("aria-expanded", "false"); btn.classList.remove("on"); btn.focus({ preventScroll: true }); }
@@ -91,7 +98,7 @@ async function online(q) {
   return md(j.reply) + (j.sources?.length ? `<p class="ch-src">Sources: ${j.sources.map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)}</a>`).join(" · ")}</p>` : "");
 }
 async function ask(q) {
-  if (busy) return; busy = true; tips.innerHTML = "";
+  if (busy) return; busy = true; tips.innerHTML = ""; await ready;
   say("me", `<p>${esc(q)}</p>`);
   const crisis = CRISIS.test(q); if (crisis) say("bot", CRISIS_HTML, "ch-care");
   const wait = say("bot", `<p class="ch-dots" aria-label="Thinking"><i></i><i></i><i></i></p>`);

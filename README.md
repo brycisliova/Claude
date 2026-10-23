@@ -9,7 +9,7 @@ Address: <https://shiningforever.in>
 ## What is on the site
 
 - **Understand:** LGBTQIA+ explained, the science, a research library, a timeline, and myths and facts.
-- **Stories:** trailblazers, the community wall, voices and videos, films and series, India and the world in data, and a news page refreshed every morning.
+- **Stories:** trailblazers, the community wall, voices and videos, films and series, India and the world in data, and a news page refreshed every night.
 - **Care:** helplines and guides, resources for LGBTQIA+ students who want to study abroad, therapies, a sound studio, and calm games.
 - **Helper chat:** a small chat on every page that finds pages, answers common questions and shows helplines.
 - **Games:** party games and quizzes to play with friends, plus calm games to play alone.
@@ -35,7 +35,7 @@ The bots in Atlas and Word antakshari pick places and words the way a person wou
 
 ## Behind the scenes
 
-The site is static and hosted on GitHub Pages. A scheduled workflow (`.github/workflows/news.yml`) gathers the news every morning. The helper chat works on its own in the browser, and gains open conversation when the small Cloudflare Worker in `backend/` is deployed (setup is in `backend/README.md`).
+The site is static and hosted on GitHub Pages. A scheduled workflow (`.github/workflows/news.yml`) gathers the news every night at about 2:20 AM India time. The helper chat works on its own in the browser, and gains open conversation when the small Cloudflare Worker in `backend/` is deployed (setup is in `backend/README.md`).
 
 ## Privacy
 
