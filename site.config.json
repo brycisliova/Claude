@@ -6,5 +6,6 @@
   "email": "shiningforevr@gmail.com",
   "author": "Reiner Endrios",
   "quickExitUrl": "https://www.google.com/",
-  "lang": "en"
+  "lang": "en",
+  "chatEndpoint": ""
 }

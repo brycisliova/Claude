@@ -1,0 +1,14 @@
+name = "who-we-are-helper"
+main = "worker.mjs"
+compatibility_date = "2026-01-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://shiningforever.in,https://www.shiningforever.in"
+CHAT_MODEL = "claude-sonnet-5-5"
+LIMIT_PER_10_MIN = "20"
+
+# Optional: a KV namespace for a per-visitor message limit.
+#   npx wrangler kv namespace create LIMITS     then paste the id here and remove the leading # from the next three lines
+# [[kv_namespaces]]
+# binding = "LIMITS"
+# id = "PASTE_THE_ID_HERE"

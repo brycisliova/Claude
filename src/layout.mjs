@@ -140,7 +140,7 @@ export function renderPage({ config, page, ctx, assetVer, body, siteUrl, is404 }
   const scripts = (page.scripts || []).map((s) => `<script type="module" src="${assetBase}assets/js/pages/${s}.js"></script>`).join("\n");
   const ld = { "@context": "https://schema.org", "@type": slug === "" ? "WebSite" : "WebPage", name: title, description: page.desc || config.description, url: canonical, inLanguage: config.lang };
   return `<!doctype html>
-<html lang="${config.lang}" data-base="${assetBase}" data-page="${slug || "home"}" style="--accent:var(--${page.accent || "pink"})">
+<html lang="${config.lang}" data-base="${assetBase}"${config.chatEndpoint ? ` data-chat="${esc(config.chatEndpoint)}"` : ""} data-page="${slug || "home"}" style="--accent:var(--${page.accent || "pink"})">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -180,6 +180,7 @@ ${footer(ctx)}
 <script defer src="${assetBase}assets/vendor/ScrollTrigger.min.js"></script>
 <script defer src="${assetBase}assets/vendor/lenis.min.js"></script>
 <script type="module" src="${assetBase}assets/js/core.js"></script>
+<script type="module" src="${assetBase}assets/js/chat.js"></script>
 ${scripts}
 <noscript><style>[data-split],.reveal{opacity:1!important;transform:none!important}.curtain,.cursor{display:none!important}</style></noscript>
 </body>

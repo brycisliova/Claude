@@ -39,12 +39,16 @@ function write(rel, content) {
   writeFileSync(full, content);
 }
 
-const urls = [];
+const urls = [], searchIndex = [];
+const plain = (h) => h.replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 for (const page of pages) {
   const ctx = makeCtx(config, page.slug, { hasCredits: hasPhotos() });
   const body = page.body(ctx);
   const html = renderPage({ config, page, ctx, assetVer, body, siteUrl });
   write(page.slug ? `${page.slug}/index.html` : "index.html", html);
+  // the chat helper finds pages from this small index: title, description and the section headings
+  const heads = [...body.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map((m) => plain(m[1])).filter((t) => t && t.length < 90);
+  searchIndex.push({ u: page.slug ? `${page.slug}/` : "", t: page.title, d: page.desc || config.description, h: [...new Set(heads)].slice(0, 14) });
   urls.push(page.slug ? `${siteUrl}/${page.slug}/` : `${siteUrl}/`);
 }
 
@@ -57,6 +61,7 @@ const nf = {
 const nfCtx = { ...makeCtx(config, "404", { hasCredits: hasPhotos() }), base: nfBase, href: (s) => (s ? `${nfBase}${s}/` : nfBase) };
 write("404.html", renderPage({ config, page: nf, ctx: nfCtx, assetVer, body: nf.body(), siteUrl, is404: true }));
 
+write("assets/data/search.json", JSON.stringify(searchIndex));
 write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u}</loc></url>`).join("\n")}\n</urlset>\n`);
 write("robots.txt", `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`);
 write("manifest.webmanifest", JSON.stringify({
