@@ -1569,3 +1569,7 @@ html,body{touch-action:manipulation}
 .vz-tl time{font-weight:650;font-variant-numeric:tabular-nums;color:var(--fg2);font-size:.9rem;padding-top:.15rem}
 .vz-tl h4{margin:0 0 .15rem;font-size:1rem}.vz-tl p{margin:0;font-size:.9rem;line-height:1.45;color:var(--fg2)}
 @media (max-width:560px){.vz-tl li{grid-template-columns:1fr;gap:.1rem}}
+
+/* fair-play notes in the chain games and the Hinglish letter hint */
+.at-letter small{font-size:.8rem;opacity:.85;margin-top:.25rem;text-align:center;max-width:14rem}
+.at-swap{margin:.2rem 0 .4rem;color:var(--ink-soft,inherit);font-size:.9rem}

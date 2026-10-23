@@ -39,15 +39,15 @@ function index(j) {
 }
 
 /* ---------- rules ---------- */
+// Twists are optional (off unless the room turns them on), arrive on a fixed beat that is shown to everyone, apply to every
+// player alike, and are only used when plenty of places fit. There are no letter-count or river-only twists.
 const TWISTS = [
   { id: "india", label: "India only", test: (e, D) => D.isIndia(e) },
-  { id: "water", label: "A continent, ocean, sea or desert", test: (e) => e.k === "w" || e.k === "x" || e.k === "k" },
-  { id: "nature", label: "A river, lake, mountain or island", test: (e) => e.k === "f" },
   { id: "country", label: "A country", test: (e) => e.k === "c" },
   { id: "state", label: "A state, province or district", test: (e) => e.k === "s" || e.k === "d" },
-  { id: "short", label: "Six letters or fewer", test: (e) => e.n.length <= 6 },
-  { id: "long", label: "Ten letters or more", test: (e) => e.n.length >= 10 }
+  { id: "city", label: "A city or town", test: (e) => e.k === "t" }
 ];
+const TWIST_EVERY = 5, TWIST_ROOM = 25;
 const lastLetter = (n) => n[n.length - 1];
 const START = "ABCDEFGHIJKLMNOPRSTUVYZ".split("");
 
@@ -85,28 +85,37 @@ const PACE = { 1.5: 40000, 1: 25000, 0.7: 15000 };
 function makeHost(ctx, solo) {
   let S = null, D = null;
   const alive = () => S.order.filter((id) => S.lives[id] > 0);
-  const view = (ph, extra) => ({ ph, order: S.order, turn: S.turn, letter: S.letter, twist: S.twist, twistLabel: S.twist ? TWISTS.find((t) => t.id === S.twist).label : "", last: S.last, hist: S.hist.slice(-8), tl: Math.max(0, S.dl - Date.now()), ms: S.ms, lives: S.lives, score: S.score, words: S.words, count: S.hist.length, wrong: S.wrong, ...extra });
+  const view = (ph, extra) => ({ ph, order: S.order, turn: S.turn, letter: S.letter, twist: S.twist, twistLabel: S.twist ? TWISTS.find((t) => t.id === S.twist).label : "", last: S.last, hist: S.hist.slice(-8), tl: Math.max(0, S.dl - Date.now()), ms: S.ms, lives: S.lives, score: S.score, words: S.words, count: S.hist.length, wrong: S.wrong, twistIn: S.twists ? TWIST_EVERY - (S.hist.length % TWIST_EVERY) : 0, swap: S.swap, ...extra });
   const nextAlive = (from) => { const o = S.order, n = o.length; for (let k = 1; k <= n; k++) { const id = o[(o.indexOf(from) + k) % n]; if (S.lives[id] > 0) return id; } return from; };
   function turn(id) {
     S.turn = id; S.wrong = 0; S.tk = (S.tk || 0) + 1; clearTimeout(S.tm);
-    // a twist every fourth turn makes each round different
-    S.twist = S.hist.length > 0 && S.hist.length % 4 === 0 ? pickTwist() : "";
+    // with twists switched on, every fifth turn has one, whoever's turn it is
+    S.twist = S.twists && S.hist.length > 0 && S.hist.length % TWIST_EVERY === 0 ? pickTwist() : "";
     S.dl = Date.now() + S.ms; S.tm = ctx.after(S.ms + 400, () => lose(id, "ran out of time"));
     ctx.push(view("play"));
-    if (id === "bot") S.tm2 = ctx.after(1400 + Math.random() * 2200, botMove);
+    if (id === "bot") S.tm2 = ctx.after((S.bot === "hard" ? 1200 : 1800) + Math.random() * 2600, botMove);
   }
   function pickTwist() {
-    // only offer a twist that at least a few places can satisfy for this letter
+    // a twist is only offered when plenty of places fit, so it never corners the player
     const opts = shuffle(TWISTS.slice());
-    for (const t of opts) { const n = (D.byFirst[(S.letter || "a").toLowerCase()] || []).filter((e) => !S.used.has(e.n) && t.test(e, D)).length; if (n >= 6) return t.id; }
+    for (const t of opts) { const n = (D.byFirst[(S.letter || "a").toLowerCase()] || []).filter((e) => !S.used.has(e.n) && t.test(e, D)).length; if (n >= TWIST_ROOM) return t.id; }
     return "";
+  }
+  const room = (ch) => (D.byFirst[ch] || []).filter((x) => !S.used.has(x.n)).length;
+  // Fair letter: if a place ends in a letter almost nothing starts with (X, Q, Z and the like), the next place starts with the
+  // letter before it, for whoever is next, human or bot.
+  function nextLetter(n) {
+    let i = n.length - 1; S.swap = "";
+    while (i > 0 && room(n[i]) < 12) i--;
+    if (i < n.length - 1) S.swap = `${n[n.length - 1].toUpperCase()} is too rare, so the next place starts with ${n[i].toUpperCase()}.`;
+    return n[i].toUpperCase();
   }
   function accept(id, e, fast) {
     const pts = (e.k === "w" || e.k === "x" || e.k === "k" || e.k === "f" || e.k === "v" ? 15 : D.isIndia(e) ? 12 : 10) + Math.round(8 * fast);
     const mult = S.twist ? 2 : 1; S.used.add(e.n); S.score[id] = (S.score[id] || 0) + pts * mult; S.words[id] = (S.words[id] || 0) + 1;
-    S.last = { n: e.name, reg: e.region, k: e.k, by: id, pts: pts * mult }; S.hist.push(S.last); S.letter = lastLetter(e.n).toUpperCase();
+    S.last = { n: e.name, reg: e.region, k: e.k, by: id, pts: pts * mult }; S.hist.push(S.last); S.letter = nextLetter(e.n);
     clearTimeout(S.tm); clearTimeout(S.tm2);
-    if (!(D.byFirst[S.letter.toLowerCase()] || []).some((x) => !S.used.has(x.n))) { S.letter = shuffle(START.slice())[0]; }
+    if (!(D.byFirst[S.letter.toLowerCase()] || []).some((x) => !S.used.has(x.n))) { S.letter = shuffle(START.slice())[0]; S.swap = "Nothing is left for that letter, so here is a fresh one."; }
     turn(nextAlive(id));
   }
   function lose(id, why) {
@@ -116,21 +125,24 @@ function makeHost(ctx, solo) {
     clearTimeout(S.tm); clearTimeout(S.tm2); turn(S.lives[id] > 0 ? nextAlive(id) : nextAlive(id));
   }
   function end() { S.over = true; clearTimeout(S.tm); clearTimeout(S.tm2); ctx.push(view("end", { winner: alive()[0] || null })); }
+  // The bot plays the way a person does: it names places it knows, the better known ones more often, and it does not look
+  // at which letter its answer leaves you with. "Sharp" knows more of the lesser-known places and answers a little faster.
+  const FAME = { t: (e) => e.pop, c: () => 5, s: () => 4, d: () => 2.5, w: () => 4.5, k: () => 4.5, x: () => 3, f: () => 2.5 };
   function botMove() {
     if (!S || S.over || S.turn !== "bot") return;
-    const hard = S.bot === "hard", L = S.letter.toLowerCase(), t = S.twist && TWISTS.find((x) => x.id === S.twist);
-    let c = (D.byFirst[L] || []).filter((e) => !S.used.has(e.n) && (!t || t.test(e, D)));
-    if (!c.length || Math.random() < (hard ? 0.03 : 0.12)) return lose("bot", "had no answer");
-    // an easy bot likes famous places; a hard one picks names that end in tricky letters
-    const memo = {}, left = (ch) => (memo[ch] ??= (D.byFirst[ch] || []).filter((x) => !S.used.has(x.n)).length);
-    c = c.map((e) => ({ e, w: hard ? 1 / (1 + left(lastLetter(e.n))) + Math.random() * 0.2 : e.pop + Math.random() * 3 })).sort((a, b) => b.w - a.w);
-    accept("bot", c[Math.floor(Math.random() * Math.min(5, c.length))].e, 0.3);
+    const sharp = S.bot === "hard", L = S.letter.toLowerCase(), t = S.twist && TWISTS.find((x) => x.id === S.twist);
+    const all = (D.byFirst[L] || []).filter((e) => !S.used.has(e.n) && (!t || t.test(e, D)));
+    // a person knows the famous places for a letter, and fewer of the rest
+    const known = all.map((e) => ({ e, f: (FAME[e.k]?.(e) ?? 2) + Math.random() * 1.6 })).sort((a, b) => b.f - a.f).slice(0, sharp ? 90 : 30);
+    // like a person, it slips more when it can think of few places, never because it is losing
+    if (!known.length || Math.random() < (known.length < 4 ? 0.35 : sharp ? 0.015 : 0.04)) return lose("bot", "could not think of one");
+    accept("bot", known[Math.floor(Math.random() * known.length)].e, 0.3);
   }
   return {
     async start(o) {
       try { D = await loadAtlas(); } catch (e) { ctx.push({ ph: "error", order: ctx.players.map((p) => p.id) }); return; }
       const lives = +o.lives || 3;
-      S = { order: ctx.players.map((p) => p.id), lives: {}, score: {}, words: {}, used: new Set(), hist: [], letter: "", turn: "", twist: "", dl: 0, ms: PACE[o.pace] || 25000, tm: null, tm2: null, over: false, wrong: 0, last: null, bot: o.bot || "easy" };
+      S = { order: ctx.players.map((p) => p.id), lives: {}, score: {}, words: {}, used: new Set(), hist: [], letter: "", turn: "", twist: "", dl: 0, ms: PACE[o.pace] || 25000, tm: null, tm2: null, over: false, wrong: 0, last: null, bot: o.bot || "easy", twists: String(o.twists) === "1", swap: "" };
       S.order.forEach((id) => { S.lives[id] = lives; S.score[id] = 0; S.words[id] = 0; });
       S.letter = shuffle(START.filter((ch) => (D.byFirst[ch.toLowerCase()] || []).length > 40))[0] || "A";
       turn(S.order[0]);
@@ -155,7 +167,7 @@ function makeHost(ctx, solo) {
 /* ---------- the view ---------- */
 function mountView(root, api, solo) {
   root.innerHTML = `<div class="mp at"><div class="mp-head"><p class="mp-turn" id="atInfo" aria-live="polite">Loading the map…</p><div class="mp-tl"><i id="atTl"></i></div></div>
-  <p class="at-twist" id="atTwist" hidden></p>
+  <p class="at-twist" id="atTwist" hidden></p><p class="at-msg at-swap" id="atSwap" hidden></p>
   <div class="at-main"><div class="at-letter" id="atLetter" aria-live="polite"><span>starts with</span><b>?</b></div><div class="at-last" id="atLast"><span class="muted">The first place is yours.</span></div></div>
   <form class="at-form" id="atForm" autocomplete="off" hidden>
     <label class="sr-only" for="atName">Place name</label><input class="text-in at-in" id="atName" maxlength="40" placeholder="Any place: city, state, country, continent, ocean, river… or a village" autocapitalize="words" spellcheck="false">
@@ -165,7 +177,7 @@ function mountView(root, api, solo) {
   <p class="at-msg" id="atMsg" role="status"></p>
   <ul class="mp-score at-score" id="atScore"></ul>
   <ol class="at-hist" id="atHist" aria-label="Places played"></ol>
-  <details class="at-how"><summary>How to play</summary><ul><li>Name a place that starts with the last letter of the previous one. Mumbai is followed by something starting with I.</li><li><b>Cities, towns, districts, states, countries, continents, oceans, seas, deserts, rivers, lakes, mountains and islands:</b> just type the name. Nothing else is needed.</li><li><b>Villages</b> are allowed too, but then you must also fill in the second box: the <b>state</b> if the village is in India, or the <b>country</b> if it is anywhere else.</li><li>No place can be used twice. Three wrong tries, or running out of time, costs a life.</li><li>Every fourth turn has a twist, like India only or deserts and oceans only, worth double points.</li><li>Last player with lives wins. Scores break ties: deserts, oceans and villages pay more, and quick answers earn a bonus.</li></ul></details>
+  <details class="at-how"><summary>How to play</summary><ul><li>Name a place that starts with the last letter of the previous one. Mumbai is followed by something starting with I.</li><li><b>Cities, towns, districts, states, countries, continents, oceans, seas, deserts, rivers, lakes, mountains and islands:</b> just type the name. Nothing else is needed.</li><li><b>Villages</b> are allowed too, but then you must also fill in the second box: the <b>state</b> if the village is in India, or the <b>country</b> if it is anywhere else.</li><li>No place can be used twice. Three wrong tries, or running out of time, costs a life.</li><li>Twists are optional. If a room switches them on, every fifth turn asks for one kind of place (India only, a country, a state or district, a city). It is the same for everyone, it is announced two turns ahead, and it only comes up when plenty of places fit. Worth double points.</li><li><b>Rare letters:</b> if a place ends in a letter almost nothing starts with, like X or Q, the next place starts with the letter before it. That goes for you and the bot alike.</li><li><b>The bot</b> names places the way a person would, famous ones more often. It never picks a place to leave you a hard letter.</li><li>Last player with lives wins. Scores break ties: deserts, oceans and villages pay more, and quick answers earn a bonus.</li></ul></details>
   <div id="atEnd"></div></div>`;
   const $ = (s) => root.querySelector(s); let st = null, D = null, lastTurnKey = "", offMsg = null;
   const me = () => api.me?.id;
@@ -181,7 +193,8 @@ function mountView(root, api, solo) {
     const mine = s.turn === me() && s.ph === "play", name = (id) => byId(api, id)?.name || "Player";
     $("#atInfo").innerHTML = s.ph === "end" ? "Game over" : mine ? "<b>Your turn</b>" : `${esc(name(s.turn))} is thinking…`;
     $("#atLetter").innerHTML = `<span>starts with</span><b>${esc(s.letter || "?")}</b>`;
-    const tw = $("#atTwist"); tw.hidden = !s.twist; if (s.twist) tw.innerHTML = `<b>Twist:</b> ${esc(s.twistLabel)}. Double points this turn.`;
+    const tw = $("#atTwist"); tw.hidden = !s.twist && !(s.twistIn > 0 && s.twistIn <= 2); if (s.twist) tw.innerHTML = `<b>Twist:</b> ${esc(s.twistLabel)}. Double points this turn.`; else if (!tw.hidden) tw.innerHTML = `A twist round is coming in ${s.twistIn} ${s.twistIn === 1 ? "turn" : "turns"}. It is the same for everyone.`;
+    const sw = $("#atSwap"); sw.hidden = !s.swap || s.ph !== "play"; sw.textContent = s.swap || "";
     const l = s.last, box = $("#atLast");
     box.innerHTML = l ? (l.miss ? `<span class="at-miss">${esc(name(l.by))} ${esc(l.miss)} and lost a life.</span>` : `<span class="at-place">${esc(l.n)}</span><span class="at-reg">${esc(l.reg || KIND[l.k])}${l.reg ? " · " + KIND[l.k] : ""}</span><span class="at-by">${dot(byId(api, l.by) || { color: 0, name: "?" })}${esc(name(l.by))} +${l.pts}</span>`) : `<span class="muted">The first place is yours.</span>`;
     const form = $("#atForm"); form.hidden = !mine;
@@ -215,12 +228,13 @@ function mountView(root, api, solo) {
 /* ---------- registering ---------- */
 const OPTIONS = [
   { id: "lives", label: "Lives", def: 3, choices: [[2, "2"], [3, "3"], [5, "5"]] },
-  { id: "pace", label: "Time per turn", def: 1, choices: [[1.5, "Relaxed (40s)"], [1, "Normal (25s)"], [0.7, "Fast (15s)"]] }
+  { id: "pace", label: "Time per turn", def: 1, choices: [[1.5, "Relaxed (40s)"], [1, "Normal (25s)"], [0.7, "Fast (15s)"]] },
+  { id: "twists", label: "Twist rounds", def: 0, choices: [[0, "Off"], [1, "Every fifth turn"]] }
 ];
 mp({ id: "atlas", title: "Atlas", min: 2, max: 8, options: OPTIONS, host: (ctx) => makeHost(ctx, false), view: (root, api) => mountView(root, api, false) });
 
 game("atlas",
-  `<div class="pq-solo"><div class="pq-setup" id="atSetup"><p class="pq-lede">Name a place that starts with the last letter of the last one. Cities, states, countries, continents, oceans, seas, deserts, rivers, lakes, mountains and islands need only a name. A village counts too, if you add its state (India) or country. Take on the bot, or play a room with friends.</p><div class="tg-opts">${[{ id: "bot", label: "Bot level", def: "easy", choices: [["easy", "Easy"], ["hard", "Hard"]] }, ...OPTIONS].map((o) => `<label>${o.label}<select class="mini" data-o="${o.id}">${o.choices.map(([v, l]) => `<option value="${v}"${String(v) === String(o.def) ? " selected" : ""}>${l}</option>`).join("")}</select></label>`).join("")}</div><div class="row"><button class="btn btn-primary" id="atGo" type="button"><span class="btn-t">Start</span></button></div></div><div id="atStage" hidden></div></div>`,
+  `<div class="pq-solo"><div class="pq-setup" id="atSetup"><p class="pq-lede">Name a place that starts with the last letter of the last one. Cities, states, countries, continents, oceans, seas, deserts, rivers, lakes, mountains and islands need only a name. A village counts too, if you add its state (India) or country. Take on the bot, or play a room with friends. The bot plays fair: it names places it knows and never tries to trap you.</p><div class="tg-opts">${[{ id: "bot", label: "Bot level", def: "easy", choices: [["easy", "Relaxed (everyday places)"], ["hard", "Sharp (knows more places)"]] }, ...OPTIONS].map((o) => `<label>${o.label}<select class="mini" data-o="${o.id}">${o.choices.map(([v, l]) => `<option value="${v}"${String(v) === String(o.def) ? " selected" : ""}>${l}</option>`).join("")}</select></label>`).join("")}</div><div class="row"><button class="btn btn-primary" id="atGo" type="button"><span class="btn-t">Start</span></button></div></div><div id="atStage" hidden></div></div>`,
   () => {
     const setup = q$("#atSetup"), stage = q$("#atStage"); loadAtlas().catch(() => {});
     let host = null, view = null, timers = [], msgFn = null;
