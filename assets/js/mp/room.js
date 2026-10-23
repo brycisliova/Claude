@@ -165,6 +165,7 @@ export class Room {
     if (m.t === "welcome") { const d = m.d; this.players = d.players; this.started = d.started; this.opts = d.opts || {}; this.game = d.game; this.max = d.max; this.seq = d.n || 0; this.state = d.state; this.emit("welcome", d); if (d.started && d.state) this.emit("start", this.opts, true); }
     else if (m.t === "players") { this.players = m.d; this.emit("players", this.players); }
     else if (m.t === "start") { this.started = true; this.opts = m.d || {}; this.seq = 0; this.state = null; this.emit("start", this.opts, false); }
+    else if (m.t === "lobby") { const d = m.d || {}; this.started = false; this.state = null; this.seq = 0; this.opts = {}; if (d.game) this.game = d.game; if (d.max) this.max = d.max; this.emit("lobby", this.game); }
     else if (m.t === "st") { if (m.d && m.d.n > this.seq) { this.seq = m.d.n; this.state = m.d.s; this.emit("state", m.d.s); } }
     else if (m.t === "msg") this.emit("msg", m.d);
     else if (m.t === "reject") this.emit("reject", m.d);
@@ -176,6 +177,14 @@ export class Room {
     this.started = true; this.opts = opts || {}; this.n = 0; this.state = null;
     this.players.forEach((p) => { p.left = false; });
     this.send("start", this.opts); this.publishRoom();
+  }
+  // host: everyone stays in the room and goes back to the lobby, optionally to pick a different game
+  backToLobby(game, max, min) {
+    if (!this.isHost || this.left) return;
+    if (game) { this.game = game; if (max) this.max = max; if (min) this.min = min; }
+    this.started = false; this.opts = {}; this.n = 0; this.state = null;
+    this.players = this.players.filter((p) => p.host || !p.left); this.players.forEach((p) => { p.left = false; });
+    this.send("lobby", { game: this.game, max: this.max }); this.syncPlayers(); this.emit("lobby", this.game);
   }
   rematch(opts) { this.begin(opts || this.opts); this.emit("start", this.opts, false); }
   push(view) { this.n++; this.state = view; this.send("st", { n: this.n, s: view }); this.emit("state", view); } // host: share the latest game state

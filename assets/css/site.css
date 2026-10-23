@@ -1634,3 +1634,13 @@ html,body{touch-action:manipulation}
 .st-src{margin:auto 0 0;padding-top:.4rem;font-size:.8rem;color:var(--fg2)}
 .st-chip{display:inline-block;padding:.15rem .55rem;border-radius:999px;font-weight:600;font-size:.78rem;color:#0e0e10}
 .st-yes{background:var(--green)}.st-soon{background:var(--yellow)}.st-ask{background:var(--sky)}.st-no{background:var(--r)}
+
+/* host controls in Adda night: pause, add time, move on */
+.pt-ctl{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:.8rem 0 0}
+.pt-ctl[hidden],.pt-paused[hidden]{display:none}
+.pt-paused{text-align:center;font-weight:700;margin:.6rem 0 0;padding:.5rem 1rem;border-radius:999px;background:var(--yellow);color:#0e0e10;width:fit-content;margin-inline:auto}
+
+/* choosing the game inside a room */
+.tg-pick{display:grid;gap:.3rem;justify-items:start;margin:.4rem 0;font-weight:600}
+.tg-pick .mini{max-width:100%}
+.tg-game-now{margin:.4rem 0}

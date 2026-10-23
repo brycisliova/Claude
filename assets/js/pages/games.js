@@ -63,7 +63,7 @@ function setMode(G, mp, m) {
   $$(".gm-modes button", body).forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.m === m)));
   try { G.api?.destroy?.(); } catch (e) { /* ignore */ } G.api = null; G.tg?.destroy(); G.tg = null;
   if (m === "solo") startSolo(G, stage);
-  else { stage.innerHTML = ""; G.tg = mountTogether(stage, mp, { defs: MP }); }
+  else { stage.innerHTML = ""; G.tg = mountTogether(stage, mp, { defs: MP, onGame: (def) => { $("#gmTitle").textContent = def.title; const c = byId(def.id); if (c) gm.style.setProperty("--c", getComputedStyle(c).getPropertyValue("--c")); } }); }
 }
 function render(id) {
   const G = REG.get(id), card = byId(id);

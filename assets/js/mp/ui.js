@@ -62,6 +62,7 @@ export function mountTogether(box, def, opts = {}) {
     const r = room, live = (fn) => (...a) => { if (room === r && !dead) fn(...a); };
     r.on("players", live(() => { if (!r.started) lobbyPlayers(); else view?.players?.(); }))
       .on("start", live((o, late) => (late && view ? view.render?.(r.state) : startGame(o, late))))
+      .on("lobby", live((g) => { const d = opts.defs?.get(g); if (d) { curDef = d; opts.onGame?.(d); } teardownGame(); lobby(); }))
       .on("state", live((s) => view?.render?.(s)))
       .on("msg", live((d) => view?.msg?.(d)))
       .on("reject", live((why) => { toast(ERR[why] || "Removed from the room."); entry("", ERR[why] || ""); }))
@@ -83,6 +84,7 @@ export function mountTogether(box, def, opts = {}) {
       <div class="tg-codebox"><span class="tg-codelab">Room code</span><strong class="tg-code" aria-label="Room code ${esc(r.code.split("").join(" "))}">${esc(prettyCode(r.code))}</strong></div>
       <div class="row tg-share"><button class="btn btn-ghost btn-sm" id="tgCopyC" type="button">Copy code</button><button class="btn btn-ghost btn-sm" id="tgCopyL" type="button">Copy link</button>${navigator.share ? `<button class="btn btn-primary btn-sm" id="tgShare" type="button">Share…</button>` : ""}</div>
       <p class="tg-banner" role="status" hidden></p>
+      ${r.isHost && opts.defs && opts.defs.size > 1 ? `<label class="tg-pick">Game<select class="mini" id="tgGameSel">${[...opts.defs.values()].map((d) => `<option value="${esc(d.id)}"${d.id === curDef.id ? " selected" : ""}>${esc(d.title)} (${d.min === d.max ? d.min : d.min + " to " + d.max} players)</option>`).join("")}</select></label>` : `<p class="tg-game-now">Game: <b>${esc(curDef.title)}</b></p>`}
       <h3 class="tg-h">Players <span id="tgCount"></span></h3>
       <ul class="tg-players" id="tgPlayers"></ul>
       ${r.isHost && opt.length ? `<div class="tg-opts">${opt.map((o) => `<label>${esc(o.label)}<select class="mini" data-o="${o.id}">${o.choices.map(([v, l]) => `<option value="${esc(v)}"${String(v) === String(o.def) ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></label>`).join("")}</div>` : ""}
@@ -95,6 +97,7 @@ export function mountTogether(box, def, opts = {}) {
     box.querySelector("#tgCopyL").addEventListener("click", () => copy(link, "Link copied"));
     box.querySelector("#tgShare")?.addEventListener("click", () => navigator.share({ title: "Play " + curDef.title + " with me", text: `Join my game of ${curDef.title}. Room code ${prettyCode(r.code)}.`, url: link }).catch(() => {}));
     box.querySelector("#tgLeave").addEventListener("click", () => entry());
+    box.querySelector("#tgGameSel")?.addEventListener("change", (e) => { const d = opts.defs.get(e.target.value); if (!d) return; r.backToLobby(d.id, d.max, d.min); });
     box.querySelector("#tgStart")?.addEventListener("click", () => {
       const o = {}; box.querySelectorAll("[data-o]").forEach((s) => (o[s.dataset.o] = s.value));
       r.begin(o); startGame(o, false);
@@ -105,20 +108,21 @@ export function mountTogether(box, def, opts = {}) {
     const r = room, ul = box.querySelector("#tgPlayers"); if (!ul) return;
     ul.innerHTML = r.players.map((p) => `<li>${dot(p)}<span class="tg-pn">${esc(p.name)}</span>${p.host ? `<em>Host</em>` : ""}${p.id === r.pid ? `<em class="me">You</em>` : ""}${p.away ? `<em class="away">Away</em>` : ""}${r.isHost && !p.host ? `<button class="tg-rm" data-id="${esc(p.id)}" type="button" aria-label="Remove ${esc(p.name)}">Remove</button>` : ""}</li>`).join("");
     ul.querySelectorAll(".tg-rm").forEach((b) => b.addEventListener("click", () => r.kick(b.dataset.id)));
-    const n = r.players.length; box.querySelector("#tgCount").textContent = `${n} of ${r.max}`;
+    const n = r.players.length; box.querySelector("#tgCount").textContent = `${n} of ${r.max}`; const over = n > curDef.max;
     const need = Math.max(0, curDef.min - n), st = box.querySelector("#tgStart"), w = box.querySelector("#tgWait");
-    if (st) { st.disabled = need > 0; st.querySelector(".btn-t").textContent = need ? `Waiting for ${need} more` : `Start game with ${n}`; }
-    if (w) w.textContent = r.isHost ? (need ? `Share the code or link. You need at least ${curDef.min} players.` : "Everyone here? Choose any options, then start.") : `Waiting for ${r.host?.name || "the host"} to start the game…`;
+    if (st) { st.disabled = need > 0 || over; st.querySelector(".btn-t").textContent = over ? `Too many for ${curDef.title}` : need ? `Waiting for ${need} more` : `Start game with ${n}`; }
+    if (w) w.textContent = r.isHost ? (over ? `${curDef.title} takes up to ${curDef.max} players. Pick another game or remove someone.` : need ? `Share the code or link. You need at least ${curDef.min} players.` : "Everyone here? Choose any options, then start.") : `Waiting for ${r.host?.name || "the host"} to start the game…`;
   }
 
   /* ---------- the game itself ---------- */
   function teardownGame() { if (barFn && room) room.off("players", barFn); barFn = null; clearTimers(); try { view?.destroy?.(); } catch (e) { /* ignore */ } try { engine?.destroy?.(); } catch (e) { /* ignore */ } view = null; engine = null; }
   function startGame(o, late) {
     teardownGame(); const r = room; flag(true);
-    box.innerHTML = `<div class="tg-game"><div class="tg-bar"><span class="tg-room">Room <b>${esc(prettyCode(r.code))}</b></span><span class="tg-ppl" id="tgPpl"></span><button class="btn btn-ghost btn-sm" id="tgLeave2" type="button">Leave</button></div><p class="tg-banner" role="status" hidden></p><div class="tg-view" id="tgView"></div></div>`;
+    box.innerHTML = `<div class="tg-game"><div class="tg-bar"><span class="tg-room">Room <b>${esc(prettyCode(r.code))}</b></span><span class="tg-ppl" id="tgPpl"></span>${r.isHost ? `<button class="btn btn-ghost btn-sm" id="tgChange" type="button">Change game</button>` : ""}<button class="btn btn-ghost btn-sm" id="tgLeave2" type="button">Leave</button></div><p class="tg-banner" role="status" hidden></p><div class="tg-view" id="tgView"></div></div>`;
     const bar = () => { const el = box.querySelector("#tgPpl"); if (el) el.innerHTML = r.players.map((p) => `<span class="tg-chip${p.away ? " away" : ""}" title="${esc(p.name)}${p.away ? " (away)" : ""}">${dot(p)}</span>`).join(""); };
     bar(); barFn = bar; r.on("players", bar);
     box.querySelector("#tgLeave2").addEventListener("click", () => { r.leave(); entry(); });
+    box.querySelector("#tgChange")?.addEventListener("click", () => { if (confirm("Go back to the lobby? Everyone stays in the room and you can pick any game or setting.")) r.backToLobby(); });
     const api = { room: r, get me() { return r.me; }, get players() { return r.players; }, isHost: r.isHost, act: (a) => r.act(a), rematch: () => r.rematch(), leave: () => { r.leave(); entry(); }, opts: o };
     view = curDef.view(box.querySelector("#tgView"), api);
     if (r.isHost) {

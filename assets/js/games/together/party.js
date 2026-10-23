@@ -26,7 +26,7 @@ const MODES = {
   td: { label: "Truth or dare", min: 2, tip: "The hot seat picks truth or dare. The others rate it." },
   word: { label: "Guess the word", min: 2, tip: "The describer talks, everyone else types guesses. If nobody gets it, a truth comes out." }
 };
-const MS = { fake: [35000, 25000, 9000], likely: [20000, 7000], wyr: [15000, 7000], hot: [12000, 6000], sit: [40000, 25000, 9000], conf: [35000, 14000, 6000], td: [12000, 60000, 12000, 7000], word: [45000, 8000] };
+const MS = { fake: [35000, 25000, 9000], likely: [20000, 7000], wyr: [15000, 7000], hot: [15000, 45000], sit: [40000, 25000, 9000], conf: [35000, 14000, 6000], td: [12000, 60000, 12000, 7000], word: [45000, 8000] };
 const live = (ctx) => ctx.players.filter((p) => !p.left);
 
 /* ---------- the host ---------- */
@@ -34,10 +34,11 @@ function makeHost(ctx) {
   let S = null;
   const ids = () => S.order.filter((id) => { const p = ctx.players.find((x) => x.id === id); return p && !p.left; });
   const pace = (ms) => Math.round(ms * S.pace);
-  const view = (extra) => ({ ph: S.ph, mode: S.mode, mlabel: MODES[S.mode]?.label, tip: MODES[S.mode]?.tip, i: S.i, total: S.total, order: S.order, scores: S.scores, tl: Math.max(0, S.dl - Date.now()), ms: S.ms, done: Object.keys(S.sub), prompt: S.prompt, opts: S.opts, who: S.who, k: S.k, kn: S.kn, text: S.text, wlen: S.wlen, ...extra });
+  const view = (extra) => { if (extra && extra.rv) S.rv = extra.rv; return viewOf(extra); };
+  const viewOf = (extra) => ({ ph: S.ph, mode: S.mode, mlabel: MODES[S.mode]?.label, tip: MODES[S.mode]?.tip, i: S.i, total: S.total, order: S.order, scores: S.scores, tl: S.paused ? S.left : Math.max(0, S.dl - Date.now()), ms: S.ms, paused: !!S.paused, tv: S.tv || 0, done: Object.keys(S.sub), prompt: S.prompt, opts: S.opts, who: S.who, k: S.k, kn: S.kn, text: S.text, wlen: S.wlen, kind: S.R?.kind, wrong: S.R?.wrong, ...(S.ph === "r" && S.rv ? { rv: S.rv } : {}), ...extra });
   const add = (id, n) => { S.scores[id] = (S.scores[id] || 0) + n; S.gain[id] = (S.gain[id] || 0) + n; };
   const stat = (id, k, n = 1) => { (S.stat[id] ||= {})[k] = ((S.stat[id] || {})[k] || 0) + n; };
-  function setPhase(ph, ms, extra = {}) { S.ph = ph; S.sub = {}; S.ms = pace(ms); S.dl = Date.now() + S.ms; Object.assign(S, extra); clearTimeout(S.tm); S.tm = ctx.after(S.ms + 300, () => timeout()); }
+  function setPhase(ph, ms, extra = {}) { S.paused = false; S.tv = (S.tv || 0) + 1; S.ph = ph; S.sub = {}; S.ms = pace(ms); S.dl = Date.now() + S.ms; Object.assign(S, extra); clearTimeout(S.tm); S.tm = ctx.after(S.ms + 300, () => timeout()); }
   const allIn = () => { const who = ids().filter((id) => S.need ? S.need(id) : true); return who.length && who.every((id) => id in S.sub); };
 
   /* round setup */
@@ -74,7 +75,7 @@ function makeHost(ctx) {
     if (m === "td") { if (S.ph === "p") return tdDo(); if (S.ph === "d") return tdRate(); if (S.ph === "t") return tdReveal(); return nextRound(); }
     if (m === "word") { if (S.ph === "g") return revealWord(); return nextRound(); }
   }
-  const finishPhase = () => { if (allIn()) { clearTimeout(S.tm); S.tm = ctx.after(600, () => step()); } };
+  const finishPhase = () => { if (S.paused) return; if (allIn()) { clearTimeout(S.tm); S.tm = ctx.after(600, () => step()); } };
 
   /* fake it */
   function startFakeVote() {
@@ -101,7 +102,8 @@ function makeHost(ctx) {
     Object.entries(S.sub).forEach(([pid, v]) => { if (wins.includes(String(v))) add(pid, m === "likely" ? 100 : 50); });
     if (m === "likely") wins.forEach((w) => stat(w, "crowned"));
     const rows = S.opts.map((o) => ({ t: m === "likely" ? "" : o.label, pid: m === "likely" ? o.id : null, voters: Object.entries(S.sub).filter(([, v]) => v === o.id).map(([p]) => p), win: wins.includes(String(o.id)) }));
-    setPhase("r", MS[m][1]); ctx.push(view({ rv: { rows, gain: S.gain, msg: m === "likely" ? "Voters who matched the crowd score." : "The majority scores." } }));
+    setPhase("r", MS[m][1]);
+    ctx.push(view({ rv: { rows, gain: S.gain, discuss: m === "hot", msg: m === "likely" ? "Voters who matched the crowd score." : m === "hot" ? "Now talk it out. Why did you pick your side? Did anyone change their mind? The host can add time or move on." : "The majority scores." } }));
   }
   /* situation */
   function startSitVote() {
@@ -152,8 +154,20 @@ function makeHost(ctx) {
   }
 
   /* actions */
+  // The host can pause the clock, add 30 seconds, or move on, in any phase.
+  function control(c) {
+    if (!S || S.ph === "end") return;
+    const left = () => Math.max(0, S.dl - Date.now());
+    if (c === "pause" && !S.paused) { S.left = left(); S.paused = true; clearTimeout(S.tm); }
+    else if (c === "resume" && S.paused) { S.paused = false; S.dl = Date.now() + S.left; S.tv++; clearTimeout(S.tm); S.tm = ctx.after(S.left + 300, () => timeout()); }
+    else if (c === "more") { if (S.paused) S.left += 30000; else { S.dl += 30000; S.tv++; clearTimeout(S.tm); S.tm = ctx.after(left() + 300, () => timeout()); } }
+    else if (c === "skip") { S.paused = false; return step(); }
+    else return;
+    ctx.push(view());
+  }
   function act(pid, a) {
-    if (!S || S.ph === "end" || S.ph === "r") return;
+    if (a && a.a === "ctl") { if (ctx.players.find((p) => p.id === pid)?.host) control(a.c); return; }
+    if (!S || S.ph === "end" || S.ph === "r" || S.paused) return;
     if (S.need && !S.need(pid)) return;
     const m = S.mode, ph = S.ph, R = S.R;
     if (m === "word" && ph === "g") {
@@ -200,7 +214,7 @@ function makeHost(ctx) {
 
 /* ---------- the view ---------- */
 function mountView(root, api) {
-  root.innerHTML = `<div class="mp pt"><div class="mp-head"><p class="mp-turn" id="ptInfo"></p><div class="mp-tl"><i id="ptTl"></i></div></div><p class="pt-tag" id="ptTag"></p><div class="qz-card pt-card" id="ptCard"></div><div id="ptBody"></div><p class="pt-msg" id="ptMsg" role="status"></p><ul class="mp-score pt-score" id="ptScore"></ul><div id="ptEnd"></div></div>`;
+  root.innerHTML = `<div class="mp pt"><div class="mp-head"><p class="mp-turn" id="ptInfo"></p><div class="mp-tl"><i id="ptTl"></i></div></div><p class="pt-tag" id="ptTag"></p><div class="qz-card pt-card" id="ptCard"></div><div id="ptBody"></div><p class="pt-paused" id="ptPaused" role="status" hidden>Paused by the host</p><div class="pt-ctl" id="ptCtl"></div><p class="pt-msg" id="ptMsg" role="status"></p><ul class="mp-score pt-score" id="ptScore"></ul><div id="ptEnd"></div></div>`;
   const $ = (s) => root.querySelector(s); let st = null, secret = null, myVote = null, mySub = null, key = "";
   const me = () => api.me?.id, name = (id) => byId(api, id)?.name || "Player", norm = (t) => String(t || "").toLowerCase().replace(/[^a-z0-9]/g, "");
   const onMsg = (m) => { if (m?.secret) { secret = m.secret; paint(); } else if (m?.bad) say(m.bad, true); else if (m?.ok) say(m.ok); };
@@ -254,6 +268,9 @@ function mountView(root, api) {
         body.innerHTML = (m === "conf" && mySub && norm(s.text) === norm(mySub)) ? `<p class="pt-ok">That one is yours. Sit tight and watch them guess.</p>` : (m === "conf" && done) ? `<p class="pt-ok">Guess locked in.</p>` : optButtons(s, own) + `<p class="muted small">${(s.done || []).length} of ${s.order.length} voted</p>`;
       }
     }
+    $("#ptPaused").hidden = !s.paused || ph === "end";
+    const ctl = $("#ptCtl"); ctl.hidden = !api.isHost || ph === "end";
+    if (!ctl.hidden) ctl.innerHTML = `<button class="btn btn-ghost btn-sm" data-c="${s.paused ? "resume" : "pause"}" type="button">${s.paused ? "Resume" : "Pause"}</button><button class="btn btn-ghost btn-sm" data-c="more" type="button">+30 seconds</button><button class="btn btn-ghost btn-sm" data-c="skip" type="button">Next</button>`;
     $("#ptScore").innerHTML = s.order.map((id) => { const p = byId(api, id) || { color: 0, name: "?" }; return `<li class="${p.away ? "away" : ""}${s.who === id && s.ph !== "end" ? " on" : ""}">${dot(p)}<span>${esc(p.name)}</span><b>${s.scores[id] || 0}</b></li>`; }).join("");
     const end = $("#ptEnd");
     if (ph === "end") {
@@ -263,6 +280,7 @@ function mountView(root, api) {
     } else end.innerHTML = "";
     bind();
   }
+  $("#ptCtl").addEventListener("click", (e) => { const b = e.target.closest("button[data-c]"); if (b) send({ a: "ctl", c: b.dataset.c }); });
   function bind() {
     root.querySelectorAll(".pt-o").forEach((b) => { if (b.dataset.b) return; b.dataset.b = 1; b.addEventListener("click", () => { if (b.disabled) return; const raw = b.dataset.c, ph = st.ph, m = st.mode; const c = m === "td" ? (ph === "t" ? +raw : raw) : (m === "likely" || m === "conf") ? raw : +raw; if (m === "td" && ph === "t" || ph === "v" || (m === "conf" && ph === "g")) myVote = c; send({ a: m === "td" ? "td" : "vote", c }); paint(); }); });
     const f = $("#ptForm"); if (f && !f.dataset.b) { f.dataset.b = 1; f.addEventListener("submit", (e) => { e.preventDefault(); const t = $("#ptIn").value.trim(); if (!t) return; send({ a: st.mode === "word" ? "guess" : "text", t }); if (st.mode === "word") { $("#ptIn").value = ""; } else mySub = t; }); setTimeout(() => $("#ptIn")?.focus({ preventScroll: true }), 60); }
@@ -270,7 +288,10 @@ function mountView(root, api) {
   function render(s) {
     if (!s || !s.ph) return;
     const fresh = !st || st.i !== s.i || st.ph !== s.ph || st.k !== s.k || st.mode !== s.mode;
-    if (s.ph !== "end" && s.ph !== "r" && fresh) timerBar($("#ptTl"), s.tl); else if (s.ph === "r" || s.ph === "end") timerBar($("#ptTl"), 0);
+    const bar = $("#ptTl"), timed = s.ph !== "end" && (s.ph !== "r" || s.rv?.discuss), tv = !st || st.tv !== s.tv || st.paused !== s.paused;
+    if (!timed) timerBar(bar, 0);
+    else if (s.paused) { bar.style.transition = "none"; bar.style.width = Math.max(0, Math.min(100, (s.tl / Math.max(1, s.ms)) * 100)) + "%"; }
+    else if (fresh || tv) timerBar(bar, s.tl);
     if (s.mode === "conf" && s.ph === "w") s.confPrompt = s.prompt; else if (s.mode === "conf" && st?.confPrompt) s.confPrompt = st.confPrompt;
     if (fresh && s.ph === "r" && ready()) tone(PENTA[4], 0.35, 0.05);
     st = s; paint();
