@@ -13,7 +13,7 @@ export default {
   desc: "Twenty-eight films and series, Indian and global, that make you feel seen. Filter by feel-good, funny, documentary and more.",
   scripts: ["watch"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Watch", title: "Films <em>and series</em>", lede: `Stories that make you feel seen, from India and around the world. Streaming availability changes, so check <a href="https://www.justwatch.com/in" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">JustWatch India</a> for where each one is playing.` })}
+${hero(ctx, { eyebrow: "Watch", title: "Films <em>and series</em>", lede: `Queer stories from India and around the world. Streaming availability changes, so check <a href="https://www.justwatch.com/in" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">JustWatch India</a> for where each one is playing.` })}
 
 <section class="sec" style="padding-top:2.4rem">
   <div class="wrap-x">

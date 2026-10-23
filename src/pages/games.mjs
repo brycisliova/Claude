@@ -13,10 +13,10 @@ export default {
   slug: "games",
   title: "Games",
   accent: "g",
-  desc: `${GAMES.length} games: Truth or Dare, Name that tune, Where in the world, Atlas, Trivia night and party games to play with friends, plus calm games to breathe, create and puzzle with.`,
+  desc: `${GAMES.length} games: Truth or Dare, Name that tune, Where in the world, Atlas, Trivia night and party games to play with friends, plus quieter games to play on your own.`,
   scripts: ["games"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Games", title: "Games for <em>everyone</em>", lede: `${GAMES.length} games. Party games and quizzes to play with friends on their own phones, and calm ones to breathe, create and puzzle with on your own. Open one and it fills the screen. No sign-up, no ads.`, accent: "g" })}
+${hero(ctx, { eyebrow: "Games", title: "Games for <em>everyone</em>", lede: `${GAMES.length} games. Party games and quizzes to play with friends on their own phones, and quieter ones to play on your own. Open one and it fills the screen. No sign-up, no ads.`, accent: "g" })}
 
 <section class="sec" style="padding-top:2.5rem">
   <div class="wrap-x">

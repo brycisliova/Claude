@@ -8,10 +8,10 @@ export default {
   slug: "myths",
   title: "Myths and facts",
   accent: "r",
-  desc: "Twelve things people say about LGBTQIA+ people, and what the evidence actually shows. Flip each card.",
+  desc: "Twelve things people say about LGBTQIA+ people, and what the evidence shows. Flip each card.",
   scripts: ["myths"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Myths", title: "Myths <em>and facts</em>", lede: "The things people say at dinner tables and in family group chats, and what the evidence actually shows." })}
+${hero(ctx, { eyebrow: "Myths", title: "Myths <em>and facts</em>", lede: "The things people say at dinner tables and in family group chats, and what the evidence shows." })}
 
 <section class="sec">
   <div class="wrap-x">

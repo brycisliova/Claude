@@ -9,13 +9,13 @@ export default {
   desc: "Verified helplines, and practical guides: if you're questioning, coming out safely, for parents, for allies, at college and work, and your legal rights in India.",
   scripts: ["help"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Support", title: "Help <em>and guides</em>", lede: "Helplines first. Then calm, practical guides for the situations people most often find themselves in.", accent: "v" })}
+${hero(ctx, { eyebrow: "Support", title: "Help <em>and guides</em>", lede: "Helplines first. Then practical guides for the situations people run into most.", accent: "v" })}
 
 <section class="sec" style="padding-top:2.5rem">
   <div class="wrap">
     <div class="urgent reveal">
       <h2>If you're in danger or thinking of ending your life</h2>
-      <p>Call <a href="tel:112"><strong>112</strong></a> for emergencies, or <a href="tel:14416"><strong>Tele-MANAS 14416</strong></a>, the government's free 24/7 mental health line in English and 20 Indian languages. You can also go to the nearest hospital emergency department. Whatever is happening, people want to help you through it.</p>
+      <p>Call <a href="tel:112"><strong>112</strong></a> for emergencies, or <a href="tel:14416"><strong>Tele-MANAS 14416</strong></a>, the government's free 24/7 mental health line in English and 20 Indian languages. You can also go to the nearest hospital emergency department. Whatever is happening, there are people who want to help.</p>
     </div>
 
     <div class="subtabs" role="tablist" aria-label="Help topics">
@@ -37,8 +37,8 @@ ${hero(ctx, { eyebrow: "Support", title: "Help <em>and guides</em>", lede: "Help
 
     <div class="subpanel" id="sub-questioning" role="tabpanel"><div class="prose" style="max-width:46rem">
       <h3 style="margin-top:0">It's okay not to know yet</h3>
-      <p>Questioning is normal and has no deadline. Some people know early; others discover themselves in their twenties, forties or later.</p>
-      <ol class="steps"><li><strong>Give yourself time.</strong> Labels are tools, not boxes. Use one if it helps; change it if it stops fitting.</li><li><strong>Read and listen.</strong> Stories on Gaysi Family, Orinam and Agents of Ishq can help you feel less alone.</li><li><strong>Talk to someone safe.</strong> An affirming counsellor at iCALL or Humsafar can help you sort through feelings without judgement.</li><li><strong>Remember the science.</strong> Whatever you discover is not an illness and not your fault.</li></ol>
+      <p>Questioning is normal and has no deadline. Some people know early; others work it out in their twenties, forties or later.</p>
+      <ol class="steps"><li><strong>Give yourself time.</strong> Use a label if it helps, and change it if it stops fitting.</li><li><strong>Read and listen.</strong> Stories on Gaysi Family, Orinam and Agents of Ishq can help you feel less alone.</li><li><strong>Talk to someone safe.</strong> An affirming counsellor at iCALL or Humsafar can help you sort through feelings without judgement.</li><li><strong>Remember the science.</strong> Whatever you find out about yourself, it is not an illness and not your fault.</li></ol>
     </div></div>
 
     <div class="subpanel" id="sub-coming" role="tabpanel"><div class="prose" style="max-width:46rem">
@@ -49,13 +49,13 @@ ${hero(ctx, { eyebrow: "Support", title: "Help <em>and guides</em>", lede: "Help
 
     <div class="subpanel" id="sub-family" role="tabpanel"><div class="prose" style="max-width:46rem">
       <h3 style="margin-top:0">If your child just came out to you</h3>
-      <p>They trusted you with something enormous. Your first reaction will be remembered for life.</p>
-      <ol class="steps"><li><strong>Say you love them.</strong> That sentence protects them more than anything else you can do.</li><li><strong>Don't look for a cure.</strong> Doctors who try to change orientation can face misconduct action in India, and research links such attempts to depression and suicide.</li><li><strong>Don't force marriage.</strong> It destroys two lives and has pushed queer people to suicide.</li><li><strong>Learn alongside them.</strong> The <a href="../science/">science</a> and <a href="../myths/">myths</a> pages here are a good start. Parent support groups exist through Humsafar and Sappho for Equality.</li><li><strong>Feel your feelings elsewhere.</strong> It's okay to grieve the future you imagined. Talk to a counsellor or friend, not at your child.</li></ol>
+      <p>They trusted you with something big. They'll remember how you react first.</p>
+      <ol class="steps"><li><strong>Say you love them.</strong> It matters more than whatever you say next.</li><li><strong>Don't look for a cure.</strong> Doctors who try to change orientation can face misconduct action in India, and research links such attempts to depression and suicide.</li><li><strong>Don't force marriage.</strong> It destroys two lives and has pushed queer people to suicide.</li><li><strong>Learn alongside them.</strong> The <a href="../science/">science</a> and <a href="../myths/">myths</a> pages here are a good start. Parent support groups exist through Humsafar and Sappho for Equality.</li><li><strong>Feel your feelings elsewhere.</strong> It's okay to grieve the future you imagined. Talk to a counsellor or friend, not at your child.</li></ol>
     </div></div>
 
     <div class="subpanel" id="sub-allies" role="tabpanel"><div class="prose" style="max-width:46rem">
       <h3 style="margin-top:0">How to be a good friend</h3>
-      <ol class="steps"><li><strong>Keep secrets.</strong> Never out someone. Their story is theirs.</li><li><strong>Speak up when they're not there.</strong> Push back on jokes and slurs in group chats. Silence is read as agreement.</li><li><strong>Use the names and pronouns people ask for.</strong> If you slip, correct yourself briefly and move on.</li><li><strong>Correct myths with facts.</strong> Share the specific study that answers the claim.</li><li><strong>Check in.</strong> "How are you really doing?" can matter more than you know.</li></ol>
+      <ol class="steps"><li><strong>Keep secrets.</strong> Never out someone. Their story is theirs.</li><li><strong>Speak up when they're not there.</strong> Push back on jokes and slurs in group chats. Silence is read as agreement.</li><li><strong>Use the names and pronouns people ask for.</strong> If you slip, correct yourself briefly and move on.</li><li><strong>Correct myths with facts.</strong> Share the specific study that answers the claim.</li><li><strong>Check in.</strong> "How are you really doing?" can matter a lot.</li></ol>
     </div></div>
 
     <div class="subpanel" id="sub-work" role="tabpanel"><div class="prose" style="max-width:46rem">

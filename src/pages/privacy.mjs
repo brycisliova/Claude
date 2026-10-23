@@ -8,7 +8,7 @@ export default {
   desc: "What this site does and doesn't know about you: no tracking, no cookies, no ads. Plus practical steps for staying safe if you share a device or a home.",
   scripts: ["privacy"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Privacy", title: "Privacy <em>and safety</em>", lede: "For many people, visiting a site like this is a risk in itself. So here is exactly what this site does, what it can't promise, and how to stay safer.", accent: "b" })}
+${hero(ctx, { eyebrow: "Privacy", title: "Privacy <em>and safety</em>", lede: "For many people, visiting a site like this is a risk in itself. Here is what this site does, what it can't promise, and how to stay safer.", accent: "b" })}
 
 <section class="sec">
   <div class="wrap narrow prose">
@@ -36,14 +36,14 @@ ${hero(ctx, { eyebrow: "Privacy", title: "Privacy <em>and safety</em>", lede: "F
       <li><strong>Use a private window.</strong> Incognito or private browsing doesn't save history or local storage when you close it. It doesn't hide you from a network owner or a monitored device.</li>
       <li><strong>Use Quick exit.</strong> The red button at the bottom left, or pressing <kbd>Esc</kbd> three times, jumps straight to a neutral site and replaces this page in your history.</li>
       <li><strong>Clear what you saved.</strong> Press the button below to remove your theme, journal and mood data from this browser, then clear your browsing history from your browser's settings.</li>
-      <li><strong>Mind your notifications and sync.</strong> If your browser or phone syncs history to an account someone else can see, a private window is safer.</li>
-      <li><strong>Trust your instincts.</strong> If a device is monitored, use a friend's phone or a library computer instead.</li>
+      <li><strong>Check your sync settings.</strong> If your browser or phone syncs history to an account someone else can see, a private window is safer.</li>
+      <li><strong>Use another device if you can.</strong> If you think a device is monitored, use a friend's phone or a library computer instead.</li>
     </ol>
     <p><button class="btn btn-primary" id="wipe">Clear everything this site saved on this device</button></p>
     <p class="status" id="wipeMsg" aria-live="polite"></p>
 
     <h2>Report a problem</h2>
-    <p>Found something wrong, unsafe, or unkind on this site? Write to <a href="mailto:${ctx.config.email}">${ctx.config.email}</a> and it will be looked at.</p>
+    <p>Spotted something wrong or hurtful on this site? Write to <a href="mailto:${ctx.config.email}">${ctx.config.email}</a> and it will be looked at.</p>
   </div>
 </section>`
 };

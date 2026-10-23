@@ -8,7 +8,7 @@ export default {
   slug: "library",
   title: "Research library",
   accent: "yellow",
-  desc: "Twenty-six key papers on sexual orientation, gender identity and mental health: what each found, its honest limitations, and a link to the original.",
+  desc: "Twenty-six key papers on sexual orientation, gender identity and mental health: what each found, its limitations, and a link to the original.",
   scripts: ["library"],
   body: (ctx) => {
     const list = [...PAPERS].sort((a, b) => a.y - b.y);

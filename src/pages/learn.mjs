@@ -6,10 +6,10 @@ export default {
   slug: "learn",
   title: "LGBTQIA+ explained",
   accent: "pink",
-  desc: "Every letter of LGBTQIA+ explained gently, four separate dials of identity, India's own gender traditions, and a searchable glossary.",
+  desc: "Every letter of LGBTQIA+ explained, four separate dials of identity, India's own gender traditions, and a searchable glossary.",
   scripts: ["learn"],
   body: (ctx) => `
-${hero(ctx, { eyebrow: "Learn", title: "LGBTQIA+ <em>explained</em>", lede: "The acronym grew because people kept finding words for experiences that had always existed. No one needs to memorise it. It's a way of saying everyone here belongs." })}
+${hero(ctx, { eyebrow: "Learn", title: "LGBTQIA+ <em>explained</em>", lede: "The acronym grew because people kept finding words for experiences that had always existed. You don't need to memorise it. Each letter was added so another group of people could be named." })}
 
 <section class="sec">
   <div class="wrap-x">
@@ -38,7 +38,7 @@ ${hero(ctx, { eyebrow: "Learn", title: "LGBTQIA+ <em>explained</em>", lede: "The
 
 <section class="sec">
   <div class="wrap">
-    ${head("Not a Western import", "Gender diversity <em>in India</em>", "Gender diversity is not a foreign idea. South Asia has some of the world's oldest communities of people outside the man-woman binary.")}
+    ${head("Not a Western import", "Gender diversity <em>in India</em>", "Gender diversity isn't a foreign idea. South Asia has some of the world's oldest communities of people outside the man-woman binary.")}
     <div class="grid" style="--min:17rem">
       <div class="card edge lift reveal" style="--c:var(--r)"><h3 class="ct">Hijra and Kinnar</h3><p class="muted" style="margin:.8rem 0 0">Centuries-old communities with their own social structures and the guru-chela tradition, recorded in Mughal courts and earlier.</p></div>
       <div class="card edge lift reveal" style="--c:var(--y);--i:1"><h3 class="ct">Aravani and Thirunangai</h3><p class="muted" style="margin:.8rem 0 0">Tamil identities. The annual Koovagam festival celebrates Aravan from the Mahabharata.</p></div>

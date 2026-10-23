@@ -31,7 +31,7 @@ ${hero(ctx, { eyebrow: "People", title: "Stories", lede: "People who lived openl
 
 <section class="sec alt">
   <div class="wrap-x">
-    ${head("Trailblazers", "Twelve <em>trailblazers</em>", "Each retold briefly, with a link to read more.")}
+    ${head("Trailblazers", "Twelve <em>trailblazers</em>", "A short version of each life, with a link to read more.")}
     <h2 class="sr-only">Trailblazers</h2>
     <div class="grid" style="--min:19rem">
       ${PEOPLE.map(([n, role, story, link, c], i) => {

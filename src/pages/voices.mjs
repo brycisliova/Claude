@@ -31,7 +31,7 @@ ${hero(ctx, { eyebrow: "Video", title: "Voices", lede: "Press play to watch righ
 
 <section class="sec">
   <div class="wrap">
-    ${sectionHead("Explore by topic", "Shelves on YouTube", "Curated searches open YouTube directly, so you always see the newest uploads.")}
+    ${sectionHead("By topic", "Shelves on YouTube", "Curated searches open YouTube directly, so you always see the newest uploads.")}
     <div class="shelf reveal">
       ${SHELF.map(([l, q]) => `<a class="btn btn-ghost btn-sm" href="https://www.youtube.com/results?search_query=${encodeURIComponent(q)}" target="_blank" rel="noopener noreferrer">${esc(l)}</a>`).join("")}
     </div>

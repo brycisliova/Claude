@@ -32,7 +32,7 @@ export const PAGES = {
   help: ["help", "Help and guides", "", "blue", "Helplines, coming out, parents, allies, rights", "10", "Care"],
   therapies: ["therapies", "Therapies", "", "pink", "What helps, plus tools to use now", "11", "Care"],
   sound: ["sound", "Sound studio", "", "sky", "Nature mixer, bowls, ambient music, songs", "12", "Care"],
-  games: ["games", "Games", "", "green", "Party games, quizzes and calm games to play alone or together", "13", "Care"],
+  games: ["games", "Games", "", "green", "Party games, quizzes and quiet games, alone or together", "13", "Care"],
   about: ["about", "About the builder", "", "violet", "A note from Reiner", "14", "About"],
   connect: ["connect", "Connect", "", "orange", "Contact and anonymous messages", "15", "About"],
   privacy: ["privacy", "Privacy and safety", "", "sky", "What this site does and doesn't know", "16", "About"],

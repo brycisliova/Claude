@@ -5,7 +5,7 @@ export default {
   slug: "science",
   title: "The science",
   accent: "orange",
-  desc: "Homosexuality is not an illness and not a choice. What seventy years of psychology, genetics, neuroscience and biology actually found, with every study linked and its limits stated.",
+  desc: "Homosexuality is not an illness and not a choice. What seventy years of psychology, genetics, neuroscience and biology found, with every study linked and its limits stated.",
   scripts: ["science"],
   body: (ctx) => `
 ${hero(ctx, { eyebrow: "Research", title: "The <em>science</em>", lede: "Psychologists, geneticists, neuroscientists and biologists asked the same questions people still argue about at dinner tables. Their answers line up." })}
@@ -20,13 +20,13 @@ ${hero(ctx, { eyebrow: "Research", title: "The <em>science</em>", lede: "Psychol
 <section class="sec">
   <div class="wrap">
     <canvas class="dna reveal" id="dna" aria-hidden="true"></canvas>
-    <div class="callout reveal" style="--c:var(--o);margin-top:3rem"><p><strong>Truthfulness first.</strong> Scientists agree that sexual orientation is not chosen and is not an illness. What they still study is exactly how it develops: the current picture is many genetic, hormonal and other biological influences, with no single cause and no "gay gene." That open question is about mechanism, never about whether queer people are real or valid. This site shows the limits of each study too, because honest evidence is the strongest kind.</p></div>
+    <div class="callout reveal" style="--c:var(--o);margin-top:3rem"><p><strong>What we know.</strong> Scientists agree that sexual orientation isn't chosen and isn't an illness. What they're still working out is how it develops. The current picture is many genetic, hormonal and other biological influences, with no single cause and no "gay gene." That open question is about mechanism. It has nothing to do with whether queer people are real. We list the limits of each study too.</p></div>
   </div>
 </section>
 
 <section class="sec alt">
   <div class="wrap-x">
-    ${head("Who agrees", "Who <em>agrees</em>", "Not one opinion, but decades of independent review by the institutions that define health.")}
+    ${head("Who agrees", "Who <em>agrees</em>", "Decades of independent review by the major health bodies, not one group's opinion.")}
     <div class="consensus">
       <div class="reveal"><strong>1973</strong><span>The American Psychiatric Association removes homosexuality from its diagnostic manual after reviewing the evidence.</span></div>
       <div class="reveal" style="--i:1"><strong>1990</strong><span>The World Health Organization removes it from the international classification of diseases. 17 May is now marked as IDAHOBIT.</span></div>

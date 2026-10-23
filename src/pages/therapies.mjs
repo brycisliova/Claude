@@ -57,7 +57,7 @@ ${hero(ctx, { eyebrow: "Wellbeing", title: "Therapies <em>and self-care</em>", l
 
 <section class="sec alt">
   <div class="wrap narrow">
-    ${sectionHead("Daily check-in", "How are you, really?", "Noticing patterns is a first step. Your check-ins stay on this device only.")}
+    ${sectionHead("Daily check-in", "How are you, really?", "Check-ins help you spot patterns. They stay on this device.")}
     <div class="card reveal" style="--c:var(--g)">
       <div class="moods" id="moods">
         ${[["😞", 1, "Really low"], ["😕", 2, "Low"], ["😐", 3, "Okay"], ["🙂", 4, "Good"], ["😊", 5, "Great"]].map(([e, v, l]) => `<button aria-pressed="false" aria-label="${l}" data-v="${v}">${e}</button>`).join("")}
