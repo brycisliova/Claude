@@ -1615,3 +1615,22 @@ html,body{touch-action:manipulation}
 .chat-send{border:0;border-radius:999px;padding:.7rem 1.1rem;background:var(--fg);color:var(--bg);font:600 .9rem var(--sans);cursor:pointer}
 @media (max-width:640px){.chat-btn{bottom:max(4.2rem,env(safe-area-inset-bottom))}.chat{right:.5rem;bottom:.5rem;width:calc(100vw - 1rem);height:calc(100dvh - 1rem)}}
 @media (prefers-reduced-motion:reduce){.ch-dots i{animation:none;opacity:.6}}
+
+/* study abroad page */
+.st-top{display:grid;gap:1.2rem;max-width:56rem}
+.st-points{margin:0;padding-left:1.2rem;display:grid;gap:.6rem;font-size:1.05rem;line-height:1.5}
+.st-nav{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.6rem}
+.st-nav a{padding:.5rem .9rem;border-radius:999px;border:1px solid var(--line);text-decoration:none;font-weight:600;font-size:.9rem}
+.st-nav a:hover,.st-nav a:focus-visible{background:var(--fg);color:var(--bg)}
+.st-grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,22rem),1fr));margin-top:1.6rem}
+.st-sub{margin:2.4rem 0 0;font-size:1.3rem}
+.st-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.6rem}
+.st-card h3{margin:0;font-size:1.15rem;line-height:1.3}
+.st-card h3 a{text-decoration:none}.st-card h3 a:hover,.st-card h3 a:focus-visible{text-decoration:underline}
+.st-meta{margin:.25rem 0 0;font-size:.85rem;color:var(--fg2)}
+.st-card dl{margin:0;display:grid;gap:.55rem}
+.st-card dt{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--fg2)}
+.st-card dd{margin:.1rem 0 0;font-size:.95rem;line-height:1.45}
+.st-src{margin:auto 0 0;padding-top:.4rem;font-size:.8rem;color:var(--fg2)}
+.st-chip{display:inline-block;padding:.15rem .55rem;border-radius:999px;font-weight:600;font-size:.78rem;color:#0e0e10}
+.st-yes{background:var(--green)}.st-soon{background:var(--yellow)}.st-ask{background:var(--sky)}.st-no{background:var(--r)}

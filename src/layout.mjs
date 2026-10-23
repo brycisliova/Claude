@@ -30,6 +30,7 @@ export const PAGES = {
   india: ["india", "India and the world", "", "blue", "Violence, data and the silence around it", "09", "Stories"],
   news: ["news", "News", "", "sky", "Today's headlines, India and the world, plus good news", "09", "Stories"],
   help: ["help", "Help and guides", "", "blue", "Helplines, coming out, parents, allies, rights", "10", "Care"],
+  students: ["students", "Study abroad", "", "green", "Scholarships, safer countries and what to ask first", "00", "Care"],
   therapies: ["therapies", "Therapies", "", "pink", "What helps, plus tools to use now", "11", "Care"],
   sound: ["sound", "Sound studio", "", "sky", "Nature mixer, bowls, ambient music, songs", "12", "Care"],
   games: ["games", "Games", "", "green", "Party games, quizzes and quiet games, alone or together", "13", "Care"],
@@ -43,7 +44,7 @@ export const PAGES = {
 export const NAV_GROUPS = [
   ["Understand", ["learn", "science", "library", "timeline", "myths"]],
   ["Stories", ["stories", "voices", "watch", "india", "news"]],
-  ["Care", ["help", "therapies", "sound", "games"]],
+  ["Care", ["help", "students", "therapies", "sound", "games"]],
   ["About", ["about", "connect", "privacy", "sources", "credits"]]
 ];
 
