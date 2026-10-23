@@ -4,7 +4,6 @@
 // The host (or your own browser in solo play) holds the song list and judges the guesses.
 import { mp, h, esc, shuffle, results, timerBar, byId, dot } from "./common.js";
 import { game, $ as q$, report } from "../shared.js";
-import { pickFresh } from "../fresh.js";
 import { clipPlayer } from "../clipplayer.js";
 import { tone, PENTA, ready } from "../../audio.js";
 
@@ -47,14 +46,40 @@ function judge(song, guess, frac, hinted) {
 }
 
 /* ---------- the host ---------- */
-const LANGS = { hi: "Hindi song", pa: "Punjabi song", ta: "Tamil song", te: "Telugu song", kn: "Kannada song", mr: "Marathi song", ml: "Malayalam song", bn: "Bengali song", en: "English song", es: "Spanish song", fr: "French song", it: "Italian song", pt: "Portuguese song", ko: "K-pop", de: "German song", ja: "Japanese song", tr: "Turkish song", ar: "Arabic song" };
+const LANGS = { hi: "Hindi song", bho: "Bhojpuri song", pa: "Punjabi song", ta: "Tamil song", te: "Telugu song", kn: "Kannada song", mr: "Marathi song", ml: "Malayalam song", bn: "Bengali song", en: "English song", es: "Spanish song", fr: "French song", it: "Italian song", pt: "Portuguese song", ko: "K-pop", de: "German song", ja: "Japanese song", tr: "Turkish song", ar: "Arabic song" };
 const Q_MS = 34000, REVEAL_MS = 8500;
-const POOLS = { hindi: (s) => s.g === "hi", english: (s) => s.g === "en", world: (s) => s.g === "world" };
+// Every song carries "q": how well known it is, from a fame grade of 1 to 5 (graded one by one, not guessed from a chart) plus a
+// small bonus for a famous artist. Higher means more people know it. The game only draws on songs people can name.
+// Hindi means Hindi and Punjabi only: Tamil, Telugu, Malayalam, Kannada and the like are left out of Hindi games.
+const HINDI = new Set(["hi", "pa"]), WORLD = new Set("es fr it pt ko ja de ar tr ru zh sv nl pl el he th vi id ms".split(" "));
+const POOLS = { hindi: (s) => HINDI.has(s.l), english: (s) => s.l === "en", world: (s) => WORLD.has(s.l) };
+const QMIN = 60; // fame grade 3 or better
+const seenKey = (source) => "wwa-tune2-" + source;
+const readSeen = (source) => { try { const v = JSON.parse(localStorage.getItem(seenKey(source))); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
+const writeSeen = (source, ids) => { try { localStorage.setItem(seenKey(source), JSON.stringify(ids.slice(-4000))); } catch (e) { /* private mode */ } };
+const q = (s) => (typeof s.q === "number" ? s.q : 0);
+// n songs from the most popular ones this device has not heard yet: take the top of the unheard list, choose n of them with at most
+// two songs per artist, then play them from the best known to the least known. Each new game slides a little further down the list,
+// never into the obscure ones. When the well-known songs run out, the list starts again from the top.
+function pickFrom(pool, source, n) {
+  let min = QMIN, list = pool.filter((s) => q(s) >= min);
+  if (list.length < n * 2) { min = 40; list = pool.filter((s) => q(s) >= min); }
+  if (list.length < n) list = pool.slice();
+  let seen = readSeen(source), set = new Set(seen);
+  let unseen = list.filter((s) => !set.has(s.id));
+  if (unseen.length < n * 2) { const ids = new Set(list.map((s) => s.id)); seen = seen.filter((id) => !ids.has(id)); set = new Set(seen); unseen = list.slice(); }
+  unseen.sort((a, b) => q(b) + Math.random() * 3 - (q(a) + Math.random() * 3));
+  const window = shuffle(unseen.slice(0, Math.min(unseen.length, n * 2 + 2))), out = [], per = {};
+  for (const s of window) { const art = String(s.a).split(/[,&]/)[0].trim().toLowerCase(); if ((per[art] || 0) >= 2) continue; per[art] = (per[art] || 0) + 1; out.push(s); if (out.length === n) break; }
+  for (const s of window) { if (out.length >= n) break; if (!out.includes(s)) out.push(s); }
+  writeSeen(source, seen.concat(out.map((s) => s.id)));
+  return out;
+}
 function pickSongs(all, source, n) {
-  const take = (list, k) => pickFresh("wwa-tune-" + source, list, (s) => s.id, k);
-  if (POOLS[source]) return shuffle(take(all.filter(POOLS[source]), n));
-  const hi = all.filter(POOLS.hindi), rest = all.filter((s) => !POOLS.hindi(s)), nh = Math.round(n * 0.6);
-  return shuffle(take(hi, nh).concat(take(rest, n - nh)));
+  const byQ = (a, b) => q(b) - q(a);
+  if (POOLS[source]) return pickFrom(all.filter(POOLS[source]), source, n).sort(byQ);
+  const nh = Math.round(n * 0.6);
+  return pickFrom(all.filter(POOLS.hindi), "mix-hindi", nh).concat(pickFrom(all.filter((s) => s.l === "en" || WORLD.has(s.l)), "mix-rest", n - nh)).sort(byQ);
 }
 function makeHost(ctx) {
   let S = null;
@@ -77,7 +102,7 @@ function makeHost(ctx) {
   return {
     async start(o) {
       let all; try { all = await loadSongs(); } catch (e) { return ctx.push({ ph: "error" }); }
-      const n = Math.min(+o.rounds || 10, all.length);
+      const n = Math.max(1, Math.min(+o.rounds || 10, all.length));
       S = { songs: pickSongs(all, o.source || "mix", n), i: 0, scores: {}, hits: {}, guess: {}, gain: {}, order: ctx.players.map((p) => p.id), tm: null, hm: null, dl: 0, ph: "q", hint: false };
       S.order.forEach((id) => (S.scores[id] = 0)); ask();
     },
@@ -122,7 +147,11 @@ function mountView(root, api, solo) {
   });
   let tried = 0;
   async function retry() { // preview links can change; ask iTunes for a fresh one by id
-    if (tried++ || !st?.clip) return;
+    if (!st?.clip) return;
+    if (tried++) { // the retry failed too: the host skips this song so the game never stalls
+      if (api.isHost && st.ph === "q") setTimeout(() => { if (st?.ph === "q" && player.state === "error") api.act({ a: "skip" }); }, 1500);
+      return;
+    }
     try { const r = await fetch(`https://itunes.apple.com/lookup?id=${st.clip.id}&country=IN`).then((x) => x.json()); const u = r.results?.[0]?.previewUrl; if (u) player.load(u, true); } catch (e) { /* offline */ }
   }
   player.unlock(); // a tap started this view in solo play; in rooms the first tap on the play button does it

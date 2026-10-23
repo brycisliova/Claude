@@ -77,7 +77,7 @@ function makeHost(ctx) {
         else if ((S.songs[sk] || 0) >= 2) msg = "That song has already been used twice. Pick another one.";
         else if (!(S.hindi ? endClasses(line).length : endEn(line).length)) msg = "The line needs to end with a letter.";
         if (msg) { S.wrong++; ctx.reply(pid, { bad: msg, left: Math.max(0, 3 - S.wrong) }); if (S.wrong >= 3) { S.lives[pid]--; S.last = { miss: "made three wrong tries", by: pid }; clearTimeout(S.tm); afterMiss(pid); } return; }
-        const known = !!songs && songs.some((x) => sim(song, x.t) >= 0.9 || (x.tn && sim(song, x.tn) >= 0.9) || (S.hindi && x.g === "hi" && canon(song) === canon(x.tn || x.t)));
+        const known = !!songs && songs.some((x) => sim(song, x.t) >= 0.9 || (x.tn && sim(song, x.tn) >= 0.9) || (S.hindi && (x.l === "hi" || x.l === "pa") && canon(song) === canon(x.tn || x.t)));
         S.cur = { line, song, k: S.hindi ? skeleton(line) : key(line), sk, known, t: Date.now() }; S.dl0 = S.dl;
         clearTimeout(S.tm); S.ph = "judge"; S.votes = {}; S.ms = JUDGE_MS; S.dl = Date.now() + S.ms; S.tm = ctx.after(S.ms + 300, judge);
         if (voters().length === 0) { S.tm = ctx.after(900, judge); }
