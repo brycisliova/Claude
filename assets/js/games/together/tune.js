@@ -69,9 +69,10 @@ function pickFrom(pool, source, n) {
   let unseen = list.filter((s) => !set.has(s.id));
   if (unseen.length < n * 2) { const ids = new Set(list.map((s) => s.id)); seen = seen.filter((id) => !ids.has(id)); set = new Set(seen); unseen = list.slice(); }
   unseen.sort((a, b) => q(b) + Math.random() * 3 - (q(a) + Math.random() * 3));
-  const window = shuffle(unseen.slice(0, Math.min(unseen.length, n * 2 + 2))), out = [], per = {};
-  for (const s of window) { const art = String(s.a).split(/[,&]/)[0].trim().toLowerCase(); if ((per[art] || 0) >= 2) continue; per[art] = (per[art] || 0) + 1; out.push(s); if (out.length === n) break; }
-  for (const s of window) { if (out.length >= n) break; if (!out.includes(s)) out.push(s); }
+  const window = shuffle(unseen.slice(0, Math.min(unseen.length, n * 2 + 2))), out = [], per = {}, titles = new Set(), tk = (s) => String(s.t).toLowerCase().replace(/[^a-z0-9]/g, "");
+  // at most two songs per artist, and never the same title twice in one game
+  for (const s of window) { const art = String(s.a).split(/[,&]/)[0].trim().toLowerCase(); if ((per[art] || 0) >= 2 || titles.has(tk(s))) continue; per[art] = (per[art] || 0) + 1; titles.add(tk(s)); out.push(s); if (out.length === n) break; }
+  for (const s of window) { if (out.length >= n) break; if (!out.includes(s) && !titles.has(tk(s))) { titles.add(tk(s)); out.push(s); } }
   writeSeen(source, seen.concat(out.map((s) => s.id)));
   return out;
 }

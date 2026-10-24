@@ -1,0 +1,41 @@
+name: Add popular songs
+
+# Adds well-known songs from tools/data/song-wishlist.json to the song games, a few hundred a night, until the list is done.
+# Apple limits how fast songs can be looked up, so this spreads the work over several runs. It does nothing once the list
+# is finished. Run it by hand from the Actions tab with "Run workflow" to speed it up.
+on:
+  schedule:
+    - cron: "40 21 * * *"
+  workflow_dispatch:
+    inputs:
+      max:
+        description: "How many songs to look up in this run"
+        default: "350"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-bot
+  cancel-in-progress: false
+
+jobs:
+  songs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Look up and add songs
+        run: node tools/add-songs.mjs "${{ github.event.inputs.max || '350' }}"
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "songs-bot"
+          git config user.email "songs-bot@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "Songs: add more well-known songs"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
