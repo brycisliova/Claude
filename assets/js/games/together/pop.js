@@ -5,11 +5,12 @@ import { game, report, $ as q$ } from "../shared.js";
 import { BANK, TOPICS } from "../../data/pop.js";
 import { MORE } from "../../data/pop-more.js";
 import { EXTRA } from "../../data/pop-extra.js";
+import { FUN } from "../../data/pop-fun.js";
 import { PICS } from "../../data/pop-pics.js";
 import { PHOTOS } from "../../data/pop-photos.js";
 import { tone, PENTA, ready } from "../../audio.js";
 
-const ALL = [...BANK, ...MORE, ...EXTRA, ...PICS];
+const ALL = [...BANK, ...MORE, ...EXTRA, ...PICS, ...FUN];
 const TIME = { pic: 20000, place: 20000, mc: 15000, tf: 10000, who: 15000, emoji: 15000, clue: 21000, odd: 15000, first: 10000, num: 20000 };
 const REVEAL_MS = 6000;
 const LABEL = { pic: "Who is this?", place: "Spot the place", mc: "Quick question", tf: "True or false?", who: "Who said it?", emoji: "Emoji decoder", clue: "Who am I?", odd: "Odd one out", first: "Which came first?", num: "Closest wins" };
@@ -19,7 +20,7 @@ const WRONG = ["Not this time, babe.", "The tea was elsewhere.", "Plot twist!", 
 const SLOW = ["Too slow. The music stopped.", "The clock won that round.", "Time's up, darling."];
 const picUrl = (id) => new URL(`../../../img/pop/${id}.webp`, import.meta.url).href;
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
-const RANKS = [[0.9, "Pride encyclopaedia"], [0.75, "Certified icon"], [0.55, "Ally with receipts"], [0.35, "Rising star"], [0, "Every legend starts somewhere"]];
+const RANKS = [[0.9, "Pop culture royalty"], [0.75, "Main character"], [0.55, "Certified fan"], [0.35, "Rising star"], [0, "Every legend starts somewhere"]];
 
 // registerQuiz builds a quiz game (solo and room) from a bank of questions. The Pride pop quiz is registered at the bottom;
 // trivia.js registers the general knowledge quiz from the same engine.
@@ -39,7 +40,7 @@ const qid = (b) => fnv(b.t + "|" + (b.img || b.code || (b.t === "clue" ? b.clues
 const readSeen = () => { try { const v = JSON.parse(localStorage.getItem(SEEN_KEY)); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
 const writeSeen = (a) => { try { localStorage.setItem(SEEN_KEY, JSON.stringify(a.slice(-2000))); } catch (e) { /* private mode */ } };
 const forgetSeen = () => writeSeen([]);
-const inTopic = (topic) => ALL.filter((b) => (topic === "mix" ? true : topic === "wild" ? WILD.has(b.t) : b.cat === topic));
+const inTopic = (topic) => ALL.filter((b) => (topic === "mix" ? (cfg.mixFilter ? cfg.mixFilter(b) : true) : topic === "wild" ? WILD.has(b.t) : b.cat === topic));
 function freshCount(topic) { const seen = new Set(readSeen()), pool = inTopic(topic); return { fresh: pool.filter((b) => !seen.has(qid(b))).length, total: pool.length }; }
 function buildQuestions(topic, total) {
   let pool = inTopic(topic);
@@ -264,4 +265,7 @@ game(cfg.id,
   });
 }
 
-registerQuiz({ id: "pop", title: "Pride pop quiz", all: ALL, right: RIGHT, wrong: WRONG, slow: SLOW, ranks: RANKS, topics: TOPICS, seenKey: "wwa-pop-seen", lede: (n) => `${n} questions about queer music, film, TV, icons, ballroom, India and more, with photographs, emoji and riddles. Each game draws a fresh set, and a question will not come back until you have seen the rest. Every answer comes with a little story.` });
+// The everyday mix is pop culture: history and law questions (icons and Queer India facts) stay available as their own topics only.
+const FACTS = new Set(["icons", "india"]), FACT_TYPES = new Set(["mc", "tf", "num", "first"]);
+const POP_TOPICS = [["mix", "Everything fun (the default)"], ["music", "Music and divas"], ["screen", "Film, TV and stage"], ["desi", "Bollywood and desi pop"], ["ballroom", "Drag, ballroom and slang"], ["arts", "Stars, sport, books and games"], ["wild", "Emoji, riddles and odd ones out"], ["icons", "Icons, firsts and history"], ["india", "Queer India"]];
+registerQuiz({ id: "pop", title: "Pride pop quiz", all: ALL, right: RIGHT, wrong: WRONG, slow: SLOW, ranks: RANKS, topics: POP_TOPICS, mixFilter: (b) => b.fun || !(FACTS.has(b.cat) && FACT_TYPES.has(b.t)), seenKey: "wwa-pop-seen-v2", lede: (n) => `${n} questions about pop music, films, Bollywood, drag, memes and the stars everyone loves, with photographs, emoji and riddles. History and law are in their own topics, so the default is just fun. Each game draws a fresh set, and a question will not come back until you have seen the rest.` });
