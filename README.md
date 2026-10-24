@@ -17,16 +17,16 @@ Address: <https://shiningforever.in>
 
 ## Games
 
-Play alone, or make a room and play with friends on their own phones. No sign-up.
+Play alone, or make a room and play with friends on their own phones. No sign-up. The host can change the game or its settings inside the same room, and everyone stays in.
 
 - **Truth or Dare:** from mild to wild, with an 18+ level, plus Never have I ever and Spill the tea.
-- **Name that tune:** hear a short clip and type the song. Mostly Hindi, plus the biggest hits from everywhere.
+- **Name that tune:** hear a short clip and type the song. Hindi games use only Hindi and Punjabi songs. Every song is graded for how many people know it, and a game plays them from the best known to the least known.
 - **Song antakshari:** sing a line, then the next player must start with your last sound. Hindi songs can be typed in Hinglish or Hindi, and spelling never matters.
 - **Word antakshari:** a word chain in English or Hinglish where each word starts with the last letter of the one before.
 - **Atlas:** name places in a chain: cities, villages, states, countries, continents, oceans and deserts.
 - **Where in the world?:** drop a pin on a map to find where a photo was taken.
-- **Trivia night** and the **Pride pop quiz:** fresh questions every game.
-- **Adda night:** party games for friends.
+- **Trivia night** and the **Pride pop quiz:** fresh questions every game. The pop quiz is about music, films, Bollywood, drag and the stars everyone loves, and every question was fact-checked.
+- **Adda night:** party games for friends. After a Hot take there is time to argue it out, and the host can pause, add time or move on.
 - **Calm games:** breathing, lanterns, sand gardens, puzzles and more.
 
 ## Fair play
